@@ -3,7 +3,6 @@ package tarehart.rlbot;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import py4j.GatewayServer;
-import tarehart.rlbot.ui.StatusSummary;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -17,10 +16,9 @@ public class GrpcServer {
     static final int DEFAULT_PORT = 25368;
     private static int port;
     private final Server server;
-    private static StatusSummary statusSummary = new StatusSummary();
 
     private GrpcServer() throws IOException {
-        server = ServerBuilder.forPort(port).addService(new GrpcService(statusSummary)).build();
+        server = ServerBuilder.forPort(port).addService(new GrpcService()).build();
     }
 
     /** Start serving requests. */
@@ -72,7 +70,6 @@ public class GrpcServer {
 
         System.out.println(String.format("Grpc server started on port %s. Listening for Rocket League data!", port));
 
-        showStatusSummary(port);
         server.blockUntilShutdown();
     }
 
@@ -87,16 +84,5 @@ public class GrpcServer {
         } catch (Throwable e) {
             return Optional.empty();
         }
-    }
-
-    private static void showStatusSummary(int port) {
-
-        statusSummary.setPort(port);
-
-        JFrame frame = new JFrame("ReliefBot");
-        frame.setContentPane(statusSummary.getRootPanel());
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setVisible(true);
     }
 }

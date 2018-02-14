@@ -4,26 +4,16 @@ import com.google.gson.Gson;
 import io.grpc.stub.StreamObserver;
 import rlbot.api.BotGrpc;
 import rlbot.api.GameData;
-import tarehart.rlbot.input.Chronometer;
-import tarehart.rlbot.input.SpinTracker;
-import tarehart.rlbot.ui.StatusSummary;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class GrpcService extends BotGrpc.BotImplBase {
 
-    private final StatusSummary statusSummary;
-    private Map<Integer, Bot> bots = new HashMap<>();
+    //private Map<Integer, Bot> bots = new HashMap<>();
     private Gson gson = new Gson();
-    private Chronometer chronometer = new Chronometer();
-    private SpinTracker spinTracker = new SpinTracker();
 
     private long frameCount = 0;
-
-    public GrpcService(StatusSummary statusSummary) {
-        this.statusSummary = statusSummary;
-    }
 
     @Override
     public void getControllerState(GameData.GameTickPacket request, StreamObserver<GameData.ControllerState> responseObserver) {
@@ -42,20 +32,20 @@ public class GrpcService extends BotGrpc.BotImplBase {
                 return new AgentOutput().toControllerState();
             }
 
-            AgentInput translatedInput = new AgentInput(request, playerIndex, chronometer, spinTracker, frameCount++);
-
             // Setup bot from this packet if necessary
-            synchronized (this) {
+            /*synchronized (this) {
                 if (!bots.containsKey(playerIndex)) {
                     ReliefBot bot = new ReliefBot(translatedInput.team, playerIndex);
                     bots.put(playerIndex, bot);
                     statusSummary.markTeamRunning(translatedInput.team, playerIndex, bot.getDebugWindow());
                 }
-            }
+            }*/
 
-            Bot bot = bots.get(playerIndex);
+            // Bot bot = bots.get(playerIndex);
 
-            return bot.processInput(translatedInput).toControllerState();
+            //return bot.processInput(translatedInput).toControllerState();
+
+            return GameData.ControllerState.newBuilder().setThrottle(-1).build();
         } catch (Exception e) {
             e.printStackTrace();
             return new AgentOutput().toControllerState();
