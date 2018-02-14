@@ -2,100 +2,94 @@ package tarehart.rlbot;
 
 import rlbot.api.GameData;
 
+/**
+ * A data class describing the outputs of an agent. This class can be translated into a ControllerState.
+ */
 public class AgentOutput {
 
-    public static final int MAX_TILT = 32767;
-
     // 0 is straight, -1 is hard left, 1 is hard right.
-    private double steeringTilt;
+    private double steeringTilt = 0;
 
     // -1 for front flip, 1 for back flip
-    private double pitchTilt;
+    private double pitchTilt = 0;
 
     // 0 is none, 1 is full
-    private double acceleration;
-    private double deceleration;
+    private double acceleration = 0;
+    private double deceleration = 0;
 
-    private boolean jumpDepressed;
-    private boolean boostDepressed;
-    private boolean slideDepressed;
+    private boolean jumpDepressed = false;
+    private boolean boostDepressed = false;
+    private boolean slideDepressed = false;
 
     public AgentOutput() {
     }
 
+    /** Set steering/turning. 0 is straight, -1 is hard left, 1 is hard right. Clamped between -1 and 1. Default it 0. */
     public AgentOutput withSteer(double steeringTilt) {
         this.steeringTilt = Math.max(-1, Math.min(1, steeringTilt));
         return this;
     }
 
+    /** Set pitch. -1 for front flip, 1 for back flip. Clamped between -1 and 1. Default is 0. */
     public AgentOutput withPitch(double pitchTilt) {
         this.pitchTilt = Math.max(-1, Math.min(1, pitchTilt));
         return this;
     }
 
+    /** Set acceleration. 0 is none, 1 is full. Clamped between 0 and 1. Default is 0. */
     public AgentOutput withAcceleration(double acceleration) {
         this.acceleration = Math.max(0, Math.min(1, acceleration));
         return this;
     }
 
+    /** Set deceleration. 0 is none, 1 is full. Clamped between 0 and 1. Default is 0. */
     public AgentOutput withDeceleration(double deceleration) {
         this.deceleration = Math.max(0, Math.min(1, deceleration));
         return this;
     }
 
+    /** Set jump pressed state. Default is false. */
     public AgentOutput withJump(boolean jumpDepressed) {
         this.jumpDepressed = jumpDepressed;
         return this;
     }
 
+    /** Set boost pressed state. Default is false. */
     public AgentOutput withBoost(boolean boostDepressed) {
         this.boostDepressed = boostDepressed;
         return this;
     }
 
+    /** Set slide pressed state. Default is false. */
     public AgentOutput withSlide(boolean slideDepressed) {
         this.slideDepressed = slideDepressed;
         return this;
     }
 
+    /** Set jump pressed state to true. */
     public AgentOutput withJump() {
         this.jumpDepressed = true;
         return this;
     }
 
+    /** Set boost pressed state to true. */
     public AgentOutput withBoost() {
         this.boostDepressed = true;
         return this;
     }
 
+    /** Set slide pressed state to true. */
     public AgentOutput withSlide() {
         this.slideDepressed = true;
         return this;
     }
 
 
-    public int[] toPython() {
-        return new int[] {
-                convertMagnitudeWithNegatives(steeringTilt),
-                convertMagnitudeWithNegatives(pitchTilt),
-                convertMagnitudeOnlyPositive(acceleration),
-                convertMagnitudeOnlyPositive(deceleration),
-                jumpDepressed ? 1 : 0,
-                boostDepressed ? 1 : 0,
-                slideDepressed ? 1 : 0
-        };
-    }
-
-    private int convertMagnitudeWithNegatives(double tilt) {
-        double normalized = (tilt + 1) / 2;
-        return convertMagnitudeOnlyPositive(normalized);
-    }
-
-    private int convertMagnitudeOnlyPositive(double normalized) {
-        double intScaled = normalized * MAX_TILT;
-        return (int) Math.round(intScaled);
-    }
-
+    /**
+     * Compare to AgentOutputs.
+     * @param o the other AgentOutput.
+     * @return whether the AgentOutputs are identical.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -130,14 +124,24 @@ public class AgentOutput {
         return result;
     }
 
+    /**
+     * @return the amount of steering. Between -1 (left) and 1 (right).
+     */
     public double getSteer() {
         return steeringTilt;
     }
 
+    /**
+     * @return the amount of pitch. Between -1 (forwards) and 1 (backwards).
+     */
     public double getPitch() {
         return pitchTilt;
     }
 
+
+    /**
+     * @return this AgentOutput as a ControllerState.
+     */
     GameData.ControllerState toControllerState() {
         return GameData.ControllerState.newBuilder()
                 .setThrottle((float) (acceleration - deceleration))
