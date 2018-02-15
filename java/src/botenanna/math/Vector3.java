@@ -28,10 +28,21 @@ public class Vector3 {
         this.z = 0;
     }
 
+    public Vector3(Vector2 vec) {
+        this.x = vec.x;
+        this.y = vec.y;
+        this.z = 0;
+    }
+
     public Vector3(double x, double y, double z) {
         this.x = x;
         this.y = y;
         this.z = z;
+    }
+
+    /** Convert to Vector2 */
+    public Vector2 asVector2() {
+        return new Vector2(this);
     }
 
     /** @return this vector plus the other vector */

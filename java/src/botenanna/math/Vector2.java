@@ -1,6 +1,8 @@
 package botenanna.math;
 
 
+import java.util.Vector;
+
 /** A vector with two components: x and y */
 public class Vector2 {
 
@@ -21,6 +23,16 @@ public class Vector2 {
     public Vector2(double x, double y){
         this.x = x;
         this.y = y;
+    }
+
+    public Vector2(Vector3 vec) {
+        this.x = vec.x;
+        this.y = vec.y;
+    }
+
+    /** Convert to Vector3 */
+    public Vector3 asVector3() {
+        return new Vector3(this);
     }
 
     /** @return this vector plus the other vector */
