@@ -65,7 +65,7 @@ public class Vector3 {
      * the length of the other vector times Cosine(ang), where ang is the angle between this and the other vector */
     public Vector3 cross(Vector3 other) {
         double x = (this.y * other.z) - (this.z * other.y);
-        double y = (this.x * other.z) - (this.z * other.x);
+        double y = (this.z * other.x) - (this.x * other.z);
         double z = (this.x * other.y) - (this.y * other.x);
         return new Vector3(x, y, z);
     }
@@ -86,7 +86,7 @@ public class Vector3 {
     }
 
     /** @return a vector with the same direction, but a length of one. If this is a zero vector, this returns a new zero vector. */
-    public Vector3 getNormalized(double scalar) {
+    public Vector3 getNormalized() {
         if (isZero()) return new Vector3();
         return scale(1.0 / getMagnitude());
     }

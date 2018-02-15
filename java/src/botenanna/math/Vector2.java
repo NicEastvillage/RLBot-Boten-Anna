@@ -66,7 +66,7 @@ public class Vector2 {
     }
 
     /** @return a vector with the same direction, but a length of one. If this is a zero vector, this returns a new zero vector. */
-    public Vector2 getNormalized(double scalar) {
+    public Vector2 getNormalized() {
         if (isZero()) return new Vector2();
         return scale(1.0 / getMagnitude());
     }
