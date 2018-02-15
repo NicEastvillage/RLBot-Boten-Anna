@@ -1,13 +1,15 @@
 package botenanna.math;
 
+import rlbot.api.GameData;
+
 public class Vector3 {
 
     public static final Vector3 UP = new Vector3(0, 0, 1);
     public static final Vector3 RIGHT = new Vector3(1, 0, 0);
     public static final Vector3 FORWARD = new Vector3(0, 1, 0);
-    public static final Vector3 BACKWARDS = new Vector3(0,-1,0);
-    public static final Vector3 LEFT = new Vector3(-1,0,0);
-    public static final Vector3 DOWN = new Vector3(0,0,-1);
+    public static final Vector3 BACKWARDS = new Vector3(0, -1, 0);
+    public static final Vector3 LEFT = new Vector3(-1, 0, 0);
+    public static final Vector3 DOWN = new Vector3(0, 0, -1);
 
     public final double x;
     public final double y;
@@ -35,7 +37,7 @@ public class Vector3 {
         double x = (this.y * other.z) - (this.z * other.y);
         double y = (this.x * other.z) - (this.z * other.x);
         double z = (this.x * other.y) - (this.y * other.x);
-        return new Vector3( x, y, z);
+        return new Vector3(x, y, z);
     }
 
     public Vector3 scale(double scalar) {
@@ -51,8 +53,11 @@ public class Vector3 {
     }
 
     public Vector3 getNormalized(double scalar) {
-        return scale( 1.0 / getMagnitude() );
+        return scale(1.0 / getMagnitude());
     }
 
+    public static Vector3 convert(GameData.Vector3 vec) {
+        return new Vector3(vec.getX(), vec.getY(), vec.getZ());
+    }
 }
 
