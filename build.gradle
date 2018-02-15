@@ -51,7 +51,7 @@ idea {
     }
 }
 
-mainClassName = 'tarehart.rlbot.GrpcServer'
+mainClassName = 'botenanna.GrpcServer'
 
 applicationDistribution.from("$projectDir") {
     into 'README'

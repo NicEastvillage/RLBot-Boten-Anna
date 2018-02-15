@@ -1,4 +1,4 @@
-package tarehart.rlbot;
+package botenanna;
 
 import rlbot.api.GameData;
 
@@ -86,7 +86,7 @@ public class AgentOutput {
 
 
     /**
-     * Compare to AgentOutputs.
+     * Compare two AgentOutputs.
      * @param o the other AgentOutput.
      * @return whether the AgentOutputs are identical.
      */

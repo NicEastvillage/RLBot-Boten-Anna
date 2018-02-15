@@ -1,4 +1,4 @@
-package tarehart.rlbot;
+package botenanna;
 
 import io.grpc.stub.StreamObserver;
 import rlbot.api.BotGrpc;
@@ -11,9 +11,10 @@ public class GrpcService extends BotGrpc.BotImplBase {
 
     private Map<Integer, Bot> registeredBots = new HashMap<>();
 
-    /* This is where we receive a message from the grpc server, and we wanna send
-       something back as an answer. Our answer is a ControllerState
-    */
+    /**
+     * This is where we receive a message from the grpc server, and we wanna send
+     * something back as an answer. Our answer is a ControllerState
+     */
     @Override
     public void getControllerState(GameData.GameTickPacket request, StreamObserver<GameData.ControllerState> responseObserver) {
         // Evaluate the message (GameTickPacket) and respond with a ControllerState
@@ -21,10 +22,11 @@ public class GrpcService extends BotGrpc.BotImplBase {
         responseObserver.onCompleted();
     }
 
-    /* This is the method were we evaluate the GameTickPacket from the grpc server.
-       It returns a ControllerState, which is then sent to Rocket League.
-       In other words, THIS IS WHERE THE MAGIC HAPPENS
-    */
+    /**
+     * This is the method were we evaluate the GameTickPacket from the grpc server.
+     * It returns a ControllerState, which is then sent to Rocket League.
+     * In other words, THIS IS WHERE THE MAGIC HAPPENS
+     */
     private GameData.ControllerState evaluateGameTick(GameData.GameTickPacket request) {
         try {
             int playerIndex = request.getPlayerIndex();

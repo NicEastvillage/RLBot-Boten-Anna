@@ -1,8 +1,7 @@
-package tarehart.rlbot;
+package botenanna;
 
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
-import py4j.GatewayServer;
 
 import javax.swing.*;
 import java.io.IOException;
