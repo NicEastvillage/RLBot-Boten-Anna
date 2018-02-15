@@ -74,9 +74,27 @@ public class Vector3 {
         return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2) + Math.pow(this.z, 2));
     }
 
-    /** @return a vector with the same direction, but a length of one. */
+    /** @return a vector with the same direction, but a length of one. If this is a zero vector, this returns a new zero vector. */
     public Vector3 getNormalized(double scalar) {
+        if (isZero()) return new Vector3();
         return scale(1.0 / getMagnitude());
+    }
+
+    /** @return whether this vector has a magnitude (length) of zero (all components are zero) */
+    public boolean isZero() {
+        return x == 0 && y == 0 && z == 0;
+    }
+
+    /** Compare two vectors.
+     * @return whether the vectors are identical. */
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        if (other == null || getClass() != other.getClass()) return false;
+
+        Vector3 that = (Vector3) other;
+
+        return this.minus(that).isZero();
     }
 
     /** Convert a vector from GameData to our Vector3. */
