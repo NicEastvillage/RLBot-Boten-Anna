@@ -16,10 +16,33 @@ public class Vector3 {
     public final double y;
     public final double z;
 
+    public Vector3() {
+        this.x = 0;
+        this.y = 0;
+        this.z = 0;
+    }
+
+    public Vector3(double x, double y) {
+        this.x = x;
+        this.y = y;
+        this.z = 0;
+    }
+
+    public Vector3(Vector2 vec) {
+        this.x = vec.x;
+        this.y = vec.y;
+        this.z = 0;
+    }
+
     public Vector3(double x, double y, double z) {
         this.x = x;
         this.y = y;
         this.z = z;
+    }
+
+    /** Convert to Vector2 */
+    public Vector2 asVector2() {
+        return new Vector2(this);
     }
 
     /** @return this vector plus the other vector */
@@ -42,7 +65,7 @@ public class Vector3 {
      * the length of the other vector times Cosine(ang), where ang is the angle between this and the other vector */
     public Vector3 cross(Vector3 other) {
         double x = (this.y * other.z) - (this.z * other.y);
-        double y = (this.x * other.z) - (this.z * other.x);
+        double y = (this.z * other.x) - (this.x * other.z);
         double z = (this.x * other.y) - (this.y * other.x);
         return new Vector3(x, y, z);
     }
@@ -62,9 +85,27 @@ public class Vector3 {
         return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2) + Math.pow(this.z, 2));
     }
 
-    /** @return a vector with the same direction, but a length of one. */
-    public Vector3 getNormalized(double scalar) {
+    /** @return a vector with the same direction, but a length of one. If this is a zero vector, this returns a new zero vector. */
+    public Vector3 getNormalized() {
+        if (isZero()) return new Vector3();
         return scale(1.0 / getMagnitude());
+    }
+
+    /** @return whether this vector has a magnitude (length) of zero (all components are zero) */
+    public boolean isZero() {
+        return x == 0 && y == 0 && z == 0;
+    }
+
+    /** Compare two vectors.
+     * @return whether the vectors are identical. */
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        if (other == null || getClass() != other.getClass()) return false;
+
+        Vector3 that = (Vector3) other;
+
+        return this.minus(that).isZero();
     }
 
     /** Convert a vector from GameData to our Vector3. */
