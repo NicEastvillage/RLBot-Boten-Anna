@@ -111,6 +111,12 @@ public class Vector3 {
         return this.minus(that).isZero();
     }
 
+    /** @return "Vec3(x, y, z)" */
+    @Override
+    public String toString() {
+        return String.format("Vec3(" + x + ", " + y + ", " + z + ")");
+    }
+
     /** Convert from GameData to our Vector3. */
     public static Vector3 convert(GameData.Vector3 vec) {
         return new Vector3(vec.getX(), vec.getY(), vec.getZ());

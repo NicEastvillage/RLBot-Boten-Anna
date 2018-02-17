@@ -84,4 +84,10 @@ public class Vector2 {
 
         return this.minus(that).isZero();
     }
+
+    /** @return "Vec2(x, y)" */
+    @Override
+    public String toString() {
+        return String.format("Vec2(" + x + ", " + y + ")");
+    }
 }
