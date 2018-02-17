@@ -11,23 +11,20 @@ public class Vector2 {
     public static final Vector2 BACKWARDS = new Vector2(0,-1);
     public static final Vector2 LEFT = new Vector2(-1,0);
 
-
     public final double x;
     public final double y;
 
     public Vector2(){
-        this.x = 0;
-        this.y = 0;
+        this(0, 0);
+    }
+
+    public Vector2(Vector3 vec) {
+        this(vec.x, vec.y);
     }
 
     public Vector2(double x, double y){
         this.x = x;
         this.y = y;
-    }
-
-    public Vector2(Vector3 vec) {
-        this.x = vec.x;
-        this.y = vec.y;
     }
 
     /** Convert to Vector3 */

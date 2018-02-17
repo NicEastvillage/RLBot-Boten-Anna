@@ -16,28 +16,31 @@ public class Vector3 {
     public final double y;
     public final double z;
 
+    // Vector3 are also used to represent rotations, but these variables are the same as x, y, z
+    /** Angle of counterclockwise rotation around the x-axis */
+    public final double pitch;
+    /** Angle of counterclockwise rotation around the y-axis */
+    public final double roll;
+    /** Angle of counterclockwise rotation around the z-axis */
+    public final double yaw;
+
+
     public Vector3() {
-        this.x = 0;
-        this.y = 0;
-        this.z = 0;
+        this(0, 0, 0);
     }
 
     public Vector3(double x, double y) {
-        this.x = x;
-        this.y = y;
-        this.z = 0;
+        this(x, y, 0);
     }
 
     public Vector3(Vector2 vec) {
-        this.x = vec.x;
-        this.y = vec.y;
-        this.z = 0;
+        this(vec.x, vec.y, 0);
     }
 
     public Vector3(double x, double y, double z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        this.x = this.roll = x;
+        this.y = this.pitch = y;
+        this.z = this.yaw = z;
     }
 
     /** Convert to Vector2 */
@@ -108,9 +111,14 @@ public class Vector3 {
         return this.minus(that).isZero();
     }
 
-    /** Convert a vector from GameData to our Vector3. */
+    /** Convert from GameData to our Vector3. */
     public static Vector3 convert(GameData.Vector3 vec) {
         return new Vector3(vec.getX(), vec.getY(), vec.getZ());
+    }
+
+    /** Convert from a GameData Rotator */
+    public static Vector3 convert(GameData.Rotator rot) {
+        return new Vector3(rot.getRoll(), rot.getPitch(), rot.getYaw());
     }
 }
 
