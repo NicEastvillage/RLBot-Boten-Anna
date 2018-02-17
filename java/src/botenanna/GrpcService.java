@@ -40,7 +40,8 @@ public class GrpcService extends BotGrpc.BotImplBase {
             // Create and register bot from this packet if necessary
             synchronized (this) {
                 if (!registeredBots.containsKey(playerIndex)) {
-                    Bot bot = new Bot(playerIndex);
+                    int teamIndex = request.getPlayers(playerIndex).getTeam() % 2;
+                    Bot bot = new Bot(playerIndex, teamIndex);
                     registeredBots.put(playerIndex, bot);
                 }
             }
