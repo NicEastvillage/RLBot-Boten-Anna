@@ -1,12 +1,13 @@
 package botenanna.math;
 
+/** A helper class for all math related to Rocket League */
 public class RLMath {
 
     /** Calculate the angle between a cars forward direction and the direction to the point from the cars position.
      * @param position the cars position
      * @param yaw the cars yaw
      * @param point the point
-     * @return the angle between the car and the point */
+     * @return the angle between the car and the point (Between -PI and +PI) */
     public static double carsAngleToPoint(Vector2 position, double yaw, Vector2 point) {
         // Find the difference between the cars location and the point
         Vector2 diff = point.minus(position);
