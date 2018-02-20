@@ -1,5 +1,6 @@
 package botenanna;
 
+import botenanna.overlayWindow.Window;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 
@@ -15,6 +16,7 @@ public class GrpcServer {
     static final int DEFAULT_PORT = 25368;
     private static int port;
     private final Server server;
+    private static Window statusWindow = new Window();
 
     private GrpcServer() throws IOException {
         server = ServerBuilder.forPort(port).addService(new GrpcService()).build();
@@ -68,6 +70,7 @@ public class GrpcServer {
         server.start();
 
         System.out.println(String.format("Grpc server started on port %s. Listening for Rocket League data!", port));
+
 
         server.blockUntilShutdown();
     }
