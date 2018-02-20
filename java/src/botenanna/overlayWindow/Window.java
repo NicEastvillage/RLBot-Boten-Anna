@@ -3,7 +3,6 @@ package botenanna.overlayWindow;
 //https://docs.oracle.com/javase/tutorial/uiswing/examples/layout/FlowLayoutDemoProject/src/layout/FlowLayoutDemo.java
 
 import botenanna.math.Vector3;
-import com.sun.xml.internal.messaging.saaj.soap.JpegDataContentHandler;
 import rlbot.api.GameData;
 
 import javax.swing.*;

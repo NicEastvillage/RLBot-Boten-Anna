@@ -16,7 +16,7 @@ public class GrpcServer {
     static final int DEFAULT_PORT = 25368;
     private static int port;
     private final Server server;
-    private static Window statusWindow = new Window();
+    public static Window statusWindow = new Window();
 
     private GrpcServer() throws IOException {
         server = ServerBuilder.forPort(port).addService(new GrpcService()).build();
