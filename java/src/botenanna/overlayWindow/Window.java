@@ -3,13 +3,16 @@ package botenanna.overlayWindow;
 //https://docs.oracle.com/javase/tutorial/uiswing/examples/layout/FlowLayoutDemoProject/src/layout/FlowLayoutDemo.java
 
 import botenanna.math.Vector3;
-import javafx.scene.text.FontWeight;
 import rlbot.api.GameData;
 
 import javax.swing.*;
 import java.awt.*;
+import java.text.DecimalFormat;
 
 public class Window extends JFrame{
+
+    private static DecimalFormat df2 = new DecimalFormat(".##");
+    private static Font font = new Font("Courier New", Font.PLAIN , 12);
 
     private JLabel carLocation;
     private JLabel carVelocity;
@@ -32,7 +35,7 @@ public class Window extends JFrame{
         //Display window
 
         frame.pack();
-        frame.setSize(400,150);
+        frame.setSize(440,190);
         frame.setVisible(true);
 
     }
@@ -59,6 +62,13 @@ public class Window extends JFrame{
         ballLocation = new JLabel("Ball Location(x, y, z)");
         ballVelocity = new JLabel("Ball Velocity(x, y, z)");
         angleToBall = new JLabel("Angle to ball()");
+
+        carLocation.setFont(font);
+        carVelocity.setFont(font);
+        carRotation.setFont(font);
+        ballLocation.setFont(font);
+        ballVelocity.setFont(font);
+        angleToBall.setFont(font);
 
         line1.add(carLocation);
         line2.add(carVelocity);
@@ -109,52 +119,36 @@ public class Window extends JFrame{
 
     }
 
-    private void updateLabelCarLocation(Vector3 playerVecLocation){
-        double playerX, playerY, playerZ;
-        playerX = playerVecLocation.x;
-        playerY = playerVecLocation.y;
-        playerZ = playerVecLocation.z;
-
-        carLocation.setText("Car Location (x: " + playerX + ", y: " + playerY + ", z: " + playerZ + ")");
+    public void updateLabelCarLocation(Vector3 playerVecLocation){
+        carLocation.setText(formatLabelVectorXYZ("Car Location", playerVecLocation));
     }
 
-    private void updateLabelCarVelocity(Vector3 playerVecVelocity){
-        double playVelX, playVelY, playVelZ;
-        playVelX = playerVecVelocity.x;
-        playVelY = playerVecVelocity.y;
-        playVelZ = playerVecVelocity.z;
+    public void updateLabelCarVelocity(Vector3 playerVecVelocity){
+        carVelocity.setText(formatLabelVectorXYZ("Car Velocity", playerVecVelocity));
 
-        carVelocity.setText("Car Velocity (x: " + playVelX + ", y: " + playVelY + ", z: " + playVelZ + ")");
     }
 
-    private void updateLabelCarRotation(Vector3 playerRotationVector) {
-        double playRotX, playRotY, playRotZ;
-        playRotX = playerRotationVector.x;
-        playRotY = playerRotationVector.y;
-        playRotZ = playerRotationVector.z;
-
-        carRotation.setText("Car Rotation (Pitch: " + playRotX + ", Yaw: " + playRotY + ", Roll: " + playRotZ + ")");
+    public void updateLabelCarRotation(Vector3 playerRotationVector) {
+        carRotation.setText(formatLabelVectorRotation("Car Rotation", playerRotationVector));
     }
 
-    private void updateLabelBallLocation(Vector3 ballVecLocation){
-        double ballX, ballY, ballZ;
-        ballX = ballVecLocation.x;
-        ballY = ballVecLocation.y;
-        ballZ = ballVecLocation.z;
-
-        ballLocation.setText("Ball Location (x: " + ballX + ", y: " + ballY + ", z: " + ballZ + ")");
+    public void updateLabelBallLocation(Vector3 ballVecLocation){
+        ballLocation.setText(formatLabelVectorXYZ("Ball Location", ballVecLocation));
     }
 
-    private void updateLabelBallVelocity(Vector3 ballVecVelocity){
-        double ballVelX, ballVelY, ballVelZ;
-        ballVelX = ballVecVelocity.x;
-        ballVelY = ballVecVelocity.y;
-        ballVelZ = ballVecVelocity.z;
-
-        ballVelocity.setText("Ball Velocity (x: " + ballVelX + ", y: " + ballVelY + ", z: " + ballVelZ + ")");
+    public void updateLabelBallVelocity(Vector3 ballVecVelocity){
+        ballVelocity.setText(formatLabelVectorXYZ("Ball Velocity", ballVecVelocity));
     }
 
-    private void updateLabelAngleToBall(){
+    public void updateLabelAngleToBall(){
 
+    }
+
+    private String formatLabelVectorXYZ(String labelName, Vector3 vector){
+        return labelName + String.format(" (x:% 8.2f, y:% 8.2f, z:% 8.2f)", vector.x, vector.y, vector.z);
+    }
+
+    private String formatLabelVectorRotation(String labelName, Vector3 vector){
+        return labelName + String.format(" (Pitch:% 8.2f, Yaw:% 8.2f, Roll:% 8.2f)", vector.x, vector.y, vector.z);
     }
 }
