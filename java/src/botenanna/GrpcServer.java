@@ -1,6 +1,6 @@
 package botenanna;
 
-import botenanna.overlayWindow.Window;
+import botenanna.overlayWindow.StatusWindow;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 
@@ -16,7 +16,7 @@ public class GrpcServer {
     static final int DEFAULT_PORT = 25368;
     private static int port;
     private final Server server;
-    public static Window statusWindow = new Window();
+    public static StatusWindow statusWindow = new StatusWindow();
 
     private GrpcServer() throws IOException {
         server = ServerBuilder.forPort(port).addService(new GrpcService()).build();

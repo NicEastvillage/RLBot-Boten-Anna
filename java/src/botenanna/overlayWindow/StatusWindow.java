@@ -7,7 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 
 /** Debug/Status window. Displays a window that shows the stats of a car and the ball. */
-public class Window extends JFrame{
+public class StatusWindow extends JFrame{
 
     private static Font font = new Font("Courier New", Font.PLAIN , 12);
 
@@ -19,9 +19,9 @@ public class Window extends JFrame{
     private JLabel angleToBall;
 
     /** Creating the window adding content/layout */
-    public Window(){
+    public StatusWindow(){
         //Creating window frame
-        JFrame frame = new JFrame("Status Window"); //Creating the frame
+        JFrame frame = new JFrame("Status StatusWindow"); //Creating the frame
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setAlwaysOnTop(true);
         frame.setResizable(false);
@@ -101,7 +101,7 @@ public class Window extends JFrame{
         updateLabelCarLocation(carLocationVector);//Updating car location label
         Vector3 carVelocityVector = Vector3.convert(car.getVelocity()); //Gets car velocity vector
         updateLabelCarVelocity(carVelocityVector); //Update car velocity label
-        Vector3 carRotationVector = Vector3.convert(car.getVelocity()); //Gets car rotation vector
+        Vector3 carRotationVector = Vector3.convert(car.getRotation()); //Gets car rotation vector
         updateLabelCarRotation(carRotationVector); //Update car rotation label
 
         //Ball info:
@@ -112,7 +112,7 @@ public class Window extends JFrame{
         updateLabelBallVelocity(ballVelocityVector); //Update ball velocity label
 
         //Angle between car and ball:
-        updateLabelAngleToBall(RLMath.carsAngleToPoint(new Vector2(carLocationVector), carRotationVector.y, new Vector2(ballLocationVector)));
+        updateLabelAngleToBall(RLMath.carsAngleToPoint(new Vector2(carLocationVector), carRotationVector.yaw, new Vector2(ballLocationVector)));
     }
 
     /** Updates the car location label with a formatted string.
@@ -173,6 +173,6 @@ public class Window extends JFrame{
      * @param vector a 3D-vector vector describing pitch, yaw and roll.
      * @return a formatted string used in labels describing rotation. */
     private String formatLabelVectorRotation(String labelName, Vector3 vector){
-        return labelName + String.format(" (Pitch:% 8.2f, Yaw:% 8.2f, Roll:% 8.2f)", vector.x, vector.y, vector.z);
+        return labelName + String.format(" (Pitch:% 8.2f, Yaw:% 8.2f, Roll:% 8.2f)", vector.pitch, vector.yaw, vector.roll);
     }
 }
