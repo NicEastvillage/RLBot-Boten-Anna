@@ -3,6 +3,7 @@ package botenanna;
 import botenanna.math.RLMath;
 import botenanna.math.Vector2;
 import botenanna.math.Vector3;
+import botenanna.physics.Rigidbody;
 import rlbot.api.GameData;
 
 public class Bot {
@@ -24,8 +25,24 @@ public class Bot {
      * @return an AgentOutput of what the agent want to do */
     public AgentOutput process(GameData.GameTickPacket packet) {
 
-        // TODO Go towards the ball for now
-        return goTowardsPoint(packet, Vector3.convert(packet.getBall().getLocation()).asVector2());
+        // TODO Go towards where the ball will land!
+        GameData.BallInfo ball = packet.getBall();
+        Vector3 ballPos = Vector3.convert(ball.getLocation());
+        Vector3 ballVel = Vector3.convert(ball.getVelocity());
+
+        // Where will ball the land?
+        Vector2 ballLandingPos = ballPos.asVector2(); // this is default, if ball is not "landing" anywhere
+        Rigidbody ballBody = new Rigidbody();
+        ballBody.setPosition(ballPos);
+        ballBody.setVelocity(ballVel);
+        ballBody.setAffectedByGravity(true);
+        double landingTime = ballBody.predictArrivalAtHeight(92); // TODO: BALL RADIUS = 92 uu
+        if (!Double.isNaN(landingTime)) {
+            ballBody.step(landingTime);
+            ballLandingPos = ballBody.getPosition().asVector2();
+        }
+
+        return goTowardsPoint(packet, ballLandingPos);
     }
 
     /**
