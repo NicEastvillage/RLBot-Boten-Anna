@@ -31,6 +31,7 @@ public class Rigidbody {
         // TODO Collision?
     }
 
+    //region PREDICT_MOVEMENT
     /** <p>Calculate when this rigidbody will be at a specific {@code height} with its current position, velocity and acceleration.
      * Will return NaN if {@code height} is never reached. This function only cares about movement
      * along the z-axis. Acceleration cannot be positive. Gravity will be included, if this is affected by gravity.</p>
@@ -56,6 +57,8 @@ public class Rigidbody {
      * @param height the height.
      * @return the expected time till the rigidbody will be at height, always positive, or NaN if {@code height} is never reached. */
     public double predictArrivalAtHeight(double height) {
+
+        // TODO if acceleration is downwards, we cannot predict when a rigidbody, while it is still moving upwards
 
         // If already at height, return 0
         if (height == position.z) return 0;
@@ -97,7 +100,7 @@ public class Rigidbody {
         }
 
         // See technical documents for this equation : t = (-v + sqrt(2*a*h - 2*a*p + v^2) / a
-        return (-velocity.z + Math.sqrt(2 * actualZAcceleration * height - 2 * actualZAcceleration * position.z + velocity.z * velocity.z)) / actualZAcceleration;
+        return -(velocity.z + Math.sqrt(2 * actualZAcceleration * height - 2 * actualZAcceleration * position.z + velocity.z * velocity.z)) / actualZAcceleration;
     }
 
     /** Helper function for {@link #predictArrivalAtHeight(double)} for when there is no acceleration, only velocity.
@@ -113,6 +116,7 @@ public class Rigidbody {
 
         return arrivalTime;
     }
+    //endregion
 
     /** Whether gravity should affect this body as well as acceleration. */
     public void setAffectedByGravity(boolean s) {
