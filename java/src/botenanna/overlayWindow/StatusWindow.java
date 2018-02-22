@@ -9,17 +9,25 @@ import java.awt.*;
 /** Debug/Status window. Displays a window that shows the stats of a car and the ball. */
 public class StatusWindow extends JFrame{
 
-    private static Font font = new Font("Courier New", Font.PLAIN , 12);
-
     private JLabel carLocation;
     private JLabel carVelocity;
     private JLabel carRotation;
     private JLabel ballLocation;
     private JLabel ballVelocity;
     private JLabel angleToBall;
+    //Finding the screen size and converting  the doubles to int.
+    private Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    private Double h = screenSize.getHeight();
+    private Double w = screenSize.getWidth();
+    private int height = h.intValue()/5;
+    private int width = w.intValue()/5;
+    //Setting font size based on screen size.
+    private Font font = new Font("Courier New", Font.PLAIN , height/11);
+
 
     /** Creating the window adding content/layout */
     public StatusWindow(){
+
         //Creating window frame
         JFrame frame = new JFrame("Status StatusWindow"); //Creating the frame
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -31,9 +39,9 @@ public class StatusWindow extends JFrame{
 
         //Display the window
         frame.pack();
-        frame.setSize(440,190);
+        frame.setSize(width,height);
         frame.setVisible(true);
-    }
+     }
 
     /** Adds components/content to to the frame */
     private void addComponentsToPane(final Container pane){
