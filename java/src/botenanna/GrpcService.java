@@ -40,16 +40,19 @@ public class GrpcService extends BotGrpc.BotImplBase {
             // Create and register bot from this packet if necessary
             synchronized (this) {
                 if (!registeredBots.containsKey(playerIndex)) {
-                    Bot bot = new Bot(playerIndex);
+                    int teamIndex = request.getPlayers(playerIndex).getTeam() % 2;
+                    Bot bot = new Bot(playerIndex, teamIndex);
                     registeredBots.put(playerIndex, bot);
                 }
             }
 
+            // Update status window with new data
+            GrpcServer.statusWindow.updateData(request);
+
             // This is the bot that needs to think
             Bot bot = registeredBots.get(playerIndex);
 
-            // TODO This is a test. Always drive backwards!
-            return GameData.ControllerState.newBuilder().setThrottle(-1).build();
+            return bot.process(request).toControllerState();
 
         } catch (Exception e) {
             e.printStackTrace();

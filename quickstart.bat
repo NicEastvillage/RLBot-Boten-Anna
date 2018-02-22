@@ -1,8 +1,8 @@
+@ECHO OFF
 start "" RLBot_Injector.exe
-echo "dll injected!"
-SLEEP 4
+ECHO Injecting dll!
 start cmd /K gradlew.bat run
-echo "java started!"
-SLEEP 1
+ECHO Starting gradlew/java grpc!
+PAUSE
 start cmd /K python runner.py
-echo "Bot started!"
+ECHO Game started!

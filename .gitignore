@@ -108,7 +108,7 @@ ENV/
 
 # Intellij IDEA build output
 /out
-
+/classes
 .gradle/
 
 # Don't include pyvjoy in repo
@@ -116,3 +116,4 @@ ENV/
 
 # Gradle
 /.gradle
+local.properties
