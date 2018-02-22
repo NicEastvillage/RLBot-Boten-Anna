@@ -26,10 +26,10 @@ public class StatusWindow extends JFrame{
     private Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     private Double h = screenSize.getHeight();
     private Double w = screenSize.getWidth();
-    private int height = h.intValue()/5;
-    private int width = w.intValue()/5;
+    private int fontsize = (h.intValue()/5)/15;
+    private int width = w.intValue()/4;
     //Setting font size based on screen size.
-    private Font font = new Font("Courier New", Font.PLAIN , height/16);
+    private Font font = new Font("Courier New", Font.PLAIN , fontsize);
 
     /** Creating the window adding content/layout */
     public StatusWindow(){
@@ -38,27 +38,28 @@ public class StatusWindow extends JFrame{
         JFrame frame = new JFrame("Status StatusWindow"); //Creating the frame
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setAlwaysOnTop(true);
-        frame.setResizable(true);
+        frame.setResizable(false);
 
         //Setting up content pane (adding stuff)
-        addComponentsToPane(frame.getContentPane());
+        int numberOfLines = addComponentsToPane(frame.getContentPane());
 
         //Display the window
         frame.pack();
-        frame.setSize(width,height);
+        frame.setSize(width,fontsize*2*numberOfLines);
         frame.setVisible(true);
      }
 
     /** Adds components/content to to the frame */
-    private void addComponentsToPane(final Container pane){
+    private int addComponentsToPane(final Container pane){
         //Creating panels, one for each label (needed for pretty layout)
-        JPanel topBar = new JPanel();
-        JPanel line1 = new JPanel();
-        JPanel line2 = new JPanel();
-        JPanel line3 = new JPanel();
-        JPanel line4 = new JPanel();
-        JPanel line5 = new JPanel();
-        JPanel line6 = new JPanel();
+        int lineCounter = 2;
+        JPanel topBar = new JPanel(); lineCounter++;
+        JPanel line1 = new JPanel();  lineCounter++;
+        JPanel line2 = new JPanel();  lineCounter++;
+        JPanel line3 = new JPanel();  lineCounter++;
+        JPanel line4 = new JPanel();  lineCounter++;
+        JPanel line5 = new JPanel();  lineCounter++;
+        JPanel line6 = new JPanel();  lineCounter++;
 
         //Setting layout and alignment to left
         topBar.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -72,7 +73,7 @@ public class StatusWindow extends JFrame{
         //Adding default content to labels
         carLocation = new JLabel("Car Location(x, y, z)");
         carVelocity = new JLabel("Car Velocity(x, y, z)");
-        carRotation = new JLabel("Car Rotation(Pitch, Yaw, Roll)");
+        carRotation = new JLabel("Car Rotation(P, Y, R)");
         ballLocation = new JLabel("Ball Location(x, y, z)");
         ballVelocity = new JLabel("Ball Velocity(x, y, z)");
         angleToBall = new JLabel("Angle to ball()");
@@ -126,6 +127,7 @@ public class StatusWindow extends JFrame{
 
         //Adding main panel to frame
         pane.add(mainPanel);
+        return lineCounter;
     }
 
     /** Updates the labels with the given game data.
@@ -219,6 +221,6 @@ public class StatusWindow extends JFrame{
      * @param vector a 3D-vector vector describing pitch, yaw and roll.
      * @return a formatted string used in labels describing rotation. */
     private String formatLabelVectorRotation(String labelName, Vector3 vector){
-        return labelName + String.format(" (Pitch:% 8.2f, Yaw:% 8.2f, Roll:% 8.2f)", vector.pitch, vector.yaw, vector.roll);
+        return labelName + String.format(" (P:% 8.2f, Y:% 8.2f, R:% 8.2f)", vector.pitch, vector.yaw, vector.roll);
     }
 }
