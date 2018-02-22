@@ -29,7 +29,7 @@ public class StatusWindow extends JFrame{
     private int height = h.intValue()/5;
     private int width = w.intValue()/5;
     //Setting font size based on screen size.
-    private Font font = new Font("Courier New", Font.PLAIN , height/11);
+    private Font font = new Font("Courier New", Font.PLAIN , height/16);
 
     /** Creating the window adding content/layout */
     public StatusWindow(){
@@ -38,7 +38,7 @@ public class StatusWindow extends JFrame{
         JFrame frame = new JFrame("Status StatusWindow"); //Creating the frame
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setAlwaysOnTop(true);
-        frame.setResizable(false);
+        frame.setResizable(true);
 
         //Setting up content pane (adding stuff)
         addComponentsToPane(frame.getContentPane());
@@ -131,24 +131,34 @@ public class StatusWindow extends JFrame{
     /** Updates the labels with the given game data.
      * @param gameDataPacket a packet with information about the current state of the game. */
     public void updateData(GameData.GameTickPacket gameDataPacket){
-        //Car info:
-        GameData.PlayerInfo car = gameDataPacket.getPlayers(0); //Gets the car info
-        Vector3 carLocationVector = Vector3.convert(car.getLocation()); //Gets car location vector
-        updateLabelCarLocation(carLocationVector);//Updating car location label
-        Vector3 carVelocityVector = Vector3.convert(car.getVelocity()); //Gets car velocity vector
-        updateLabelCarVelocity(carVelocityVector); //Update car velocity label
-        Vector3 carRotationVector = Vector3.convert(car.getRotation()); //Gets car rotation vector
-        updateLabelCarRotation(carRotationVector); //Update car rotation label
 
-        //Ball info:
-        GameData.BallInfo ball = gameDataPacket.getBall(); //Gets ball info
-        Vector3 ballLocationVector = Vector3.convert(ball.getLocation()); //Gets ball location vector
-        updateLabelBallLocation(ballLocationVector); //Updating ball location label
-        Vector3 ballVelocityVector = Vector3.convert(ball.getVelocity()); //Gets ball velocity vector
-        updateLabelBallVelocity(ballVelocityVector); //Update ball velocity label
+        if(selectedPlayer < gameDataPacket.getPlayersCount()){
+            //Car info:
+            GameData.PlayerInfo car = gameDataPacket.getPlayers(selectedPlayer); //Gets the car info
+            Vector3 carLocationVector = Vector3.convert(car.getLocation()); //Gets car location vector
+            updateLabelCarLocation(carLocationVector);//Updating car location label
+            Vector3 carVelocityVector = Vector3.convert(car.getVelocity()); //Gets car velocity vector
+            updateLabelCarVelocity(carVelocityVector); //Update car velocity label
+            Vector3 carRotationVector = Vector3.convert(car.getRotation()); //Gets car rotation vector
+            updateLabelCarRotation(carRotationVector); //Update car rotation label
 
-        //Angle between car and ball:
-        updateLabelAngleToBall(RLMath.carsAngleToPoint(new Vector2(carLocationVector), carRotationVector.yaw, new Vector2(ballLocationVector)));
+            //Ball info:
+            GameData.BallInfo ball = gameDataPacket.getBall(); //Gets ball info
+            Vector3 ballLocationVector = Vector3.convert(ball.getLocation()); //Gets ball location vector
+            updateLabelBallLocation(ballLocationVector); //Updating ball location label
+            Vector3 ballVelocityVector = Vector3.convert(ball.getVelocity()); //Gets ball velocity vector
+            updateLabelBallVelocity(ballVelocityVector); //Update ball velocity label
+
+            //Angle between car and ball:
+            updateLabelAngleToBall(RLMath.carsAngleToPoint(new Vector2(carLocationVector), carRotationVector.yaw, new Vector2(ballLocationVector)));
+        }else{
+            updateLabelCarLocation(new Vector3(0,0,0));
+            updateLabelCarVelocity(new Vector3(0,0,0));
+            updateLabelCarRotation(new Vector3(0,0,0));
+            updateLabelBallLocation(new Vector3(0,0,0));
+            updateLabelBallVelocity(new Vector3(0,0,0));
+            updateLabelAngleToBall(0.0);
+        }
     }
 
     /** Updates the car location label with a formatted string.
