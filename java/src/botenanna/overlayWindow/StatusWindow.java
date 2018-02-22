@@ -17,6 +17,12 @@ public class StatusWindow extends JFrame{
     private JLabel ballLocation;
     private JLabel ballVelocity;
     private JLabel angleToBall;
+    private JButton buttonPlay0;
+    private JButton buttonPlay1;
+    private JButton buttonPlay2;
+    private JButton buttonPlay3;
+
+    private int selectedPlayer = 0;
 
     /** Creating the window adding content/layout */
     public StatusWindow(){
@@ -38,6 +44,7 @@ public class StatusWindow extends JFrame{
     /** Adds components/content to to the frame */
     private void addComponentsToPane(final Container pane){
         //Creating panels, one for each label (needed for pretty layout)
+        JPanel topBar = new JPanel();
         JPanel line1 = new JPanel();
         JPanel line2 = new JPanel();
         JPanel line3 = new JPanel();
@@ -46,6 +53,7 @@ public class StatusWindow extends JFrame{
         JPanel line6 = new JPanel();
 
         //Setting layout and alignment to left
+        topBar.setLayout(new FlowLayout(FlowLayout.LEFT));
         line1.setLayout(new FlowLayout(FlowLayout.LEFT));
         line2.setLayout(new FlowLayout(FlowLayout.LEFT));
         line3.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -61,15 +69,34 @@ public class StatusWindow extends JFrame{
         ballVelocity = new JLabel("Ball Velocity(x, y, z)");
         angleToBall = new JLabel("Angle to ball()");
 
+        //Creating buttons
+        buttonPlay0 = new JButton("Player 1");
+        buttonPlay1 = new JButton("Player 2");
+        buttonPlay2 = new JButton("Player 3");
+        buttonPlay3 = new JButton("Player 4");
+
+        //Adding functions to the buttons
+        buttonPlay0.addActionListener(e -> StatusWindow.this.selectedPlayer = 0);
+        buttonPlay1.addActionListener(e -> StatusWindow.this.selectedPlayer = 1);
+        buttonPlay2.addActionListener(e -> StatusWindow.this.selectedPlayer = 2);
+        buttonPlay3.addActionListener(e -> StatusWindow.this.selectedPlayer = 3);
+
         //Setting the font (monospaced)
+        buttonPlay0.setFont(font);
+        buttonPlay1.setFont(font);
+        buttonPlay2.setFont(font);
+        buttonPlay3.setFont(font);
         carLocation.setFont(font);
         carVelocity.setFont(font);
         carRotation.setFont(font);
         ballLocation.setFont(font);
         ballVelocity.setFont(font);
         angleToBall.setFont(font);
-
-        //Adding the labels to the panels
+        //Adding the labels and buttons to the panels
+        topBar.add(buttonPlay0);
+        topBar.add(buttonPlay1);
+        topBar.add(buttonPlay2);
+        topBar.add(buttonPlay3);
         line1.add(carLocation);
         line2.add(carVelocity);
         line3.add(carRotation);
@@ -81,6 +108,7 @@ public class StatusWindow extends JFrame{
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS)); //Stack on Y_axis, aka stack
         mainPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        mainPanel.add(topBar);
         mainPanel.add(line1);
         mainPanel.add(line2);
         mainPanel.add(line3);
