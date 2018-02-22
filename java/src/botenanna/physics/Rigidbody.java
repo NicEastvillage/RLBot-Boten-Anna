@@ -2,8 +2,6 @@ package botenanna.physics;
 
 import botenanna.math.Vector3;
 
-import java.time.Duration;
-
 /** A physical object with position, velocity and acceleration */
 public class Rigidbody {
 
@@ -55,10 +53,8 @@ public class Rigidbody {
      * </p>
      *
      * @param height the height.
-     * @return the expected time till the rigidbody will be at height, always positive, or NaN if {@code height} is never reached. */
+     * @return the expected time till the rigidbody will be at height in seconds, always positive, or NaN if {@code height} is never reached. */
     public double predictArrivalAtHeight(double height) {
-
-        // TODO if acceleration is downwards, we cannot predict when a rigidbody, while it is still moving upwards
 
         // If already at height, return 0
         if (height == position.z) return 0;
@@ -71,13 +67,13 @@ public class Rigidbody {
 
         } else {
             // Acceleration must be taken into account
-            return predictArrivalAtHeightPoly(height, actualAcceleration.z);
+            return predictArrivalAtHeightQuadratic(height, actualAcceleration.z);
         }
     }
 
     /** Helper function for {@link #predictArrivalAtHeight(double)} for when acceleration is relevant.
      * @return the expected time till arrival, or NaN if the rigidbody will never arrive at {@code height} */
-    private double predictArrivalAtHeightPoly(double height, double actualZAcceleration) {
+    private double predictArrivalAtHeightQuadratic(double height, double actualZAcceleration) {
 
         assert actualZAcceleration < 0;
 
@@ -96,10 +92,16 @@ public class Rigidbody {
             // Return null if height is never reached
             if (turningHeight < height) return Double.NaN;
 
+            // The height is reached on the way up!
+            if (position.z < height) {
+                // See technical documents for this equation : t = (-v + sqrt(2*a*h - 2*a*p + v^2) / a
+                return (-velocity.z + Math.sqrt(2 * actualZAcceleration * height - 2 * actualZAcceleration * position.z + velocity.z * velocity.z)) / actualZAcceleration;
+            }
+
             // No cases hit, everything is fine
         }
 
-        // See technical documents for this equation : t = (-v + sqrt(2*a*h - 2*a*p + v^2) / a
+        // See technical documents for this equation : t = -(v + sqrt(2*a*h - 2*a*p + v^2) / a
         return -(velocity.z + Math.sqrt(2 * actualZAcceleration * height - 2 * actualZAcceleration * position.z + velocity.z * velocity.z)) / actualZAcceleration;
     }
 

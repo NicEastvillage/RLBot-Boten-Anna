@@ -95,8 +95,7 @@ public class RigidbodyTest {
         rb.setVelocity(Vector3.UP.scale(1000));
         rb.setAffectedByGravity(true);
         double time = rb.predictArrivalAtHeight(300);
-        // TODO this is the answer for when the Rigidbody has reached this height ON ITS WAY DOWN, NOT UP
-        assertEquals(time, 2.973442931, 1E-6);
+        assertEquals(time, 0.1034801457, 1E-6);
     }
 
     @Test
@@ -106,7 +105,6 @@ public class RigidbodyTest {
         rb.setVelocity(Vector3.UP.scale(2000));
         rb.setAffectedByGravity(true);
         double time = rb.predictArrivalAtHeight(0);
-        // TODO this is the answer for when the Rigidbody has reached this height ON ITS WAY DOWN, NOT UP
-        assertEquals(time, 5.892770034, 1E-6);
+        assertEquals(time, 0.2610761200, 1E-6);
     }
 }
