@@ -9,8 +9,6 @@ import java.awt.*;
 /** Debug/Status window. Displays a window that shows the stats of a car and the ball. */
 public class StatusWindow extends JFrame{
 
-    private static Font font = new Font("Courier New", Font.PLAIN , 12);
-
     private JLabel carLocation;
     private JLabel carVelocity;
     private JLabel carRotation;
