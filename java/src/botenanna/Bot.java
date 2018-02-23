@@ -29,7 +29,7 @@ public class Bot {
         GameData.BallInfo ball = packet.getBall();
         Vector3 ballPos = Vector3.convert(ball.getLocation());
         Vector3 ballVel = Vector3.convert(ball.getVelocity());
-        Vector2 ballBuff = new Vector2(0,1000);
+        Vector2 ballBuff = new Vector2(0,400);
 
         // Where will ball the land?
         Vector2 ballLandingPos = ballPos.asVector2(); // this is default, if ball is not "landing" anywhere
@@ -39,10 +39,9 @@ public class Bot {
         ballBody.setAffectedByGravity(true);
         double landingTime = ballBody.predictArrivalAtHeight(92); // TODO: BALL RADIUS = 92 uu
 
-        if (team == Team.BLUE) {
-            Vector2 blueBuff = ballLandingPos.minus(ballBuff);
+        if (team == Team.BLUE) { //If the player is blue then they will  return "home" if they are on the wrong side of it
 
-            if (blueBuff.y <= Vector3.convert(packet.getPlayers(playerIndex).getLocation()).asVector2().y) {
+            if (ballLandingPos.y-ballBuff.y <= Vector3.convert(packet.getPlayers(playerIndex).getLocation()).asVector2().y+ballBuff.y) {
                 return goTowardsPoint(packet, new Vector2(0, -5120));
 
             } else
@@ -54,8 +53,7 @@ public class Bot {
             return goTowardsPoint(packet, ballLandingPos);
 
         } else {
-            Vector2 orangeBuff = ballLandingPos.plus(ballBuff);
-            if (orangeBuff.y >= Vector3.convert(packet.getPlayers(playerIndex).getLocation()).asVector2().y) {
+            if (ballLandingPos.y+ballBuff.y >= Vector3.convert(packet.getPlayers(playerIndex).getLocation()).asVector2().y-ballBuff.y) {
                 return goTowardsPoint(packet, new Vector2(0, 5120));
 
             }else
