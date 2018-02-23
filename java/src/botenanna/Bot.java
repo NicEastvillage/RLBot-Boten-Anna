@@ -29,6 +29,7 @@ public class Bot {
         GameData.BallInfo ball = packet.getBall();
         Vector3 ballPos = Vector3.convert(ball.getLocation());
         Vector3 ballVel = Vector3.convert(ball.getVelocity());
+        Vector2 ballBuff = new Vector2(0,400);
 
         // Where will ball the land?
         Vector2 ballLandingPos = ballPos.asVector2(); // this is default, if ball is not "landing" anywhere
@@ -37,14 +38,36 @@ public class Bot {
         ballBody.setVelocity(ballVel);
         ballBody.setAffectedByGravity(true);
         double landingTime = ballBody.predictArrivalAtHeight(92); // TODO: BALL RADIUS = 92 uu
-        if (!Double.isNaN(landingTime)) {
-            ballBody.step(landingTime);
-            ballLandingPos = ballBody.getPosition().asVector2();
+
+        if (team == Team.BLUE) {
+            Vector2 blueBuff = ballLandingPos.minus(ballBuff);
+
+            if (blueBuff.y <= Vector3.convert(packet.getPlayers(playerIndex).getLocation()).asVector2().y) {
+                return goTowardsPoint(packet, new Vector2(0, -5120));
+
+            } else
+                if (!Double.isNaN(landingTime)) {
+                ballBody.step(landingTime);
+                ballLandingPos = ballBody.getPosition().asVector2();
+            }
+
+            return goTowardsPoint(packet, ballLandingPos);
+
+        } else {
+            Vector2 orangeBuff = ballLandingPos.plus(ballBuff);
+            if (orangeBuff.y >= Vector3.convert(packet.getPlayers(playerIndex).getLocation()).asVector2().y) {
+                return goTowardsPoint(packet, new Vector2(0, 5120));
+
+            }else
+               if (!Double.isNaN(landingTime)) {
+                    ballBody.step(landingTime);
+                    ballLandingPos = ballBody.getPosition().asVector2();
+            }
+            return goTowardsPoint(packet, ballLandingPos);
+
         }
-
-        return goTowardsPoint(packet, ballLandingPos);
-    }
-
+        
+}
     /**
      * @param packet the game tick packet from the game
      * @param point the location the agent should go towards
