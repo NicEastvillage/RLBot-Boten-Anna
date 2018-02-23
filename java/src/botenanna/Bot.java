@@ -29,7 +29,7 @@ public class Bot {
         GameData.BallInfo ball = packet.getBall();
         Vector3 ballPos = Vector3.convert(ball.getLocation());
         Vector3 ballVel = Vector3.convert(ball.getVelocity());
-        Vector2 ballBuff = new Vector2(0,400);
+        Vector2 ballBuff = new Vector2(0,1000);
 
         // Where will ball the land?
         Vector2 ballLandingPos = ballPos.asVector2(); // this is default, if ball is not "landing" anywhere
@@ -66,7 +66,7 @@ public class Bot {
             return goTowardsPoint(packet, ballLandingPos);
 
         }
-        
+
 }
     /**
      * @param packet the game tick packet from the game
