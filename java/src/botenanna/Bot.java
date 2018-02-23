@@ -38,26 +38,27 @@ public class Bot {
         ballBody.setVelocity(ballVel);
         ballBody.setAffectedByGravity(true);
         double landingTime = ballBody.predictArrivalAtHeight(92); // TODO: BALL RADIUS = 92 uu
+        boolean home;
 
         if (team == Team.BLUE) { //If the player is blue then they will  return "home" if they are on the wrong side of it
-
-            if (ballLandingPos.y-ballBuff.y <= Vector3.convert(packet.getPlayers(playerIndex).getLocation()).asVector2().y+ballBuff.y) {
+            home = goingHome(ballLandingPos,ballBuff, Vector3.convert(packet.getPlayers(playerIndex).getLocation()).asVector2(),true);
+            if (home) {
                 return goTowardsPoint(packet, new Vector2(0, -5120));
 
-            } else
-                if (!Double.isNaN(landingTime)) {
+            }
+            if (!Double.isNaN(landingTime)) {
                 ballBody.step(landingTime);
                 ballLandingPos = ballBody.getPosition().asVector2();
             }
-
             return goTowardsPoint(packet, ballLandingPos);
 
-        } else {
-            if (ballLandingPos.y+ballBuff.y >= Vector3.convert(packet.getPlayers(playerIndex).getLocation()).asVector2().y-ballBuff.y) {
+        }  else {
+            home = goingHome(ballLandingPos,ballBuff,Vector3.convert(packet.getPlayers(playerIndex).getLocation()).asVector2(),false);
+            if (home) {
                 return goTowardsPoint(packet, new Vector2(0, 5120));
 
-            }else
-               if (!Double.isNaN(landingTime)) {
+            }
+            if (!Double.isNaN(landingTime)) {
                     ballBody.step(landingTime);
                     ballLandingPos = ballBody.getPosition().asVector2();
             }
@@ -86,5 +87,26 @@ public class Bot {
         double steering = RLMath.steeringSmooth(ang);
 
         return new AgentOutput().withAcceleration(1).withSteer(steering);
+
+    }
+    private boolean goingHome (Vector2 ball, Vector2 player, Vector2 ballBuff,  boolean color ){
+        if(color){
+        if (ball.y-ballBuff.y < player.y){
+            return true;
+        }else if (ball.y-ballBuff.y > player.y && (ball.y-ballBuff.y) > ballBuff.y){
+            return false;
+        }
+        else return false;
+
+    }   else
+            if (ball.y+ballBuff.y > player.y){
+                return true;
+            }else if (ball.y+ballBuff.y < player.y && (ball.y+ballBuff.y) < ballBuff.y){
+                return false;
+            }
+            else return false;
+
     }
 }
+
+
