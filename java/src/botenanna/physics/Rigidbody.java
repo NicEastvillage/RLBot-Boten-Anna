@@ -3,7 +3,7 @@ package botenanna.physics;
 import botenanna.math.Vector3;
 
 /** A physical object with position, velocity and acceleration */
-public class Rigidbody {
+public class Rigidbody implements Cloneable {
 
     public static final Vector3 GRAVITY = Vector3.DOWN.scale(650);
 
@@ -27,6 +27,17 @@ public class Rigidbody {
         velocity = velocity.plus(actualAcceleration.scale(timeDelta));
 
         // TODO Collision?
+    }
+
+    /** Make a copy which is moved {@code timeDelta} seconds into the future. Useful when
+     * you want to know where this Rigidbody will be, but you don't want to change the state of this Rigidbody.
+     * @param timeDelta time passed in seconds
+     * @return a copy of this, but {@code timeDelta} seconds into the future.
+     * @see #step(double) */
+    public Rigidbody stepped(double timeDelta) {
+        Rigidbody copy = clone();
+        copy.step(timeDelta);
+        return copy;
     }
 
     //region PREDICT_MOVEMENT
@@ -119,6 +130,18 @@ public class Rigidbody {
         return arrivalTime;
     }
     //endregion
+
+    /** Clone this Rigidbody.
+     * @return a Rigidbody with the same position, velocity, acceleration and gravity */
+    @Override
+    public Rigidbody clone() {
+        Rigidbody copy = new Rigidbody();
+        copy.setPosition(position);
+        copy.setVelocity(velocity);
+        copy.setAcceleration(acceleration);
+        copy.setAffectedByGravity(affectedByGravity);
+        return copy;
+    }
 
     /** Whether gravity should affect this body as well as acceleration. */
     public void setAffectedByGravity(boolean s) {
