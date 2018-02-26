@@ -6,6 +6,8 @@ import botenanna.math.Vector3;
 import botenanna.physics.Rigidbody;
 import rlbot.api.GameData;
 
+import javax.vecmath.Vector2d;
+
 public class Bot {
 
     public enum Team {
@@ -73,27 +75,29 @@ public class Bot {
         GameData.PlayerInfo me = packet.getPlayers(playerIndex);
         Vector3 myPos = Vector3.convert(me.getLocation());
         Vector3 myRotation = Vector3.convert(me.getRotation());
-        Vector2 my2dpos = Vector3.convert(me.getLocation()).asVector2();
+        Vector2 my2dPos = Vector3.convert(me.getLocation()).asVector2();
 
         double ang = RLMath.carsAngleToPoint(myPos.asVector2(), myRotation.yaw, point);
 
         // Smooth the angle to a steering amount - this avoids wobbling
         double steering = RLMath.steeringSmooth(ang);
         //Currently stops at the point it is trying to reach.
-        if (distanceToBall(point, my2dpos)<=200){
-            return new AgentOutput().withDeceleration(1);
-        } else return new AgentOutput().withAcceleration(1).withSteer(steering);
+        if (distanceToBall(point, my2dPos)<=200){
+            return new AgentOutput().withDeceleration(1).withSteer((steering));
+        }
+        if (steering<1&& steering>-1){return new AgentOutput().withAcceleration(1).withBoost();}
+        
+        return new AgentOutput().withAcceleration(1).withSteer(steering);
 
     }
-
     /**
      * Adds 3 Defensive points for the bot to stop at.
      * @param ballLandingPos The position of the ball
      * @return a 2d vector that the bot will stop at.
      */
     private Vector2 defencePoint(Vector2 ballLandingPos){
-        if (rightleftormiddle(ballLandingPos)==1){ return new Vector2(280, 5100 * teamsDirectionToGoal(team));}
-        else if (rightleftormiddle(ballLandingPos)==-1){ return new Vector2(-280, 5100* teamsDirectionToGoal(team));}
+        if (posInField(ballLandingPos)==1){ return new Vector2(280, 5100 * teamsDirectionToGoal(team));}
+        else if (posInField(ballLandingPos)==-1){ return new Vector2(-280, 5100* teamsDirectionToGoal(team));}
         else return new Vector2(0, 5120 * teamsDirectionToGoal(team));
     }
 
@@ -104,12 +108,15 @@ public class Bot {
         return ballPoss.y*team>0;
     }
 
-    private static int rightleftormiddle(Vector2 ballPos){
+    private static int posInField(Vector2 ballPos){
         if (ballPos.x>325){ return 1;}
         else if (ballPos.x<-325) {return -1;}
         else return 0;
     }
 
+    /**
+     * Boolean that returns true of the ball is behind the player.
+     */
     private static boolean isBallBehind(Vector2 ball, Vector2 Player, int team) {
         return ball.y*team > Player.y*team;
     }
