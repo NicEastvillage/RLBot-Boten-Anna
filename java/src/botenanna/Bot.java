@@ -46,18 +46,18 @@ public class Bot {
         //Player info
         GameData.PlayerInfo me = packet.getPlayers(playerIndex);
         Vector2 myPos = Vector3.convert(me.getLocation()).asVector2();
-        double turnRate  = 200;
+        double turnRate = 200;
         //If the player is blue then they will  return "home" if they are on the wrong side of it
 
         if (!Double.isNaN(landingTime)) {
             ballBody.step(landingTime);
             ballLandingPos = ballBody.getPosition().asVector2();
         }
-        if (ballInHalf(ballLandingPos,teamsDirectionToGoal(team){
+
+        if (ballInHalf(ballLandingPos,teamsDirectionToGoal(team))  && ballBehind(ballLandingPos, myPos,teamsDirectionToGoal(team))){
             return goTowardsPoint(packet, new Vector2(0, 5120 * teamsDirectionToGoal(team)));
         }
-        return goTowardsPoint(packet, ballLandingPos);
-
+            return goTowardsPoint(packet, ballLandingPos);
         }
 
 
@@ -81,12 +81,11 @@ public class Bot {
 
         // Smooth the angle to a steering amount - this avoids wobbling
         double steering = RLMath.steeringSmooth(ang);
-        if (distanceToBall(point, my2dpos)<=100){
-            return new AgentOutput().withAcceleration(0);
+        if (distanceToBall(point, my2dpos)<=200){
+            return new AgentOutput().withAcceleration(-1);
         } else return new AgentOutput().withAcceleration(1).withSteer(steering);
 
     }
-
 
 
     public static int teamsDirectionToGoal(Team team) {
