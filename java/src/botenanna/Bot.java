@@ -36,7 +36,7 @@ public class Bot {
             ballLandingPos = ballBody.stepped(landingTime).getPosition().asVector2();
         }
 
-        return goTowardsPoint(packet, ballLandingPos);
+        return collectNearestBoost(packet);
     }
 
     /**
@@ -61,7 +61,7 @@ public class Bot {
         return new AgentOutput().withAcceleration(1).withSteer(steering);
     }
 
-    private AgentOutput collectNearestBoost(GameData.GameTickPacket packet, Vector2 point) {
+    private AgentOutput collectNearestBoost(GameData.GameTickPacket packet) {
 
         Vector2 bigBoostPad[] = new Vector2[5];
         bigBoostPad[0] = new Vector2(-3070, 4100);
