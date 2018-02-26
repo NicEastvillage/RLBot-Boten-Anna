@@ -46,7 +46,6 @@ public class Bot {
         //Player info
         GameData.PlayerInfo me = packet.getPlayers(playerIndex);
         Vector2 myPos = Vector3.convert(me.getLocation()).asVector2();
-        double turnRate = 200;
         //If the player is blue then they will  return "home" if they are on the wrong side of it
 
         if (!Double.isNaN(landingTime)) {
@@ -55,7 +54,7 @@ public class Bot {
         }
 
         if (isBallInTeamHalf(ballLandingPos,teamsDirectionToGoal(team))  && isBallBehind(ballLandingPos, myPos,teamsDirectionToGoal(team))){
-            return goTowardsPoint(packet, new Vector2(0, 5120 * teamsDirectionToGoal(team)));
+            return goTowardsPoint(packet, defencePoint(ballLandingPos));
         }
             return goTowardsPoint(packet, ballLandingPos);
         }
@@ -87,15 +86,31 @@ public class Bot {
 
     }
 
+    /**
+     * Adds 3 Defensive points for the bot to stop at.
+     * @param ballLandingPos The position of the ball
+     * @return a 2d vector that the bot will stop at.
+     */
+    private Vector2 defencePoint(Vector2 ballLandingPos){
+        if (rightleftormiddle(ballLandingPos)==1){ return new Vector2(280, 5100 * teamsDirectionToGoal(team));}
+        else if (rightleftormiddle(ballLandingPos)==-1){ return new Vector2(-280, 5100* teamsDirectionToGoal(team));}
+        else return new Vector2(0, 5120 * teamsDirectionToGoal(team));
+    }
 
-    public static int teamsDirectionToGoal(Team team) {
+    private static int teamsDirectionToGoal(Team team) {
         return team == Team.BLUE ? -1 : 1;
     }
-    boolean isBallInTeamHalf(Vector2 ballPoss, int team){
+    private static boolean isBallInTeamHalf(Vector2 ballPoss, int team){
         return ballPoss.y*team>0;
     }
 
-    boolean isBallBehind(Vector2 ball, Vector2 Player, int team) {
+    private static int rightleftormiddle(Vector2 ballPos){
+        if (ballPos.x>325){ return 1;}
+        else if (ballPos.x<-325) {return -1;}
+        else return 0;
+    }
+
+    private static boolean isBallBehind(Vector2 ball, Vector2 Player, int team) {
         return ball.y*team > Player.y*team;
     }
 
@@ -104,7 +119,7 @@ public class Bot {
      * @param player vector player position
      * @return the distance between the two points.
      */
-    double distanceToBall(Vector2  ball, Vector2 player){
+    private double distanceToBall(Vector2  ball, Vector2 player){
         return Math.sqrt(Math.pow(ball.y-player.y,2)+Math.pow(ball.x-player.x,2));
     }
 }
