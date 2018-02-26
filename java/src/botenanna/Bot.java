@@ -77,7 +77,7 @@ public class Bot {
         Vector3 myRotation = Vector3.convert(me.getRotation());
         Vector2 my2dPos = Vector3.convert(me.getLocation()).asVector2();
 
-        double ang = RLMath.carsAngleToPoint(myPos.asVector2(), myRotation.yaw, point);
+        double ang = RLMath.carsAngleToPoint(my2dPos, myRotation.yaw, point);
 
         // Smooth the angle to a steering amount - this avoids wobbling
         double steering = RLMath.steeringSmooth(ang);
@@ -85,9 +85,8 @@ public class Bot {
         if (distanceToBall(point, my2dPos)<=200){
             return new AgentOutput().withDeceleration(1).withSteer((steering));
         }
-        if (steering!=0){return new AgentOutput().withAcceleration(1).withSteer(steering);}
+        if (RLMath.carsAngleToPoint(my2dPos,myRotation.yaw, point)==0){return new AgentOutput().withAcceleration(1).withSteer(steering);}
         return new AgentOutput().withAcceleration(1).withBoost();
-        
 
     }
     /**
