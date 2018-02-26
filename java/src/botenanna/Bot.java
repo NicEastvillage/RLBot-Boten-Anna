@@ -53,13 +53,12 @@ public class Bot {
             ballBody.step(landingTime);
             ballLandingPos = ballBody.getPosition().asVector2();
         }
-        if (ballBehind(ballLandingPos, myPos, teamsDirectionToGoal(team))) {
-            if (canTurn(turnRate,distanceToBall(ballLandingPos,myPos))) {
-                return goTowardsPoint(packet, ballLandingPos);
-            }else return goTowardsPoint(packet, new Vector2(0, 5120 * teamsDirectionToGoal(team)));
-        } else return goTowardsPoint(packet, ballLandingPos);
+        if (ballInHalf(ballLandingPos,teamsDirectionToGoal(team){
+            return goTowardsPoint(packet, new Vector2(0, 5120 * teamsDirectionToGoal(team)));
+        }
+        return goTowardsPoint(packet, ballLandingPos);
 
-    }
+        }
 
 
     /**
@@ -82,7 +81,7 @@ public class Bot {
 
         // Smooth the angle to a steering amount - this avoids wobbling
         double steering = RLMath.steeringSmooth(ang);
-        if (distanceToBall(point, my2dpos)<=30){
+        if (distanceToBall(point, my2dpos)<=100){
             return new AgentOutput().withAcceleration(0);
         } else return new AgentOutput().withAcceleration(1).withSteer(steering);
 
