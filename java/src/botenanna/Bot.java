@@ -85,9 +85,9 @@ public class Bot {
         if (distanceToBall(point, my2dPos)<=200){
             return new AgentOutput().withDeceleration(1).withSteer((steering));
         }
-        if (steering<1&& steering>-1){return new AgentOutput().withAcceleration(1).withBoost();}
+        if (steering!=0){return new AgentOutput().withAcceleration(1).withSteer(steering);}
+        return new AgentOutput().withAcceleration(1).withBoost();
         
-        return new AgentOutput().withAcceleration(1).withSteer(steering);
 
     }
     /**
