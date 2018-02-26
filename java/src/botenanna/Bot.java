@@ -54,12 +54,11 @@ public class Bot {
             ballLandingPos = ballBody.getPosition().asVector2();
         }
 
-        if (ballInHalf(ballLandingPos,teamsDirectionToGoal(team))  && ballBehind(ballLandingPos, myPos,teamsDirectionToGoal(team))){
+        if (isBallInTeamHalf(ballLandingPos,teamsDirectionToGoal(team))  && isBallBehind(ballLandingPos, myPos,teamsDirectionToGoal(team))){
             return goTowardsPoint(packet, new Vector2(0, 5120 * teamsDirectionToGoal(team)));
         }
             return goTowardsPoint(packet, ballLandingPos);
         }
-
 
     /**
      * @param packet the game tick packet from the game
@@ -81,8 +80,9 @@ public class Bot {
 
         // Smooth the angle to a steering amount - this avoids wobbling
         double steering = RLMath.steeringSmooth(ang);
+        //Currently stops at the point it is trying to reach.
         if (distanceToBall(point, my2dpos)<=200){
-            return new AgentOutput().withAcceleration(-1);
+            return new AgentOutput().withDeceleration(1);
         } else return new AgentOutput().withAcceleration(1).withSteer(steering);
 
     }
@@ -91,10 +91,11 @@ public class Bot {
     public static int teamsDirectionToGoal(Team team) {
         return team == Team.BLUE ? -1 : 1;
     }
-    boolean ballInHalf(Vector2 ballPoss, int team){
+    boolean isBallInTeamHalf(Vector2 ballPoss, int team){
         return ballPoss.y*team>0;
     }
-    boolean ballBehind(Vector2 ball, Vector2 Player, int team) {
+
+    boolean isBallBehind(Vector2 ball, Vector2 Player, int team) {
         return ball.y*team > Player.y*team;
     }
 
@@ -106,16 +107,6 @@ public class Bot {
     double distanceToBall(Vector2  ball, Vector2 player){
         return Math.sqrt(Math.pow(ball.y-player.y,2)+Math.pow(ball.x-player.x,2));
     }
-
-    /**
-     * @param turn is a fixed turnRate
-     * @param distance the distance to the ball
-     * @return true of the turn distance is smaller than the distance to the ball.
-     */
-    boolean canTurn(double turn, double distance){
-        return turn<distance;
-    }
-
 }
 
 
