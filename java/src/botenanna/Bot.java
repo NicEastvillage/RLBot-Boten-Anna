@@ -82,7 +82,7 @@ public class Bot {
         // Smooth the angle to a steering amount - this avoids wobbling
         double steering = RLMath.steeringSmooth(ang);
         //Currently stops at the point it is trying to reach.
-        if (distanceToBall(point, my2dPos)<=200){
+        if (distanceToBall(point, my2dPos)<=90){
             return new AgentOutput().withDeceleration(1).withSteer((steering));
         }
         if (RLMath.carsAngleToPoint(my2dPos,myRotation.yaw, point)==0){return new AgentOutput().withAcceleration(1).withSteer(steering);}
