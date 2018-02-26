@@ -3,6 +3,7 @@ package botenanna;
 import botenanna.math.RLMath;
 import botenanna.math.Vector2;
 import botenanna.math.Vector3;
+import botenanna.overlayWindow.StatusWindow;
 import botenanna.physics.Rigidbody;
 import rlbot.api.GameData;
 
@@ -58,6 +59,12 @@ public class Bot {
         // Smooth the angle to a steering amount - this avoids wobbling
         double steering = RLMath.steeringSmooth(ang);
 
-        return new AgentOutput().withAcceleration(1).withSteer(steering);
+        if (ang > 1.5) {
+            return new AgentOutput().withAcceleration(1).withSteer(steering).withSlide();
+        } else if (ang < -1.5) {
+            return new AgentOutput().withAcceleration(1).withSteer(steering).withSlide();
+        } else {
+            return new AgentOutput().withAcceleration(1).withSteer(steering);
+        }
     }
 }

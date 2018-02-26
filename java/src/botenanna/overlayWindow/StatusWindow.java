@@ -5,9 +5,10 @@ import rlbot.api.GameData;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
 
 /** Debug/Status window. Displays a window that shows the stats of a car and the ball. */
-public class StatusWindow extends JFrame{
+public class StatusWindow extends JFrame {
 
     private JLabel carLocation;
     private JLabel carVelocity;
