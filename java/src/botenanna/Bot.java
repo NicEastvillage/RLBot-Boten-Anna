@@ -15,6 +15,7 @@ public class Bot {
     private final Team team;
     private final int playerIndex;
 
+
     public Bot(int playerIndex, int teamIndex) {
         this.playerIndex = playerIndex;
         team = (teamIndex == 0 ? Team.BLUE : Team.ORANGE);
@@ -32,7 +33,7 @@ public class Bot {
         GameData.BallInfo ball = packet.getBall();
         Vector3 ballPos = Vector3.convert(ball.getLocation());
         Vector3 ballVel = Vector3.convert(ball.getVelocity());
-        Vector2 ballBuff = new Vector2(0, 600);
+
 
         // Where will ball the land?
         Vector2 ballLandingPos = ballPos.asVector2(); // this is default, if ball is not "landing" anywhere
@@ -41,22 +42,23 @@ public class Bot {
         ballBody.setVelocity(ballVel);
         ballBody.setAffectedByGravity(true);
         double landingTime = ballBody.predictArrivalAtHeight(92); // TODO: BALL RADIUS = 92 uu
-        boolean home;
 
-         //If the player is blue then they will  return "home" if they are on the wrong side of it
-            home = goingHome(ballLandingPos, ballBuff, Vector3.convert(packet.getPlayers(playerIndex).getLocation()).asVector2(), teamsDirectionToGoal(team));
+        //Player info
+        GameData.PlayerInfo me = packet.getPlayers(playerIndex);
+        Vector2 myPos = Vector3.convert(me.getLocation()).asVector2();
+        double turnRate  = 200;
+        //If the player is blue then they will  return "home" if they are on the wrong side of it
 
-            if (home) {
-                return goTowardsPoint(packet, new Vector2(0, 5120*teamsDirectionToGoal(team)));
-            }
-            if (!Double.isNaN(landingTime)) {
-                ballBody.step(landingTime);
-                ballLandingPos = ballBody.getPosition().asVector2();
-            }
-            return goTowardsPoint(packet, ballLandingPos);
-
-
+        if (!Double.isNaN(landingTime)) {
+            ballBody.step(landingTime);
+            ballLandingPos = ballBody.getPosition().asVector2();
+        }
+        if (ballBehind(ballLandingPos, myPos, teamsDirectionToGoal(team))) {
+            return goTowardsPoint(packet, new Vector2(0, 5120 * teamsDirectionToGoal(team)));
+        }
+        return goTowardsPoint(packet, ballLandingPos);
     }
+
 
     /**
      * @param packet the game tick packet from the game
@@ -82,19 +84,22 @@ public class Bot {
 
     }
 
-    private boolean goingHome(Vector2 ball, Vector2 player, Vector2 ballBuff, int color) {
-        //Need to fix the math to not be double.
-        if (ball.y + (ballBuff.y*color) < -player.y*color) {
-            return true;
-        } else if (ball.y + ballBuff.y*color > -player.y*color && (ball.y + (ballBuff.y*color)) > ballBuff.y) {
-            return false;
-        } else return false;
-    }
-
-
     public static int teamsDirectionToGoal(Team team) {
         return team == Team.BLUE ? -1 : 1;
     }
+    boolean ballInHalf(Vector2 ballPoss, int team){
+        return ballPoss.y*team>0;
+    }
+    boolean ballBehind(Vector2 ball, Vector2 Player, int team) {
+        return ball.y*team > Player.y*team;
+    }
+    double distanceToBall(Vector2  ball, Vector2 player){
+        return ball.getMagnitude()+player.getMagnitude();
+    }
+    boolean canTurn(double turn, double distance){
+        return turn>distance;
+    }
+
 }
 
 
