@@ -54,9 +54,11 @@ public class Bot {
             ballLandingPos = ballBody.getPosition().asVector2();
         }
         if (ballBehind(ballLandingPos, myPos, teamsDirectionToGoal(team))) {
-            return goTowardsPoint(packet, new Vector2(0, 5120 * teamsDirectionToGoal(team)));
-        }
-        return goTowardsPoint(packet, ballLandingPos);
+            if (canTurn(turnRate,distanceToBall(ballLandingPos,myPos))) {
+                return goTowardsPoint(packet, ballLandingPos);
+            }else return goTowardsPoint(packet, new Vector2(0, 5120 * teamsDirectionToGoal(team)));
+        } else return goTowardsPoint(packet, ballLandingPos);
+
     }
 
 
@@ -74,15 +76,19 @@ public class Bot {
         GameData.PlayerInfo me = packet.getPlayers(playerIndex);
         Vector3 myPos = Vector3.convert(me.getLocation());
         Vector3 myRotation = Vector3.convert(me.getRotation());
+        Vector2 my2dpos = Vector3.convert(me.getLocation()).asVector2();
 
         double ang = RLMath.carsAngleToPoint(myPos.asVector2(), myRotation.yaw, point);
 
         // Smooth the angle to a steering amount - this avoids wobbling
         double steering = RLMath.steeringSmooth(ang);
-
-        return new AgentOutput().withAcceleration(1).withSteer(steering);
+        if (distanceToBall(point, my2dpos)<=30){
+            return new AgentOutput().withAcceleration(0);
+        } else return new AgentOutput().withAcceleration(1).withSteer(steering);
 
     }
+
+
 
     public static int teamsDirectionToGoal(Team team) {
         return team == Team.BLUE ? -1 : 1;
@@ -93,11 +99,23 @@ public class Bot {
     boolean ballBehind(Vector2 ball, Vector2 Player, int team) {
         return ball.y*team > Player.y*team;
     }
+
+    /**
+     * @param ball Vector ball position
+     * @param player vector player position
+     * @return the distance between the two points.
+     */
     double distanceToBall(Vector2  ball, Vector2 player){
-        return ball.getMagnitude()+player.getMagnitude();
+        return Math.sqrt(Math.pow(ball.y-player.y,2)+Math.pow(ball.x-player.x,2));
     }
+
+    /**
+     * @param turn is a fixed turnRate
+     * @param distance the distance to the ball
+     * @return true of the turn distance is smaller than the distance to the ball.
+     */
     boolean canTurn(double turn, double distance){
-        return turn>distance;
+        return turn<distance;
     }
 
 }
