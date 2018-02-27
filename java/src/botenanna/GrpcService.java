@@ -46,11 +46,13 @@ public class GrpcService extends BotGrpc.BotImplBase {
                 }
             }
 
+            // Update status window with new data
+            GrpcServer.statusWindow.updateData(request);
+
             // This is the bot that needs to think
             Bot bot = registeredBots.get(playerIndex);
 
-            // TODO This is a test. Always drive backwards!
-            return GameData.ControllerState.newBuilder().setThrottle(-1).build();
+            return bot.process(request).toControllerState();
 
         } catch (Exception e) {
             e.printStackTrace();
