@@ -29,16 +29,16 @@ public class Bot {
      * @param packet the game tick packet from the game
      * @return an AgentOutput of what the agent want to do
      */
-    public AgentOutput process(GameData.GameTickPacket packet) {
+    public AgentOutput process(AgentInput packet) {
 
         // TODO Go towards where the ball will land!
 
         //Player info
-        GameData.PlayerInfo me = packet.getPlayers(playerIndex);
+        GameData.PlayerInfo me = packet.getPacket().getPlayers(playerIndex);
         Vector3 myPos = Vector3.convert(me.getLocation());
 
         // Where will ball the land?
-        Rigidbody ballBody = new Ball(packet.getBall());
+        Rigidbody ballBody = new Ball(packet.getPacket().getBall());
         Vector3 ballLandingPos = ballBody.getPosition(); // this is default, if ball is not "landing" anywhere
         double landingTime = ballBody.predictArrivalAtHeight(Ball.RADIUS);
 
@@ -49,9 +49,9 @@ public class Bot {
 
         // If the ball is behind the player and in the players half, it will go towards one of tree designated defence points based on the balls position
         if (isBallInTeamHalf(ballLandingPos,teamsDirectionToGoal(team))  && isBallBehind(ballLandingPos, myPos,teamsDirectionToGoal(team))){
-            return goTowardsPoint(packet, getDefencePoint(ballLandingPos));
+            return goTowardsPoint(packet.getPacket(), getDefencePoint(ballLandingPos));
         }
-        return goTowardsPoint(packet, ballLandingPos);
+        return goTowardsPoint(packet.getPacket(), ballLandingPos);
     }
 
     /**
