@@ -4,6 +4,7 @@ import botenanna.math.RLMath;
 import botenanna.math.Vector2;
 import botenanna.math.Vector3;
 import botenanna.physics.Rigidbody;
+import botenanna.physics.Boostpads;
 import rlbot.api.GameData;
 
 public class Bot {
@@ -36,7 +37,15 @@ public class Bot {
             ballLandingPos = ballBody.stepped(landingTime).getPosition().asVector2();
         }
 
-        return collectNearestBoost(packet);
+        Boostpads boostpad = new Boostpads();
+        GameData.PlayerInfo me = packet.getPlayers(playerIndex);
+        Vector3 myPos = Vector3.convert(me.getLocation());
+        Vector2 myPos2 = myPos.asVector2();
+
+
+        Vector2 nearestBoostPad = boostpad.collectNearestBoost(myPos2);
+
+        return goTowardsPoint(packet, boostpad.bigBoostPad[0]);
     }
 
     /**
@@ -54,30 +63,6 @@ public class Bot {
         Vector3 myRotation = Vector3.convert(me.getRotation());
 
         double ang = RLMath.carsAngleToPoint(myPos.asVector2(), myRotation.yaw, point);
-
-        // Smooth the angle to a steering amount - this avoids wobbling
-        double steering = RLMath.steeringSmooth(ang);
-
-        return new AgentOutput().withAcceleration(1).withSteer(steering);
-    }
-
-    private AgentOutput collectNearestBoost(GameData.GameTickPacket packet) {
-
-        Vector2 bigBoostPad[] = new Vector2[5];
-        bigBoostPad[0] = new Vector2(-3070, 4100);
-        bigBoostPad[1] = new Vector2(3070, 4100);
-        bigBoostPad[2] = new Vector2(-3580, 0);
-        bigBoostPad[3] = new Vector2(3580, 0);
-        bigBoostPad[4] = new Vector2(-3070, -4100);
-        bigBoostPad[5] = new Vector2(3070, -4100);
-
-        
-        // Get the needed positions and rotations
-        GameData.PlayerInfo me = packet.getPlayers(playerIndex);
-        Vector3 myPos = Vector3.convert(me.getLocation());
-        Vector3 myRotation = Vector3.convert(me.getRotation());
-
-        double ang = RLMath.carsAngleToPoint(myPos.asVector2(), myRotation.yaw, bigBoostPad[0]);
 
         // Smooth the angle to a steering amount - this avoids wobbling
         double steering = RLMath.steeringSmooth(ang);
