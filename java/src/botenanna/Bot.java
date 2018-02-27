@@ -48,7 +48,7 @@ public class Bot {
 
         // If the ball is behind the player and in the players half, it will go towards one of tree designated defence points based on the balls position
         if (isBallInTeamHalf(ballLandingPos,teamsDirectionToGoal(team))  && isBallBehind(ballLandingPos, myPos,teamsDirectionToGoal(team))){
-            return goTowardsPoint(packet, defencePoint(ballLandingPos));
+            return goTowardsPoint(packet, getDefencePoint(ballLandingPos));
         }
         return goTowardsPoint(packet, ballLandingPos);
     }
@@ -65,28 +65,32 @@ public class Bot {
 
         // Get the needed positions and rotations
         GameData.PlayerInfo me = packet.getPlayers(playerIndex);
-        Vector3 myPos = Vector3.convert(me.getLocation());
         Vector3 myRotation = Vector3.convert(me.getRotation());
         Vector2 my2dPos = Vector3.convert(me.getLocation()).asVector2();
 
+        // Get the angle and distance between point and car.
         double ang = RLMath.carsAngleToPoint(my2dPos, myRotation.yaw, point);
+        Vector2 distance = my2dPos.minus(point);
+
 
         // Smooth the angle to a steering amount - this avoids wobbling
         double steering = RLMath.steeringSmooth(ang);
-        //Currently stops at the point it is trying to reach.
-        if (distanceToBall(point, my2dPos)<=90){
+
+        //Currently stops close to the point it is trying to reach.
+        if (distance.getMagnitude()<=90){
             return new AgentOutput().withDeceleration(1).withSteer((steering));
         }
-        if (RLMath.carsAngleToPoint(my2dPos,myRotation.yaw, point)==0){return new AgentOutput().withAcceleration(1).withSteer(steering);}
+        // If the angle is 0 it will boost towards the point.
+        if (ang==0){return new AgentOutput().withAcceleration(1).withSteer(steering);}
         return new AgentOutput().withAcceleration(1).withBoost();
 
     }
     /**
      * Chooses between 3 Defensive points based on the balls position and the bots team.
-     * @param ballLandingPos The position of the ball
+     * @param ballLandingPos The landing position of the ball
      * @return returns one of tree points in front of the goal depending on if the ball is on the top, bottom or in the middle of the field.
      */
-    private Vector2 defencePoint(Vector2 ballLandingPos){
+    private Vector2 getDefencePoint(Vector2 ballLandingPos){
         if (posInField(ballLandingPos)==1){ return new Vector2(280, 5100 * teamsDirectionToGoal(team));}
         else if (posInField(ballLandingPos)==-1){ return new Vector2(-280, 5100* teamsDirectionToGoal(team));}
         else return new Vector2(0, 5120 * teamsDirectionToGoal(team));
@@ -99,6 +103,11 @@ public class Bot {
         return ballPoss.y*team>0;
     }
 
+    /**
+     * Returns an int depending on the current x-position of the ball in the field.
+     * @param ballPos The position of the ball
+     * @return  returns 1 if the ball is in the top part of the field, -1 if its the bottom part, and 0 if its in the middle.
+     */
     private static int posInField(Vector2 ballPos){
         if (ballPos.x>325){ return 1;}
         else if (ballPos.x<-325) {return -1;}
@@ -106,20 +115,12 @@ public class Bot {
     }
 
     /**
-     * Boolean that returns true of the ball is behind the player.
+     * Boolean that returns true if the ball is behind the player.
      */
     private static boolean isBallBehind(Vector2 ball, Vector2 Player, int team) {
         return ball.y*team > Player.y*team;
     }
 
-    /**
-     * @param ball Vector ball position
-     * @param player vector player position
-     * @return the distance between the two points.
-     */
-    private double distanceToBall(Vector2  ball, Vector2 player){
-        return Math.sqrt(Math.pow(ball.y-player.y,2)+Math.pow(ball.x-player.x,2));
-    }
 }
 
 
