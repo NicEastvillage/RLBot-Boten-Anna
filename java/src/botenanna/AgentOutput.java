@@ -12,6 +12,7 @@ public class AgentOutput {
 
     // -1 for front flip, 1 for back flip
     private double pitchTilt = 0;
+    private double rollTilt = 0;
 
     // 0 is none, 1 is full
     private double acceleration = 0;
@@ -33,6 +34,12 @@ public class AgentOutput {
     /** Set pitch. -1 for front flip, 1 for back flip. Clamped between -1 and 1. Default is 0. */
     public AgentOutput withPitch(double pitchTilt) {
         this.pitchTilt = Math.max(-1, Math.min(1, pitchTilt));
+        return this;
+    }
+
+    /** Set roll. -1 for left roll, 1 for right roll, Clamped between -1 and 1. Default is 0. */
+    public AgentOutput withRoll(double rollTilt) {
+        this.rollTilt = Math.max(-1, Math.min(1, rollTilt));
         return this;
     }
 
@@ -99,6 +106,7 @@ public class AgentOutput {
 
         if (Double.compare(that.steeringTilt, steeringTilt) != 0) return false;
         if (Double.compare(that.pitchTilt, pitchTilt) != 0) return false;
+        if (Double.compare(that.rollTilt, rollTilt) != 0) return false;
         if (Double.compare(that.acceleration, acceleration) != 0) return false;
         if (Double.compare(that.deceleration, deceleration) != 0) return false;
         if (jumpDepressed != that.jumpDepressed) return false;
@@ -113,6 +121,8 @@ public class AgentOutput {
         temp = Double.doubleToLongBits(steeringTilt);
         result = (int) (temp ^ (temp >>> 32));
         temp = Double.doubleToLongBits(pitchTilt);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(rollTilt);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         temp = Double.doubleToLongBits(acceleration);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
@@ -138,6 +148,10 @@ public class AgentOutput {
         return pitchTilt;
     }
 
+    public double getRoll() {
+        return rollTilt;
+    }
+
 
     /**
      * @return this AgentOutput as a ControllerState.
@@ -149,6 +163,7 @@ public class AgentOutput {
                 .setYaw(slideDepressed ? 0 : (float) steeringTilt)
                 .setRoll(slideDepressed ? (float) steeringTilt : 0)
                 .setPitch((float) pitchTilt)
+                .setRoll((float) rollTilt)
                 .setBoost(boostDepressed)
                 .setHandbrake(slideDepressed)
                 .setJump(jumpDepressed)
