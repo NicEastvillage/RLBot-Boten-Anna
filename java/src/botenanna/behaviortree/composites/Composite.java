@@ -1,4 +1,7 @@
-package botenanna.behaviortree;
+package botenanna.behaviortree.composites;
+
+import botenanna.behaviortree.BehaviourTreeBuildingException;
+import botenanna.behaviortree.Node;
 
 import java.util.ArrayList;
 
