@@ -24,7 +24,18 @@ public class Boostpads {
         Vector2 temp;
 
         GameData.BoostInfo yo = packet.getBoostPads(1);
-        System.out.println(yo.getLocation());
+        GameData.BoostInfo yo2 = packet.getBoostPads(2);
+        GameData.BoostInfo yo3 = packet.getBoostPads(3);
+        GameData.BoostInfo yo4 = packet.getBoostPads(4);
+        GameData.BoostInfo yo5 = packet.getBoostPads(5);
+        GameData.BoostInfo yo6 = packet.getBoostPads(6);
+
+        System.out.println("1. Location test" + Vector3.convert(yo.getLocation()));
+        System.out.println("2. Location test" + Vector3.convert(yo2.getLocation()));
+        System.out.println("3. Location test" + Vector3.convert(yo3.getLocation()));
+        System.out.println("4. Location test" + Vector3.convert(yo4.getLocation()));
+        System.out.println("5. Location test" + Vector3.convert(yo5.getLocation()));
+        System.out.println("6. Location test" + Vector3.convert(yo6.getLocation()));
 
         for(i = 0; i <= 5; i++) {
             temp = playerPos.minus(bigBoostPad[i]);
