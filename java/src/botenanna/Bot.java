@@ -32,34 +32,26 @@ public class Bot {
     public AgentOutput process(GameData.GameTickPacket packet) {
 
         // TODO Go towards where the ball will land!
-        GameData.BallInfo ball = packet.getBall();
-        Vector3 ballPos = Vector3.convert(ball.getLocation());
-        Vector3 ballVel = Vector3.convert(ball.getVelocity());
-
-
-        // Where will ball the land?
-        Vector2 ballLandingPos = ballPos.asVector2(); // this is default, if ball is not "landing" anywhere
-        Rigidbody ballBody = new Rigidbody();
-        ballBody.setPosition(ballPos);
-        ballBody.setVelocity(ballVel);
-        ballBody.setAffectedByGravity(true);
-        double landingTime = ballBody.predictArrivalAtHeight(92); // TODO: BALL RADIUS = 92 uu
 
         //Player info
         GameData.PlayerInfo me = packet.getPlayers(playerIndex);
         Vector2 myPos = Vector3.convert(me.getLocation()).asVector2();
-        //If the player is blue then they will  return "home" if they are on the wrong side of it
 
+        // Where will ball the land?
+        Rigidbody ballBody = new Ball(packet.getBall());
+        Vector2 ballLandingPos = ballBody.getPosition().asVector2(); // this is default, if ball is not "landing" anywhere
+        double landingTime = ballBody.predictArrivalAtHeight(Ball.RADIUS);
         if (!Double.isNaN(landingTime)) {
-            ballBody.step(landingTime);
-            ballLandingPos = ballBody.getPosition().asVector2();
+            // Calculate landing position
+            ballLandingPos = ballBody.stepped(landingTime).getPosition().asVector2();
         }
 
+        // If the ball is behind the player and in the players half, it will go towards one of tree designated defence points based on the balls position
         if (isBallInTeamHalf(ballLandingPos,teamsDirectionToGoal(team))  && isBallBehind(ballLandingPos, myPos,teamsDirectionToGoal(team))){
             return goTowardsPoint(packet, defencePoint(ballLandingPos));
         }
-            return goTowardsPoint(packet, ballLandingPos);
-        }
+        return goTowardsPoint(packet, ballLandingPos);
+    }
 
     /**
      * @param packet the game tick packet from the game
@@ -90,9 +82,9 @@ public class Bot {
 
     }
     /**
-     * Adds 3 Defensive points for the bot to stop at.
+     * Chooses between 3 Defensive points based on the balls position and the bots team.
      * @param ballLandingPos The position of the ball
-     * @return a 2d vector that the bot will stop at.
+     * @return returns one of tree points in front of the goal depending on if the ball is on the top, bottom or in the middle of the field.
      */
     private Vector2 defencePoint(Vector2 ballLandingPos){
         if (posInField(ballLandingPos)==1){ return new Vector2(280, 5100 * teamsDirectionToGoal(team));}
