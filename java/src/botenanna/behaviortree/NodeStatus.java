@@ -28,7 +28,7 @@ public class NodeStatus {
      *               NodeStatus will then be return all the way to the behaviour tree's top.
      *               Otherwise they can be null.
      * @param output the resulting AgentOutput. @{@code status} must be RUNNING, if this is not null.
-     * @param creator the node, that created this NodeStatus. The creator will be reset, if the NodeStatus created somewhere
+     * @param creator the node, that created this NodeStatus. The creator and all dependencies will be reset, if the NodeStatus created somewhere
      *                else in a subsequent tick.*/
     public NodeStatus(Status status, AgentOutput output, Node creator) {
         this.status = status;
@@ -36,11 +36,13 @@ public class NodeStatus {
         this.creator = creator;
     }
 
-    /** */
-    public void addDependency(Node dependency) {
-        dependencies.add(dependency);
+    /** Register that this NodeStatus' state is dependent on the state of {@code node}. Dependency nodes will also be reset,
+     * when the creator of the NodeStatus changes from tick to tick. */
+    public void addDependency(Node node) {
+        dependencies.add(node);
     }
 
+    /** @return an ArrayList of all nodes, that this NodeStatus is dependent on. Should only be used by BehaviourTree. */
     public ArrayList<Node> getDependencies() {
         return (ArrayList<Node>) dependencies.clone();
     }
