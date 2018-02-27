@@ -45,7 +45,11 @@ public class Bot {
 
         Vector2 nearestBoostPad = boostpad.collectNearestBoost(myPos2);
 
-        return goTowardsPoint(packet, nearestBoostPad);
+        double boostParameter = me.getBoost();
+        if (boostParameter < 50) {
+            return goTowardsPoint(packet, nearestBoostPad);
+        }
+            else return goTowardsPoint(packet, ballLandingPos);
     }
 
     /**
