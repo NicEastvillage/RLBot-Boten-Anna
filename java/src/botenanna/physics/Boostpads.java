@@ -14,10 +14,21 @@ public class Boostpads {
             new Vector2(3070,-4100)
     };
 
-    public Vector2 collectNearestBoost(Vector2 point){
+    public Vector2 collectNearestBoost(Vector2 playerPos){
+        int i;
+        int index = 0;
+        double mainDistance = 99999;
+        double secondaryDistance = 0;
+        Vector2 temp;
 
-
-
-        return bigBoostPad[0];
+        for(i = 0; i <= 5; i++) {
+            temp = playerPos.minus(bigBoostPad[i]);
+            secondaryDistance = temp.getMagnitude();
+            if(secondaryDistance < mainDistance) {
+                mainDistance = secondaryDistance;
+                index = i;
+            }
+        }
+        return bigBoostPad[index];
     }
 }

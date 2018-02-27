@@ -45,7 +45,7 @@ public class Bot {
 
         Vector2 nearestBoostPad = boostpad.collectNearestBoost(myPos2);
 
-        return goTowardsPoint(packet, boostpad.bigBoostPad[0]);
+        return goTowardsPoint(packet, nearestBoostPad);
     }
 
     /**
