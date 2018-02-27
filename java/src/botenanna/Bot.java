@@ -43,7 +43,7 @@ public class Bot {
         Vector2 myPos2 = myPos.asVector2();
 
 
-        Vector2 nearestBoostPad = boostpad.collectNearestBoost(myPos2);
+        Vector2 nearestBoostPad = boostpad.collectNearestBoost(packet, myPos2);
 
         double boostParameter = me.getBoost();
         if (boostParameter < 2) {
