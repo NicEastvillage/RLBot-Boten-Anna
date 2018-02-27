@@ -46,7 +46,7 @@ public class Bot {
         Vector2 nearestBoostPad = boostpad.collectNearestBoost(myPos2);
 
         double boostParameter = me.getBoost();
-        if (boostParameter < 50) {
+        if (boostParameter < 2) {
             return goTowardsPoint(packet, nearestBoostPad);
         }
             else return goTowardsPoint(packet, ballLandingPos);
@@ -71,7 +71,7 @@ public class Bot {
         // Smooth the angle to a steering amount - this avoids wobbling
         double steering = RLMath.steeringSmooth(ang);
 
-        return new AgentOutput().withAcceleration(1).withSteer(steering);
+        return new AgentOutput().withAcceleration(1).withBoost(1).withSteer(steering);
     }
 }
 
