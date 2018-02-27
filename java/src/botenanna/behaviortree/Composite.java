@@ -6,11 +6,11 @@ import java.util.ArrayList;
 public abstract class Composite implements Node {
 
     /** A list of all children this composite node has. */
-    protected ArrayList<Node> children = new ArrayList<>();
+    protected final ArrayList<Node> children = new ArrayList<>();
 
     /** Add a child to this Composite node */
     @Override
     public final void addChild(Node child) throws BehaviourTreeBuildingException {
-
+        children.add(child);
     }
 }
