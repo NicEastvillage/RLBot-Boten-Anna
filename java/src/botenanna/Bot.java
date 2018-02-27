@@ -80,7 +80,7 @@ public class Bot {
         double steering = RLMath.steeringSmooth(ang);
 
         //Currently stops close to the point it is trying to reach.
-        if (distance.getMagnitude() <= 200 && point.z > 120) {
+        if (distance.getMagnitude() <= 90 && point.z > 95) {
             return new AgentOutput().withDeceleration(1).withSteer((steering));
         }
         // Boosting towards the ball if the angle and distances are within the parameters.
@@ -100,8 +100,8 @@ public class Bot {
      * @return returns one of tree points in front of the goal depending on if the ball is on the top, bottom or in the middle of the field.
      */
     private Vector3 getDefencePoint(Vector3 ballLandingPos){
-        if (posInField(ballLandingPos)==1){ return new Vector3(280, 5100 * teamsDirectionToGoal(team),300);}
-        else if (posInField(ballLandingPos)==-1){ return new Vector3(-280, 5100* teamsDirectionToGoal(team),300);}
+        if (posInField(ballLandingPos)==1){ return new Vector3(280, 5140 * teamsDirectionToGoal(team),400);}
+        else if (posInField(ballLandingPos)==-1){ return new Vector3(-280, 5140* teamsDirectionToGoal(team),400);}
         else return new Vector3(0, 5120 * teamsDirectionToGoal(team),300);
     }
 
