@@ -3,7 +3,9 @@ package botenanna;
 import botenanna.math.RLMath;
 import botenanna.math.Vector2;
 import botenanna.math.Vector3;
+import botenanna.overlayWindow.StatusWindow;
 import botenanna.physics.Rigidbody;
+import botenanna.physics.Boostpads;
 import rlbot.api.GameData;
 
 import javax.vecmath.Vector2d;
@@ -42,6 +44,12 @@ public class Bot {
         Vector3 ballLandingPos = ballBody.getPosition(); // this is default, if ball is not "landing" anywhere
         double landingTime = ballBody.predictArrivalAtHeight(Ball.RADIUS);
 
+        // Nearest boost variables
+        Boostpads boostpad = new Boostpads();
+        Vector2 myPos2 = myPos.asVector2();
+        Vector2 nearestBoostPad = boostpad.collectNearestBoost(packet, myPos2);
+        double boostParameter = me.getBoost();
+
         if (!Double.isNaN(landingTime)) {
             // Calculate landing position
             ballLandingPos = ballBody.stepped(landingTime).getPosition();
@@ -50,7 +58,9 @@ public class Bot {
         // If the ball is behind the player and in the players half, it will go towards one of tree designated defence points based on the balls position
         if (isBallInTeamHalf(ballLandingPos,teamsDirectionToGoal(team))  && isBallBehind(ballLandingPos, myPos,teamsDirectionToGoal(team))){
             return goTowardsPoint(packet, getDefencePoint(ballLandingPos));
-        }
+        } /*else if (me.getBoost() == 0 && !(isBallInTeamHalf(ballLandingPos,teamsDirectionToGoal(team)) && myPos2.minus(ballLandingPos.asVector2()).getMagnitude() >  myPos2.minus(nearestBoostPad).getMagnitude())){
+                return goTowardsPoint(packet, nearestBoostPad.asVector3());
+        }*/ // TODO: Fix boost taking.
         return goTowardsPoint(packet, ballLandingPos);
     }
 
@@ -59,6 +69,7 @@ public class Bot {
      * @param point  the location the agent should go towards
      * @return an AgentOutput of what the agent needs to do to get to the point
      */
+
     private AgentOutput goTowardsPoint(GameData.GameTickPacket packet, Vector3 point) {
 
         // TODO For now we always to full throttle forwards, though that not be the shortest route. Maybe we should slide in some cases?
@@ -78,6 +89,25 @@ public class Bot {
 
         // Smooth the angle to a steering amount - this avoids wobbling
         double steering = RLMath.steeringSmooth(ang);
+
+        if (me.getIsMidair()) {
+            double smoothRot = RLMath.steeringSmooth(-myRotation.pitch / 2);
+            if (myRotation.pitch < 0) {
+                if (myRotation.roll < 0) {
+                    System.out.println("Rotating upwards and rolling +1.");
+                    return new AgentOutput().withPitch(smoothRot).withRoll(smoothRot);
+                }else {
+                    return new AgentOutput().withPitch(smoothRot);
+                }
+            } else if (myRotation.pitch > 0) {
+                if (myRotation.roll > 0) {
+                    System.out.println("Rotating upwards and rolling -1.");
+                    return new AgentOutput().withPitch(smoothRot).withRoll(smoothRot);
+                } else {
+                    return new AgentOutput().withPitch(smoothRot);
+                }
+            }
+        }
 
         //Currently stops close to the point it is trying to reach.
         if (distance.getMagnitude() <= 90 && point.z > 95) {
@@ -139,5 +169,4 @@ public class Bot {
     private static boolean isBallBehind(Vector3 ball, Vector3 Player, int team) {
         return ball.y*team > Player.y*team;
     }
-
 }
