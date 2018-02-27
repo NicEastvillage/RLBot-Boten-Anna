@@ -1,5 +1,7 @@
 package botenanna;
 
+import botenanna.behaviortree.BehaviorTree;
+import botenanna.behaviortree.tasks.TaskGoTowardsPoint;
 import botenanna.math.RLMath;
 import botenanna.math.Vector2;
 import botenanna.math.Vector3;
@@ -14,10 +16,20 @@ public class Bot {
 
     private final Team team;
     private final int playerIndex;
+    private BehaviorTree behaviorTree;
 
     public Bot(int playerIndex, int teamIndex) {
         this.playerIndex = playerIndex;
         team = (teamIndex == 0 ? Team.BLUE : Team.ORANGE);
+        behaviorTree = buildBehaviourTree();
+    }
+
+    /** Hardcoded building of a BehaviourTree */
+    public BehaviorTree buildBehaviourTree() {
+        BehaviorTree bhtree = new BehaviorTree();
+        bhtree.addChild(new TaskGoTowardsPoint(new String[0]));
+
+        return bhtree;
     }
 
     /** Let the bot process the information from the data packet
@@ -25,24 +37,7 @@ public class Bot {
      * @return an AgentOutput of what the agent want to do */
     public AgentOutput process(GameData.GameTickPacket packet) {
 
-        // TODO Go towards where the ball will land!
-        GameData.BallInfo ball = packet.getBall();
-        Vector3 ballPos = Vector3.convert(ball.getLocation());
-        Vector3 ballVel = Vector3.convert(ball.getVelocity());
-
-        // Where will ball the land?
-        Vector2 ballLandingPos = ballPos.asVector2(); // this is default, if ball is not "landing" anywhere
-        Rigidbody ballBody = new Rigidbody();
-        ballBody.setPosition(ballPos);
-        ballBody.setVelocity(ballVel);
-        ballBody.setAffectedByGravity(true);
-        double landingTime = ballBody.predictArrivalAtHeight(92); // TODO: BALL RADIUS = 92 uu
-        if (!Double.isNaN(landingTime)) {
-            ballBody.step(landingTime);
-            ballLandingPos = ballBody.getPosition().asVector2();
-        }
-
-        return goTowardsPoint(packet, ballLandingPos);
+        return behaviorTree.evaluate(packet);
     }
 
     /**
