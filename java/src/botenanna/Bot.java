@@ -80,10 +80,11 @@ public class Bot {
         if (distance.getMagnitude()<=90){
             return new AgentOutput().withDeceleration(1).withSteer((steering));
         }
-        // If the angle is 0 it will boost towards the point.
-        if (ang==0){return new AgentOutput().withAcceleration(1).withSteer(steering);}
-        return new AgentOutput().withAcceleration(1).withBoost();
+        // Boosting towards the ball if the angle and distances are within the parameters.
+        if (ang>=-0.2 && ang<=0.2 && distance.getMagnitude()>300){return new AgentOutput().withAcceleration(1).withBoost().withSteer(steering);
+        }
 
+        return new AgentOutput().withAcceleration(1).withSteer(steering);
     }
     /**
      * Chooses between 3 Defensive points based on the balls position and the bots team.
