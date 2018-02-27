@@ -5,6 +5,7 @@ import botenanna.math.Vector2;
 import botenanna.math.Vector3;
 import botenanna.overlayWindow.StatusWindow;
 import botenanna.physics.Rigidbody;
+import botenanna.physics.Boostpads;
 import rlbot.api.GameData;
 
 import javax.vecmath.Vector2d;
@@ -43,6 +44,12 @@ public class Bot {
         Vector3 ballLandingPos = ballBody.getPosition(); // this is default, if ball is not "landing" anywhere
         double landingTime = ballBody.predictArrivalAtHeight(Ball.RADIUS);
 
+        // Nearest boost variables
+        Boostpads boostpad = new Boostpads();
+        Vector2 myPos2 = myPos.asVector2();
+        Vector2 nearestBoostPad = boostpad.collectNearestBoost(packet, myPos2);
+        double boostParameter = me.getBoost();
+
         if (!Double.isNaN(landingTime)) {
             // Calculate landing position
             ballLandingPos = ballBody.stepped(landingTime).getPosition();
@@ -51,7 +58,9 @@ public class Bot {
         // If the ball is behind the player and in the players half, it will go towards one of tree designated defence points based on the balls position
         if (isBallInTeamHalf(ballLandingPos,teamsDirectionToGoal(team))  && isBallBehind(ballLandingPos, myPos,teamsDirectionToGoal(team))){
             return goTowardsPoint(packet, getDefencePoint(ballLandingPos));
-        }
+        } /*else if (me.getBoost() == 0 && !(isBallInTeamHalf(ballLandingPos,teamsDirectionToGoal(team)) && myPos2.minus(ballLandingPos.asVector2()).getMagnitude() >  myPos2.minus(nearestBoostPad).getMagnitude())){
+                return goTowardsPoint(packet, nearestBoostPad.asVector3());
+        }*/ // TODO: Fix boost taking.
         return goTowardsPoint(packet, ballLandingPos);
     }
 
