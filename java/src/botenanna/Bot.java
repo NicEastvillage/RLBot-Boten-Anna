@@ -26,20 +26,14 @@ public class Bot {
     public AgentOutput process(GameData.GameTickPacket packet) {
 
         // TODO Go towards where the ball will land!
-        GameData.BallInfo ball = packet.getBall();
-        Vector3 ballPos = Vector3.convert(ball.getLocation());
-        Vector3 ballVel = Vector3.convert(ball.getVelocity());
 
         // Where will ball the land?
-        Vector2 ballLandingPos = ballPos.asVector2(); // this is default, if ball is not "landing" anywhere
-        Rigidbody ballBody = new Rigidbody();
-        ballBody.setPosition(ballPos);
-        ballBody.setVelocity(ballVel);
-        ballBody.setAffectedByGravity(true);
-        double landingTime = ballBody.predictArrivalAtHeight(92); // TODO: BALL RADIUS = 92 uu
+        Rigidbody ballBody = new Ball(packet.getBall());
+        Vector2 ballLandingPos = ballBody.getPosition().asVector2(); // this is default, if ball is not "landing" anywhere
+        double landingTime = ballBody.predictArrivalAtHeight(Ball.RADIUS);
         if (!Double.isNaN(landingTime)) {
-            ballBody.step(landingTime);
-            ballLandingPos = ballBody.getPosition().asVector2();
+            // Calculate landing position
+            ballLandingPos = ballBody.stepped(landingTime).getPosition().asVector2();
         }
 
         return goTowardsPoint(packet, ballLandingPos);
