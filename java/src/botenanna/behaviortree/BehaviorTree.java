@@ -3,40 +3,54 @@ package botenanna.behaviortree;
 import botenanna.AgentOutput;
 import rlbot.api.GameData;
 
-public class BehaviorTree implements Task {
+public class BehaviorTree implements Node {
 
-    private Task topNode;
-    private Action lastAction;
-
-    @Override
-    public Status getStatus() {
-        return Status.RUNNING;
-    }
+    private Node topNode;
+    private NodeStatus lastNodeStatus;
 
     @Override
     public void reset() {
-        lastAction = null;
+        lastNodeStatus = null;
     }
 
     @Override
-    public Action run() {
-        Action newAction = topNode.run();
+    public NodeStatus run(GameData.GameTickPacket packet) throws MissingNodeException {
 
-        if (lastAction != null && (newAction == null || newAction.creator != lastAction.creator)) {
-            lastAction.creator.reset();
+        if (topNode == null) throw new MissingNodeException(this);
+
+        NodeStatus newNodeStatus = topNode.run(packet);
+
+        // If newNodeStatus's creator is not the same as the lastNodeStatus's creator, then
+        // lastNodeStatus's creator and all dependencies will be reset.
+        if (lastNodeStatus != null && (newNodeStatus == null || newNodeStatus.creator != lastNodeStatus.creator)) {
+            lastNodeStatus.creator.reset();
+            for (Node dependencies : lastNodeStatus.getDependencies()) {
+                dependencies.reset();
+            }
         }
 
-        if (newAction == null) {
-            lastAction = new Action(new AgentOutput(), this);
+        // Set lastNodeStatus to newNodeStatus
+        if (newNodeStatus == null) {
+            // If newNodeStatus is null, something went wrong, so we just create one now.
+            lastNodeStatus = new NodeStatus(Status.RUNNING, new AgentOutput(), this);
         } else {
-            lastAction = newAction;
+            lastNodeStatus = newNodeStatus;
         }
 
-        return lastAction;
+        return lastNodeStatus;
     }
 
+    /** Evaluate the behaviour tree.
+     * @return the AgentOutput. */
+    public AgentOutput evaluate(GameData.GameTickPacket packet) {
+        NodeStatus nodeStatus = run(packet);
+        return nodeStatus.output;
+    }
+
+    /** Set the top node of the tree to {@code child}.
+     * @param child top node of the tree. */
     @Override
-    public void addChild(Task child) throws BehaviourTreeBuildingException {
+    public void addChild(Node child) throws BehaviourTreeBuildingException {
         if (topNode != null) {
             throw new BehaviourTreeBuildingException();
         }

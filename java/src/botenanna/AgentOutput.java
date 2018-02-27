@@ -48,37 +48,37 @@ public class AgentOutput {
         return this;
     }
 
-    /** Set jump pressed state. Default is false. */
+    /** Set jump pressed output. Default is false. */
     public AgentOutput withJump(boolean jumpDepressed) {
         this.jumpDepressed = jumpDepressed;
         return this;
     }
 
-    /** Set boost pressed state. Default is false. */
+    /** Set boost pressed output. Default is false. */
     public AgentOutput withBoost(boolean boostDepressed) {
         this.boostDepressed = boostDepressed;
         return this;
     }
 
-    /** Set slide pressed state. Default is false. */
+    /** Set slide pressed output. Default is false. */
     public AgentOutput withSlide(boolean slideDepressed) {
         this.slideDepressed = slideDepressed;
         return this;
     }
 
-    /** Set jump pressed state to true. */
+    /** Set jump pressed output to true. */
     public AgentOutput withJump() {
         this.jumpDepressed = true;
         return this;
     }
 
-    /** Set boost pressed state to true. */
+    /** Set boost pressed output to true. */
     public AgentOutput withBoost() {
         this.boostDepressed = true;
         return this;
     }
 
-    /** Set slide pressed state to true. */
+    /** Set slide pressed output to true. */
     public AgentOutput withSlide() {
         this.slideDepressed = true;
         return this;
