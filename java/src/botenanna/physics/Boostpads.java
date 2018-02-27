@@ -1,10 +1,7 @@
 package botenanna.physics;
 
 import botenanna.math.Vector2;
-import botenanna.math.Vector3;
 import rlbot.api.GameData;
-
-import java.util.List;
 
 public class Boostpads {
     public Vector2[] bigBoostPad = {
@@ -20,7 +17,7 @@ public class Boostpads {
         int i;
         int index = 0;
         double mainDistance = 99999;
-        double secondaryDistance = 0;
+        double secondaryDistance;
         Vector2 temp;
 
         for(i = 0; i <= 5; i++) {

@@ -71,6 +71,10 @@ public class Bot {
         // Smooth the angle to a steering amount - this avoids wobbling
         double steering = RLMath.steeringSmooth(ang);
 
+        if(me.getIsSupersonic()){
+            return new AgentOutput().withAcceleration(1).withBoost(false).withSteer(steering);
+        }
+
         return new AgentOutput().withAcceleration(1).withBoost(true).withSteer(steering);
     }
 }
