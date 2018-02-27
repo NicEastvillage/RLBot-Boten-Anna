@@ -9,7 +9,7 @@ import rlbot.api.GameData;
 /** <p>The Selector is a Composite node. When run it goes through each of its child nodes, one at a time, until one succeeds.</p>
  * <p>If a child returns FAILURE it goes onto the next child. If a child returns SUCCESS the Selector immediately stops
  * and returns SUCCESS itself. If any RUNNING node is found, RUNNING is returned.</p>
- * <p>The Selector can be used as a OR with short-circuit evaluation.</p>*/
+ * <p>The Selector can be used as a conditional OR with short-circuit evaluation.</p>*/
 public class Selector extends Composite {
 
     @Override
