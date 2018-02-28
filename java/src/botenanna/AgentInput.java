@@ -122,4 +122,28 @@ public class AgentInput {
         return timeTracker;
     }
 
+    /** @return whether a player is super sonic. */
+    public boolean isSuperSonic(int playerIndex) {
+        return playerIndex == myPlayerIndex ? myIsSupersonic : enemyIsSupersonic;
+    }
+
+    /** @return whether a player is demolished. */
+    public boolean isDemolished(int playerIndex) {
+        return playerIndex == myPlayerIndex ? myIsDemolished : enemyIsDemolished;
+    }
+
+    /** @return whether a player has jumped. */
+    public boolean hasJumped(int playerIndex) {
+        return playerIndex == myPlayerIndex ? myHasJumped : enemyHasJumped;
+    }
+
+    /** @return whether a player has double jumped. */
+    public boolean hasDoubleJumped(int playerIndex) {
+        return playerIndex == myPlayerIndex ? myHasDoubleJumped : enemyHasDoubleJumped;
+    }
+
+    /** @return whether a player is on the ground. */
+    public boolean isCarOnGround(int playerIndex) {
+        return playerIndex == myPlayerIndex ? myIsCarOnGround : enemyIsCarOnGround;
+    }
 }
