@@ -1,9 +1,8 @@
-package botenanna.behaviortree.composites;
+package botenanna.behaviortree.decorators;
 
 import botenanna.behaviortree.MissingNodeException;
 import botenanna.behaviortree.NodeStatus;
 import botenanna.behaviortree.Status;
-import botenanna.behaviortree.decorators.Decorator;
 import rlbot.api.GameData;
 
 /** <p>The Invert is a Decorator node that inverts the return value of its child. So SUCCESS' becomes FAILURES, and FAILURES
