@@ -16,46 +16,48 @@ public class AgentInput {
     private TimeTracker timeTracker;
 
     /* CAR */
-    private int myPlayerIndex;
-    private int myTeam;
-    private Vector3 myLocation;
-    private Vector3 myVelocity;
-    private Vector3 myRotation;
-    private int myBoost;
-    private boolean myJumped;
-    private boolean myDoubleJumped;
-    private boolean myIsDemolished;
-    private boolean myIsSupersonic;
-    private boolean myIsCarOnGround;
+    public final int myPlayerIndex;
+    public final int myTeam;
+    public final Vector3 myLocation;
+    public final Vector3 myVelocity;
+    public final Vector3 myRotation;
+    //public final Vector3 myUpVector;
+    public final int myBoost;
+    public final boolean myHasJumped;
+    public final boolean myHasDoubleJumped;
+    public final boolean myIsDemolished;
+    public final boolean myIsSupersonic;
+    public final boolean myIsCarOnGround;
 
     /* ENEMY */
-    private int enemyPlayerIndex;
-    private int enemyTeam;
-    private Vector3 enemyLocation;
-    private Vector3 enemyVelocity;
-    private Vector3 enemyRotation;
-    private int enemyBoost;
-    private boolean enemyJumped;
-    private boolean enemyDoubleJumped;
-    private boolean enemyIsDemolished;
-    private boolean enemyIsSupersonic;
-    private boolean enemyIsCarOnGround;
+    public final int enemyPlayerIndex;
+    public final int enemyTeam;
+    public final Vector3 enemyLocation;
+    public final Vector3 enemyVelocity;
+    public final Vector3 enemyRotation;
+    //public final Vector3 enemyUpVector;
+    public final int enemyBoost;
+    public final boolean enemyHasJumped;
+    public final boolean enemyHasDoubleJumped;
+    public final boolean enemyIsDemolished;
+    public final boolean enemyIsSupersonic;
+    public final boolean enemyIsCarOnGround;
 
     /* BALL */
-    private Vector3 ballLocation;
-    private Vector3 ballVelocity;
-    private Vector3 ballAcceleration;
-    private boolean ballHasAcceleration;
+    public final Vector3 ballLocation;
+    public final Vector3 ballVelocity;
+    public final Vector3 ballAcceleration;
+    public final boolean ballHasAcceleration;
 
     /* GAME */
-    private boolean gameIsKickOffPause;
-    private boolean gameIsMatchEnded;
-    private boolean gameIsOvertime;
-    private boolean gameIsRoundActive;
-    private int gamePlayerCount;
+    public final boolean gameIsKickOffPause;
+    public final boolean gameIsMatchEnded;
+    public final boolean gameIsOvertime;
+    public final boolean gameIsRoundActive;
+    public final int gamePlayerCount;
 
     /* UTILS */
-    private double angleToBall;
+    public final double angleToBall;
 
 
     /** The constructor.
@@ -71,12 +73,13 @@ public class AgentInput {
         this.myLocation = Vector3.convert(packet.getPlayers(myPlayerIndex).getLocation());
         this.myVelocity = Vector3.convert(packet.getPlayers(myPlayerIndex).getVelocity());
         this.myRotation = Vector3.convert(packet.getPlayers(myPlayerIndex).getRotation());
+        //this.myUpVector = RLMath.carUpVector(Vector3.convert(packet.getPlayers(myPlayerIndex).getRotation()));
         this.myBoost = packet.getPlayers(myPlayerIndex).getBoost(); //TODO: Value?
-        this.myJumped = packet.getPlayers(myPlayerIndex).getJumped();
-        this.myDoubleJumped = packet.getPlayers(myPlayerIndex).getDoubleJumped();
+        this.myHasJumped = packet.getPlayers(myPlayerIndex).getJumped();
+        this.myHasDoubleJumped = packet.getPlayers(myPlayerIndex).getDoubleJumped();
         this.myIsDemolished = packet.getPlayers(myPlayerIndex).getIsDemolished();
         this.myIsSupersonic = packet.getPlayers(myPlayerIndex).getIsSupersonic();
-        this.myIsCarOnGround = isCarOnGround(myPlayerIndex);
+        this.myIsCarOnGround = packet.getPlayers(myPlayerIndex).getLocation().getZ() < 20;
 
         /* ENEMY */
         this.enemyPlayerIndex = this.myPlayerIndex == 1 ? 0 :  1;
@@ -84,12 +87,13 @@ public class AgentInput {
         this.enemyLocation = Vector3.convert(packet.getPlayers(enemyPlayerIndex).getLocation());
         this.enemyVelocity = Vector3.convert(packet.getPlayers(enemyPlayerIndex).getVelocity());
         this.enemyRotation = Vector3.convert(packet.getPlayers(enemyPlayerIndex).getRotation());
+        //this.enemyUpVector = RLMath.carUpVector(Vector3.convert(packet.getPlayers(enemyPlayerIndex).getRotation()));
         this.enemyBoost = packet.getPlayers(enemyPlayerIndex).getBoost(); //TODO: Value?
-        this.enemyJumped = packet.getPlayers(enemyPlayerIndex).getJumped();
-        this.enemyDoubleJumped = packet.getPlayers(enemyPlayerIndex).getDoubleJumped();
+        this.enemyHasJumped = packet.getPlayers(enemyPlayerIndex).getJumped();
+        this.enemyHasDoubleJumped = packet.getPlayers(enemyPlayerIndex).getDoubleJumped();
         this.enemyIsDemolished = packet.getPlayers(enemyPlayerIndex).getIsDemolished();
         this.enemyIsSupersonic = packet.getPlayers(enemyPlayerIndex).getIsSupersonic();
-        this.enemyIsCarOnGround = isCarOnGround(enemyPlayerIndex);
+        this.enemyIsCarOnGround = packet.getPlayers(enemyPlayerIndex).getLocation().getZ() < 20;
 
         /* BALL */
         this.ballLocation = Vector3.convert(packet.getBall().getLocation());
@@ -118,146 +122,4 @@ public class AgentInput {
         return timeTracker;
     }
 
-    /** Returns true if the car is on the ground.
-     *  This does not work if the car is upside down.
-     * @param playerIndex the index of the player.
-     * @return true if the car is on the ground. */
-    private boolean isCarOnGround(int playerIndex){
-        float carZ = this.packet.getPlayers(playerIndex).getLocation().getZ();
-
-        if(carZ < 20)
-            return true;
-        else
-            return false;
-    }
-
-
-    /* GETTERS: GENERATED */
-    public int getMyPlayerIndex() {
-        return myPlayerIndex;
-    }
-
-    public int getMyTeam() {
-        return myTeam;
-    }
-
-    public Vector3 getMyLocation() {
-        return myLocation;
-    }
-
-    public Vector3 getMyVelocity() {
-        return myVelocity;
-    }
-
-    public Vector3 getMyRotation() {
-        return myRotation;
-    }
-
-    public int getMyBoost() {
-        return myBoost;
-    }
-
-    public boolean isMyJumped() {
-        return myJumped;
-    }
-
-    public boolean isMyDoubleJumped() {
-        return myDoubleJumped;
-    }
-
-    public boolean isMyIsDemolished() {
-        return myIsDemolished;
-    }
-
-    public boolean isMyIsSupersonic() {
-        return myIsSupersonic;
-    }
-
-    public boolean isMyIsCarOnGround() {
-        return myIsCarOnGround;
-    }
-
-    public int getEnemyPlayerIndex() {
-        return enemyPlayerIndex;
-    }
-
-    public int getEnemyTeam() {
-        return enemyTeam;
-    }
-
-    public Vector3 getEnemyLocation() {
-        return enemyLocation;
-    }
-
-    public Vector3 getEnemyVelocity() {
-        return enemyVelocity;
-    }
-
-    public Vector3 getEnemyRotation() {
-        return enemyRotation;
-    }
-
-    public int getEnemyBoost() {
-        return enemyBoost;
-    }
-
-    public boolean isEnemyJumped() {
-        return enemyJumped;
-    }
-
-    public boolean isEnemyDoubleJumped() {
-        return enemyDoubleJumped;
-    }
-
-    public boolean isEnemyIsDemolished() {
-        return enemyIsDemolished;
-    }
-
-    public boolean isEnemyIsSupersonic() {
-        return enemyIsSupersonic;
-    }
-
-    public boolean isEnemyIsCarOnGround() {
-        return enemyIsCarOnGround;
-    }
-
-    public Vector3 getBallLocation() {
-        return ballLocation;
-    }
-
-    public Vector3 getBallVelocity() {
-        return ballVelocity;
-    }
-
-    public Vector3 getBallAcceleration() {
-        return ballAcceleration;
-    }
-
-    public boolean isBallHasAcceleration() {
-        return ballHasAcceleration;
-    }
-
-    public boolean isGameIsKickOffPause() {
-        return gameIsKickOffPause;
-    }
-
-    public boolean isGameIsMatchEnded() {
-        return gameIsMatchEnded;
-    }
-
-    public boolean isGameIsOvertime() {
-        return gameIsOvertime;
-    }
-
-    public boolean isGameIsRoundActive() {
-        return gameIsRoundActive;
-    }
-
-    public int getGamePlayerCount() {
-        return gamePlayerCount;
-    }
-
-    public double getAngleToBall() {
-        return angleToBall;
-    }
 }
