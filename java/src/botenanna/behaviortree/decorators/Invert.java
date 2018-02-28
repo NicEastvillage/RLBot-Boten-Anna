@@ -1,9 +1,9 @@
 package botenanna.behaviortree.decorators;
 
+import botenanna.AgentInput;
 import botenanna.behaviortree.MissingNodeException;
 import botenanna.behaviortree.NodeStatus;
 import botenanna.behaviortree.Status;
-import rlbot.api.GameData;
 
 /** <p>The Invert is a Decorator node that inverts the return value of its child. So SUCCESS' becomes FAILURES, and FAILURES
  * become SUCCESS'. If the child returns RUNNING, this returns RUNNING as well.</p>
@@ -16,10 +16,10 @@ public class Invert extends Decorator {
     }
 
     @Override
-    public NodeStatus run(GameData.GameTickPacket packet) throws MissingNodeException {
+    public NodeStatus run(AgentInput input) throws MissingNodeException {
         if (child == null) throw new MissingNodeException(this);
 
-        NodeStatus result = child.run(packet);
+        NodeStatus result = child.run(input);
 
         // Failure becomes success, and success becomes failure
         if (result.status == Status.RUNNING) return result;

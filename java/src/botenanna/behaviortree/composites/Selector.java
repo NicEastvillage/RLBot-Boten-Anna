@@ -1,10 +1,10 @@
 package botenanna.behaviortree.composites;
 
+import botenanna.AgentInput;
 import botenanna.behaviortree.MissingNodeException;
 import botenanna.behaviortree.Node;
 import botenanna.behaviortree.NodeStatus;
 import botenanna.behaviortree.Status;
-import rlbot.api.GameData;
 
 /** <p>The Selector is a Composite node. When run it goes through each of its child nodes, one at a time, until one succeeds.</p>
  * <p>If a child returns FAILURE it goes onto the next child. If a child returns SUCCESS the Selector immediately stops
@@ -18,12 +18,12 @@ public class Selector extends Composite {
     }
 
     @Override
-    public NodeStatus run(GameData.GameTickPacket packet) throws MissingNodeException {
+    public NodeStatus run(AgentInput input) throws MissingNodeException {
         if (children.size() == 0) throw new MissingNodeException(this);
 
         // Go through each child node until one returns RUNNING or SUCCESS
         for (Node child : children) {
-            NodeStatus result = child.run(packet);
+            NodeStatus result = child.run(input);
             if (result.status == Status.RUNNING) return result;
             if (result.status == Status.SUCCESS) return NodeStatus.DEFAULT_SUCCESS;
         }

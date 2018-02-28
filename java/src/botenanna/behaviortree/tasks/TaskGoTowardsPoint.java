@@ -1,5 +1,6 @@
 package botenanna.behaviortree.tasks;
 
+import botenanna.AgentInput;
 import botenanna.AgentOutput;
 import botenanna.behaviortree.*;
 import botenanna.math.RLMath;
@@ -21,17 +22,16 @@ public class TaskGoTowardsPoint extends Leaf {
     }
 
     @Override
-    public NodeStatus run(GameData.GameTickPacket packet) throws MissingNodeException {
+    public NodeStatus run(AgentInput input) throws MissingNodeException {
         // TODO For now we always to full throttle forwards, though that not be the shortest route. Maybe we should slide in some cases?
         // TODO Also, the bot will overshoot. In some cases we want the bot to stop, or get to point at a specific time (e.g. when ball lands)
 
-        int playerIndex = packet.getPlayerIndex();
-        Vector2 point = Vector3.convert(packet.getBall().getLocation()).asVector2(); // TODO Go towards ball for now
+        int playerIndex = input.myPlayerIndex;
 
         // Get the needed positions and rotations
-        GameData.PlayerInfo me = packet.getPlayers(playerIndex);
-        Vector3 myPos = Vector3.convert(me.getLocation());
-        Vector3 myRotation = Vector3.convert(me.getRotation());
+        Vector3 myPos = input.myLocation;
+        Vector3 myRotation = input.myRotation;
+        Vector2 point = input.ballLocation.asVector2(); // TODO Go towards ball for now
 
         double ang = RLMath.carsAngleToPoint(myPos.asVector2(), myRotation.yaw, point);
 

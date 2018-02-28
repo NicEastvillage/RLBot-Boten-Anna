@@ -1,5 +1,6 @@
 package botenanna.behaviortree.tasks;
 
+import botenanna.AgentInput;
 import botenanna.behaviortree.Leaf;
 import botenanna.behaviortree.MissingNodeException;
 import botenanna.behaviortree.NodeStatus;
@@ -23,12 +24,12 @@ public class GuardIsDistanceLessThan extends Leaf {
     }
 
     @Override
-    public NodeStatus run(GameData.GameTickPacket packet) throws MissingNodeException {
+    public NodeStatus run(AgentInput input) throws MissingNodeException {
         // TODO For now, always return whether distance between player and ball is less than 1000
 
         // Get points
-        Vector3 carPos = Vector3.convert(packet.getPlayers(packet.getPlayerIndex()).getLocation());
-        Vector3 ballPos = Vector3.convert(packet.getBall().getLocation());
+        Vector3 carPos = input.myLocation;
+        Vector3 ballPos = input.ballLocation;
 
         // Compare distance
         double dist = carPos.minus(ballPos).getMagnitudeSqr();

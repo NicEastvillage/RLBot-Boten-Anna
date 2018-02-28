@@ -18,6 +18,7 @@ public class RLMath {
         if (angDiff > Math.PI) angDiff -= 2 * Math.PI; // Fix ang between -PI and +PI
 
         return angDiff;
+
     }
 
     /** Translate an angular difference to a smooth steering to avoid wobbly driving. A positive

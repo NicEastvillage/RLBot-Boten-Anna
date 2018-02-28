@@ -1,5 +1,6 @@
 package botenanna;
 
+import botenanna.physics.TimeTracker;
 import io.grpc.stub.StreamObserver;
 import rlbot.api.BotGrpc;
 import rlbot.api.GameData;
@@ -9,6 +10,7 @@ import java.util.Map;
 
 public class GrpcService extends BotGrpc.BotImplBase {
 
+    private TimeTracker timeTracker = new TimeTracker();
     private Map<Integer, Bot> registeredBots = new HashMap<>();
 
     /**
@@ -37,6 +39,11 @@ public class GrpcService extends BotGrpc.BotImplBase {
                 return new AgentOutput().toControllerState();
             }
 
+            request.getGameInfo().getGameTimeRemaining();
+
+            // Rework the package
+            AgentInput input = new AgentInput(request, timeTracker);
+
             // Create and register bot from this packet if necessary
             synchronized (this) {
                 if (!registeredBots.containsKey(playerIndex)) {
@@ -52,7 +59,7 @@ public class GrpcService extends BotGrpc.BotImplBase {
             // This is the bot that needs to think
             Bot bot = registeredBots.get(playerIndex);
 
-            return bot.process(request).toControllerState();
+            return bot.process(input).toControllerState();
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -1,7 +1,7 @@
 package botenanna.behaviortree;
 
+import botenanna.AgentInput;
 import botenanna.AgentOutput;
-import rlbot.api.GameData;
 
 public class BehaviorTree implements Node {
 
@@ -14,11 +14,11 @@ public class BehaviorTree implements Node {
     }
 
     @Override
-    public NodeStatus run(GameData.GameTickPacket packet) throws MissingNodeException {
+    public NodeStatus run(AgentInput input) throws MissingNodeException {
 
         if (topNode == null) throw new MissingNodeException(this);
 
-        NodeStatus newNodeStatus = topNode.run(packet);
+        NodeStatus newNodeStatus = topNode.run(input);
 
         // If newNodeStatus's creator is not the same as the lastNodeStatus's creator, then
         // lastNodeStatus's creator and all dependencies will be reset.
@@ -42,8 +42,8 @@ public class BehaviorTree implements Node {
 
     /** Evaluate the behaviour tree.
      * @return the AgentOutput. */
-    public AgentOutput evaluate(GameData.GameTickPacket packet) {
-        NodeStatus nodeStatus = run(packet);
+    public AgentOutput evaluate(AgentInput input) {
+        NodeStatus nodeStatus = run(input);
         return nodeStatus.output;
     }
 
