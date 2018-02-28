@@ -13,7 +13,7 @@ public class NodeStatus {
 
     /** The return status of the node. If this is RUNNING, then {@code output} and {@code creator} is defined too.*/
     public final Status status;
-    /** The AgentOutput produced by a Task. Will be null when {@code status} is not RUNNING.*/
+    /** The AgentOutput produced by a Leaf. Will be null when {@code status} is not RUNNING.*/
     public final AgentOutput output;
     /** The creator of this NodeStatus. Can be null when {@code status} is not RUNNING.*/
     public final Node creator;
@@ -23,7 +23,7 @@ public class NodeStatus {
     /** <p>A NodeStatus describes the result of a behaviour tree node.</p>
      * <p>Guard nodes must only create SUCCESS' or FAILURES. See NodeStatus.DEFAULT_SUCCESS and NodeStatus.DEFAULT_FAILURE
      * for commonly used NodeStatus'.</p>
-     * <p>Task nodes usually creates RUNNING status', and when they do, {@code output} and {@code creator} must be defined.</p>
+     * <p>Leaf nodes usually creates RUNNING status', and when they do, {@code output} and {@code creator} must be defined.</p>
      * @param status the Status of the node. If this is RUNNING, {@code output} and {@code creator} must be defined, since the
      *               NodeStatus will then be return all the way to the behaviour tree's top.
      *               Otherwise they can be null.

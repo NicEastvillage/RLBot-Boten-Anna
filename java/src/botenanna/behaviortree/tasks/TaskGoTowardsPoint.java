@@ -7,10 +7,10 @@ import botenanna.math.Vector2;
 import botenanna.math.Vector3;
 import rlbot.api.GameData;
 
-/** Task for going towards a specific point */
-public class TaskGoTowardsPoint extends Task {
+/** Leaf for going towards a specific point */
+public class TaskGoTowardsPoint extends Leaf {
 
-    /** Task for going towards a specific point */
+    /** Leaf for going towards a specific point */
     public TaskGoTowardsPoint(String[] arguments) {
         super(arguments);
     }
