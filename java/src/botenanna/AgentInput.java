@@ -12,6 +12,11 @@ import rlbot.api.GameData;
  *  It handles calculations and other measures. */
 public class AgentInput {
 
+    public static final double ARENA_LENGTH = 10280;
+    public static final double ARENA_WIDTH = 8240;
+    public static final Vector3 BLUE_GOAL_BOX = Vector3.BACKWARDS.scale(5000);
+    public static final Vector3 ORANGE_GOAL_BOX = Vector3.FORWARD.scale(5000);
+
     private GameData.GameTickPacket packet;
     private TimeTracker timeTracker;
 
@@ -145,5 +150,14 @@ public class AgentInput {
     /** @return whether a player is on the ground. */
     public boolean isCarOnGround(int playerIndex) {
         return playerIndex == myPlayerIndex ? myIsCarOnGround : enemyIsCarOnGround;
+    }
+
+    /** @return either +1 or -1, depending on which end of the y-axis this player's goal is. */
+    public int getGoalDirection(int playerIndex) {
+        return playerIndex == 0 ? -1 : 1;
+    }
+
+    public Vector3 getGoalBox(int playerIndex) {
+        return playerIndex == 0 ? BLUE_GOAL_BOX : ORANGE_GOAL_BOX;
     }
 }

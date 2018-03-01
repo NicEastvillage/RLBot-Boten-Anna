@@ -1,14 +1,14 @@
 package botenanna;
 
-import botenanna.behaviortree.BehaviorTree;
-import botenanna.behaviortree.tasks.TaskGoTowardsPoint;
+import botenanna.behaviortree.*;
+import botenanna.behaviortree.composites.Selector;
+import botenanna.behaviortree.composites.Sequencer;
+import botenanna.behaviortree.tasks.*;
+import botenanna.behaviortree.guards.*;
 import botenanna.math.RLMath;
 import botenanna.math.Vector2;
 import botenanna.math.Vector3;
-import botenanna.physics.Rigidbody;
 import rlbot.api.GameData;
-
-import javax.vecmath.Vector2d;
 
 public class Bot {
 
@@ -29,8 +29,24 @@ public class Bot {
 
     /** Hardcoded building of a BehaviourTree */
     public BehaviorTree buildBehaviourTree() {
+
+        /* Current tree is:
+           Selector
+             Sequencer
+               GuardIsBallOnMyHalf
+               TaskGoTowardsPoint ball_pos
+             TaskGoTowardsPoint my_goal_box
+        */
+        Node sequence = new Sequencer();
+        sequence.addChild(new GuardIsBallOnMyHalf(new String[0]));
+        sequence.addChild(new TaskGoTowardsPoint(new String[] {"ball_pos"}));
+
+        Node selector = new Selector();
+        selector.addChild(sequence);
+        selector.addChild(new TaskGoTowardsPoint(new String[] {"my_goal_box"}));
+
         BehaviorTree bhtree = new BehaviorTree();
-        bhtree.addChild(new TaskGoTowardsPoint(new String[] {"ball_pos"}));
+        bhtree.addChild(selector);
 
         return bhtree;
     }

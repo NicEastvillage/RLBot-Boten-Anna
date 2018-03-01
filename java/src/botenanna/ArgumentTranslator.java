@@ -19,6 +19,8 @@ public class ArgumentTranslator {
 
             case "ball_pos": return (AgentInput a) -> a.ballLocation;           // Vector3
             case "ball_vel": return (AgentInput a) -> a.ballVelocity;           // Vector3
+            case "my_goal_box": return (AgentInput a) -> a.getGoalBox(a.myPlayerIndex); // Vector3
+            case "enemy_goal_box": return (AgentInput a) -> a.getGoalBox(a.enemyPlayerIndex); // Vector3
 
             case "ang_ball": return (AgentInput a) -> a.angleToBall;            // angle (double)
 

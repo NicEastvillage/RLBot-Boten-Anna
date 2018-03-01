@@ -1,4 +1,4 @@
-package botenanna.behaviortree.tasks;
+package botenanna.behaviortree.guards;
 
 import botenanna.AgentInput;
 import botenanna.ArgumentTranslator;
@@ -6,7 +6,6 @@ import botenanna.behaviortree.Leaf;
 import botenanna.behaviortree.MissingNodeException;
 import botenanna.behaviortree.NodeStatus;
 import botenanna.math.Vector3;
-import rlbot.api.GameData;
 
 import java.util.function.Function;
 
