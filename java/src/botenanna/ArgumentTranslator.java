@@ -5,7 +5,7 @@ import java.util.function.Function;
 /** The ArgumentTranslators purpose is to translate the node arguments into Function objects, that allow quick
  * conversion to into the right variable. By using a Function we can avoid comparing Strings every time a node runs. */
 public class ArgumentTranslator {
-    public Function<AgentInput, Object> get(String key) throws UnknownBTKeyException {
+    public static Function<AgentInput, Object> get(String key) throws UnknownBTKeyException {
         switch (key) {
             case "my_index": return (AgentInput a) -> a.myPlayerIndex;          // index (int)
             case "enemy_index": return (AgentInput a) -> a.enemyPlayerIndex;    // index (int)

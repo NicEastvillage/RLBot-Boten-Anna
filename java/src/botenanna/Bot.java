@@ -30,7 +30,7 @@ public class Bot {
     /** Hardcoded building of a BehaviourTree */
     public BehaviorTree buildBehaviourTree() {
         BehaviorTree bhtree = new BehaviorTree();
-        bhtree.addChild(new TaskGoTowardsPoint(new String[0]));
+        bhtree.addChild(new TaskGoTowardsPoint(new String[] {"ball_pos"}));
 
         return bhtree;
     }
