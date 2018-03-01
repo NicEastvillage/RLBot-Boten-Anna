@@ -21,7 +21,9 @@ public class AgentInput {
     public final Vector3 myLocation;
     public final Vector3 myVelocity;
     public final Vector3 myRotation;
-    //public final Vector3 myUpVector;
+    public final Vector3 myUpVector;
+    public final Vector3 myFrontVector;
+    public final Vector3 mySideVector;
     public final int myBoost;
     public final boolean myHasJumped;
     public final boolean myHasDoubleJumped;
@@ -35,7 +37,9 @@ public class AgentInput {
     public final Vector3 enemyLocation;
     public final Vector3 enemyVelocity;
     public final Vector3 enemyRotation;
-    //public final Vector3 enemyUpVector;
+    public final Vector3 enemyUpVector;
+    public final Vector3 enemyFrontVector;
+    public final Vector3 enemySideVector;
     public final int enemyBoost;
     public final boolean enemyHasJumped;
     public final boolean enemyHasDoubleJumped;
@@ -73,7 +77,9 @@ public class AgentInput {
         this.myLocation = Vector3.convert(packet.getPlayers(myPlayerIndex).getLocation());
         this.myVelocity = Vector3.convert(packet.getPlayers(myPlayerIndex).getVelocity());
         this.myRotation = Vector3.convert(packet.getPlayers(myPlayerIndex).getRotation());
-        //this.myUpVector = RLMath.carUpVector(Vector3.convert(packet.getPlayers(myPlayerIndex).getRotation()));
+        this.myUpVector = RLMath.carUpVector(Vector3.convert(packet.getPlayers(myPlayerIndex).getRotation()));
+        this.myFrontVector = RLMath.carFrontVector(Vector3.convert(packet.getPlayers(myPlayerIndex).getRotation()));
+        this.mySideVector = RLMath.carSideVector(Vector3.convert(packet.getPlayers(myPlayerIndex).getRotation()));
         this.myBoost = packet.getPlayers(myPlayerIndex).getBoost(); //TODO: Value?
         this.myHasJumped = packet.getPlayers(myPlayerIndex).getJumped();
         this.myHasDoubleJumped = packet.getPlayers(myPlayerIndex).getDoubleJumped();
@@ -87,7 +93,10 @@ public class AgentInput {
         this.enemyLocation = Vector3.convert(packet.getPlayers(enemyPlayerIndex).getLocation());
         this.enemyVelocity = Vector3.convert(packet.getPlayers(enemyPlayerIndex).getVelocity());
         this.enemyRotation = Vector3.convert(packet.getPlayers(enemyPlayerIndex).getRotation());
-        //this.enemyUpVector = RLMath.carUpVector(Vector3.convert(packet.getPlayers(enemyPlayerIndex).getRotation()));
+        this.enemyUpVector = RLMath.carUpVector(Vector3.convert(packet.getPlayers(enemyPlayerIndex).getRotation()));
+        this.enemyFrontVector = RLMath.carFrontVector(Vector3.convert(packet.getPlayers(enemyPlayerIndex).getRotation()));
+        this.enemySideVector = RLMath.carSideVector(Vector3.convert(packet.getPlayers(enemyPlayerIndex).getRotation()));
+
         this.enemyBoost = packet.getPlayers(enemyPlayerIndex).getBoost(); //TODO: Value?
         this.enemyHasJumped = packet.getPlayers(enemyPlayerIndex).getJumped();
         this.enemyHasDoubleJumped = packet.getPlayers(enemyPlayerIndex).getDoubleJumped();
