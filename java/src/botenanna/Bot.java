@@ -33,15 +33,22 @@ public class Bot {
         /* Current tree is:
            Selector
              Sequencer
-               GuardIsBallOnMyHalf
+               Selector
+                 GuardIsBallOnMyHalf
+                 GuardIsDistanceLessThan my_pos ball_pos 1200
                TaskGoTowardsPoint ball_pos
              TaskGoTowardsPoint my_goal_box
         */
+
+        Node selector = new Selector(); // low selector
+        selector.addChild(new GuardIsBallOnMyHalf(new String[0]));
+        selector.addChild(new GuardIsDistanceLessThan(new String[] {"my_pos", "ball_pos", "1200"}));
+
         Node sequence = new Sequencer();
-        sequence.addChild(new GuardIsBallOnMyHalf(new String[0]));
+        sequence.addChild(selector);
         sequence.addChild(new TaskGoTowardsPoint(new String[] {"ball_pos"}));
 
-        Node selector = new Selector();
+        selector = new Selector(); // upper selector
         selector.addChild(sequence);
         selector.addChild(new TaskGoTowardsPoint(new String[] {"my_goal_box"}));
 
