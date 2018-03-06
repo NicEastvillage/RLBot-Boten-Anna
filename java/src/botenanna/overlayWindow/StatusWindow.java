@@ -132,7 +132,7 @@ public class StatusWindow extends JFrame {
     }
 
     /** Updates the labels with the given game data.
-     * @param gameDataPacket a packet with information about the current state of the game. */
+     * @param gameDataPacket a packet with information about the current output of the game. */
     public void updateData(GameData.GameTickPacket gameDataPacket){
 
         if(selectedPlayer < gameDataPacket.getPlayersCount()){

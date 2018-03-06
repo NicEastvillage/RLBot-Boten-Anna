@@ -41,7 +41,8 @@ public class GrpcService extends BotGrpc.BotImplBase {
 
             request.getGameInfo().getGameTimeRemaining();
 
-            AgentInput newPacket = new AgentInput(request, timeTracker); //Reworking the package
+            // Rework the package
+            AgentInput input = new AgentInput(request, timeTracker);
 
             // Create and register bot from this packet if necessary
             synchronized (this) {
@@ -58,7 +59,7 @@ public class GrpcService extends BotGrpc.BotImplBase {
             // This is the bot that needs to think
             Bot bot = registeredBots.get(playerIndex);
 
-            return bot.process(newPacket).toControllerState();
+            return bot.process(input).toControllerState();
 
         } catch (Exception e) {
             e.printStackTrace();
