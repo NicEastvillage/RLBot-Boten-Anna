@@ -35,6 +35,7 @@ public class AgentInput {
     public final boolean myIsDemolished;
     public final boolean myIsSupersonic;
     public final boolean myIsCarOnGround;
+    public final boolean myIsCarUpsideDown;
 
     /* ENEMY */
     public final int enemyPlayerIndex;
@@ -51,6 +52,7 @@ public class AgentInput {
     public final boolean enemyIsDemolished;
     public final boolean enemyIsSupersonic;
     public final boolean enemyIsCarOnGround;
+    public final boolean enemyIsCarUpsideDown;
 
     /* BALL */
     public final Vector3 ballLocation;
@@ -91,6 +93,7 @@ public class AgentInput {
         this.myIsDemolished = packet.getPlayers(myPlayerIndex).getIsDemolished();
         this.myIsSupersonic = packet.getPlayers(myPlayerIndex).getIsSupersonic();
         this.myIsCarOnGround = packet.getPlayers(myPlayerIndex).getLocation().getZ() < 20;
+        this.myIsCarUpsideDown = RLMath.carUpVector(Vector3.convert(packet.getPlayers(myPlayerIndex).getRotation())).z < 0;
 
         /* ENEMY */
         this.enemyPlayerIndex = this.myPlayerIndex == 1 ? 0 :  1;
@@ -101,13 +104,14 @@ public class AgentInput {
         this.enemyUpVector = RLMath.carUpVector(Vector3.convert(packet.getPlayers(enemyPlayerIndex).getRotation()));
         this.enemyFrontVector = RLMath.carFrontVector(Vector3.convert(packet.getPlayers(enemyPlayerIndex).getRotation()));
         this.enemySideVector = RLMath.carSideVector(Vector3.convert(packet.getPlayers(enemyPlayerIndex).getRotation()));
-
         this.enemyBoost = packet.getPlayers(enemyPlayerIndex).getBoost(); //TODO: Value?
         this.enemyHasJumped = packet.getPlayers(enemyPlayerIndex).getJumped();
         this.enemyHasDoubleJumped = packet.getPlayers(enemyPlayerIndex).getDoubleJumped();
         this.enemyIsDemolished = packet.getPlayers(enemyPlayerIndex).getIsDemolished();
         this.enemyIsSupersonic = packet.getPlayers(enemyPlayerIndex).getIsSupersonic();
         this.enemyIsCarOnGround = packet.getPlayers(enemyPlayerIndex).getLocation().getZ() < 20;
+        this.enemyIsCarUpsideDown = RLMath.carUpVector(Vector3.convert(packet.getPlayers(enemyPlayerIndex).getRotation())).z < 0;
+
 
         /* BALL */
         this.ballLocation = Vector3.convert(packet.getBall().getLocation());
