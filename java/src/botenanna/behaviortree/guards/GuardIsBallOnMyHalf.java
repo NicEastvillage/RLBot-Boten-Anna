@@ -6,6 +6,8 @@ import botenanna.behaviortree.*;
 public class GuardIsBallOnMyHalf extends Leaf {
 
     /** The GuardIsBallOnMyHalf returns SUCCESS when the ball is on the agent's own half of the field.
+     * Can be invert to check if the ball is on the enemy half.
+     *
      * Its signature is {@code GuardIsBallOnMyHalf}*/
     public GuardIsBallOnMyHalf(String[] arguments) throws IllegalArgumentException {
         super(arguments);

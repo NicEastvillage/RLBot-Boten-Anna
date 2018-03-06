@@ -16,7 +16,8 @@ public class GuardIsDistanceLessThan extends Leaf {
     private double distance;
 
     /** The GuardIsDistanceLessThan compares to Vector3 ands returns whether the distance between those are less than
-     * a given distance.
+     * a given distance. Can be inverted to check if distance is greater than instead.
+     *
      * Its signature is {@code GuardIsDistanceLessThan <from:Vector3> <to:Vector3> <dist:double>}*/
     public GuardIsDistanceLessThan(String[] arguments) throws IllegalArgumentException {
         super(arguments);

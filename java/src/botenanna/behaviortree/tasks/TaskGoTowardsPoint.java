@@ -14,7 +14,9 @@ public class TaskGoTowardsPoint extends Leaf {
 
     private Function<AgentInput, Object> pointFunc;
 
-    /** The TaskGoTowardsPoint is the simple version of going to a specific pointFunc.
+    /** The TaskGoTowardsPoint is the simple version of going to a specific point.
+     * In the current version the agent won’t slide and it will overshoot the point.
+     *
      * It's signature is {@code TaskGoTowardsPoint <point:Vector3>} */
     public TaskGoTowardsPoint(String[] arguments) throws IllegalArgumentException {
         super(arguments);
