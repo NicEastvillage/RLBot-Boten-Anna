@@ -20,7 +20,7 @@ public class BehaviorTree implements Node {
 
         NodeStatus newNodeStatus;
         // Check if last status has high priority
-        if (lastNodeStatus.isHighPriority) {
+        if (lastNodeStatus != null && lastNodeStatus.isHighPriority) {
             newNodeStatus = lastNodeStatus.creator.run(input);
         } else {
             newNodeStatus = topNode.run(input);
