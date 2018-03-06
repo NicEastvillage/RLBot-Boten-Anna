@@ -1,12 +1,14 @@
 package botenanna;
 
+import botenanna.behaviortree.*;
+import botenanna.behaviortree.composites.Selector;
+import botenanna.behaviortree.composites.Sequencer;
+import botenanna.behaviortree.tasks.*;
+import botenanna.behaviortree.guards.*;
 import botenanna.math.RLMath;
 import botenanna.math.Vector2;
 import botenanna.math.Vector3;
-import botenanna.physics.Rigidbody;
 import rlbot.api.GameData;
-
-import javax.vecmath.Vector2d;
 
 public class Bot {
 
@@ -16,11 +18,44 @@ public class Bot {
 
     private final Team team;
     private final int playerIndex;
+    private BehaviorTree behaviorTree;
 
 
     public Bot(int playerIndex, int teamIndex) {
         this.playerIndex = playerIndex;
         team = (teamIndex == 0 ? Team.BLUE : Team.ORANGE);
+        behaviorTree = buildBehaviourTree();
+    }
+
+    /** Hardcoded building of a BehaviourTree */
+    public BehaviorTree buildBehaviourTree() {
+
+        /* Current tree is:
+           Selector
+             Sequencer
+               Selector
+                 GuardIsBallOnMyHalf
+                 GuardIsDistanceLessThan my_pos ball_pos 1200
+               TaskGoTowardsPoint ball_pos
+             TaskGoTowardsPoint my_goal_box
+        */
+
+        Node selector = new Selector(); // low selector
+        selector.addChild(new GuardIsBallOnMyHalf(new String[0]));
+        selector.addChild(new GuardIsDistanceLessThan(new String[] {"my_pos", "ball_pos", "1200"}));
+
+        Node sequence = new Sequencer();
+        sequence.addChild(selector);
+        sequence.addChild(new TaskGoTowardsPoint(new String[] {"ball_pos"}));
+
+        selector = new Selector(); // upper selector
+        selector.addChild(sequence);
+        selector.addChild(new TaskGoTowardsPoint(new String[] {"my_goal_box"}));
+
+        BehaviorTree bhtree = new BehaviorTree();
+        bhtree.addChild(selector);
+
+        return bhtree;
     }
 
     /**
@@ -31,27 +66,7 @@ public class Bot {
      */
     public AgentOutput process(AgentInput packet) {
 
-        // TODO Go towards where the ball will land!
-
-        //Player info
-        GameData.PlayerInfo me = packet.getPacket().getPlayers(playerIndex);
-        Vector3 myPos = Vector3.convert(me.getLocation());
-
-        // Where will ball the land?
-        Rigidbody ballBody = new Ball(packet.getPacket().getBall());
-        Vector3 ballLandingPos = ballBody.getPosition(); // this is default, if ball is not "landing" anywhere
-        double landingTime = ballBody.predictArrivalAtHeight(Ball.RADIUS);
-
-        if (!Double.isNaN(landingTime)) {
-            // Calculate landing position
-            ballLandingPos = ballBody.stepped(landingTime).getPosition();
-        }
-
-        // If the ball is behind the player and in the players half, it will go towards one of tree designated defence points based on the balls position
-        if (isBallInTeamHalf(ballLandingPos,teamsDirectionToGoal(team))  && isBallBehind(ballLandingPos, myPos,teamsDirectionToGoal(team))){
-            return goTowardsPoint(packet.getPacket(), getDefencePoint(ballLandingPos));
-        }
-        return goTowardsPoint(packet.getPacket(), ballLandingPos);
+        return behaviorTree.evaluate(packet);
     }
 
     /**
