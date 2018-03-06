@@ -15,6 +15,7 @@ public class TaskGoTowardsPoint extends Leaf {
     public static final double SLIDE_ANGLE = 1.7;
 
     private Function<AgentInput, Object> pointFunc;
+    private boolean allowSlide = true;
 
     /** <p>The TaskGoTowardsPoint is the simple version of going to a specific point.
      * By default the agent will slide if the angle to the point is too high. This can be toggled through arguments
@@ -26,11 +27,15 @@ public class TaskGoTowardsPoint extends Leaf {
     public TaskGoTowardsPoint(String[] arguments) throws IllegalArgumentException {
         super(arguments);
 
-        if (arguments.length != 1) {
+        if (arguments.length == 0 || arguments.length > 2) {
             throw new IllegalArgumentException();
         }
 
         pointFunc = ArgumentTranslator.get(arguments[0]);
+
+        if (arguments.length == 2) {
+            allowSlide = Boolean.parseBoolean(arguments[1]);
+        }
     }
 
     @Override
@@ -53,9 +58,11 @@ public class TaskGoTowardsPoint extends Leaf {
 
         AgentOutput outout = new AgentOutput().withAcceleration(1).withSteer(steering);
 
-        // Do slide for sharp turning
-        if (ang > SLIDE_ANGLE || ang < -SLIDE_ANGLE) {
-            outout.withSlide();
+        if (allowSlide) {
+            // Do slide for sharp turning
+            if (ang > SLIDE_ANGLE || ang < -SLIDE_ANGLE) {
+                outout.withSlide();
+            }
         }
 
         return new NodeStatus(Status.RUNNING, outout, this);
