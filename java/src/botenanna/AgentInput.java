@@ -127,7 +127,7 @@ public class AgentInput {
         this.gamePlayerCount = packet.getPlayersCount();
 
         /* UTILS*/
-        this.angleToBall = RLMath.carsAngleToPoint(new Vector2(this.ballLocation), this.myRotation.yaw, new Vector2(this.ballLocation));
+        this.angleToBall = RLMath.carsAngleToPoint(new Vector2(this.myLocation), this.myRotation.yaw, new Vector2(this.ballLocation));
     }
 
     /** Used to access GameTickPacket */
@@ -173,4 +173,5 @@ public class AgentInput {
     public Vector3 getGoalBox(int playerIndex) {
         return playerIndex == 0 ? BLUE_GOAL_BOX : ORANGE_GOAL_BOX;
     }
+
 }
