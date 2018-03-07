@@ -3,6 +3,7 @@ package botenanna;
 import botenanna.math.RLMath;
 import botenanna.math.Vector2;
 import botenanna.math.Vector3;
+import botenanna.physics.Rigidbody;
 import botenanna.physics.TimeTracker;
 import rlbot.api.GameData;
 
@@ -59,6 +60,9 @@ public class AgentInput {
     public final Vector3 ballVelocity;
     public final Vector3 ballAcceleration;
     public final boolean ballHasAcceleration;
+    public final Ball ball;
+    public final double ballLandingTime;
+    public final Vector3 ballLandingPosition;
 
     /* GAME */
     public final boolean gameIsKickOffPause;
@@ -118,6 +122,15 @@ public class AgentInput {
         this.ballVelocity = Vector3.convert(packet.getBall().getVelocity());
         this.ballAcceleration = Vector3.convert(packet.getBall().getAcceleration());
         this.ballHasAcceleration = packet.getBall().hasAcceleration();
+        this.ball = new Ball(packet.getBall());
+        double landingTime = ball.predictArrivalAtHeight(Ball.RADIUS);
+        if (Double.isNaN(landingTime)) {
+            this.ballLandingTime = 0;
+            this.ballLandingPosition = ball.getPosition();
+        } else {
+            this.ballLandingTime = landingTime;
+            this.ballLandingPosition = ball.stepped(ballLandingTime).getPosition();
+        }
 
         /* GAME */
         this.gameIsKickOffPause = packet.getGameInfo().getIsKickoffPause();

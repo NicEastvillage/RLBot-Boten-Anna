@@ -39,17 +39,19 @@ public class Bot {
                Selector
                  GuardIsBallOnMyHalf
                  GuardIsDistanceLessThan my_pos ball_pos 1200
-               TaskGoTowardsPoint ball_pos
+                 GuardIsDistanceLessThan my_pos ball_land_pos 1800
+               TaskGoTowardsPoint ball_land_pos
              TaskGoTowardsPoint my_goal_box
         */
 
         Node selector = new Selector(); // low selector
         selector.addChild(new GuardIsBallOnMyHalf(new String[0]));
         selector.addChild(new GuardIsDistanceLessThan(new String[] {"my_pos", "ball_pos", "1200"}));
+        selector.addChild(new GuardIsDistanceLessThan(new String[] {"my_pos", "ball_land_pos", "1800"}));
 
         Node sequence = new Sequencer();
         sequence.addChild(selector);
-        sequence.addChild(new TaskGoTowardsPoint(new String[] {"ball_pos"}));
+        sequence.addChild(new TaskGoTowardsPoint(new String[] {"ball_land_pos"}));
 
         selector = new Selector(); // upper selector
         selector.addChild(sequence);
