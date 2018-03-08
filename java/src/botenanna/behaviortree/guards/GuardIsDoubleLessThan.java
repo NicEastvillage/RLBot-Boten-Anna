@@ -19,7 +19,7 @@ public class GuardIsDoubleLessThan extends Leaf {
      * both times and angles. The checked value can be marked as being absolute, which is commonly used with angles,
      * by setting the isAbsolute argument to true.
      *
-     * It's signature is {@code GuardIsDoubleLessThan <value:time/angle> <size:double> [isAbsolute:boolean]}*/
+     * It's signature is {@code GuardIsDoubleLessThan <value:double> <size:DOUBLE> [isAbsolute:BOOLEAN]}*/
     public GuardIsDoubleLessThan(String[] arguments) throws IllegalArgumentException {
         super(arguments);
 

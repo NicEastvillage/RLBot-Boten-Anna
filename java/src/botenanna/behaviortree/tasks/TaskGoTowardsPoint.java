@@ -23,7 +23,7 @@ public class TaskGoTowardsPoint extends Leaf {
      *
      * <p>NOTE: The agent will overshoot the point.</p>
      *
-     * <p>It's signature is {@code TaskGoTowardsPoint <point:Vector3> [allowSlide:boolean]}</p>*/
+     * <p>It's signature is {@code TaskGoTowardsPoint <point:Vector3> [allowSlide:BOOLEAN]}</p>*/
     public TaskGoTowardsPoint(String[] arguments) throws IllegalArgumentException {
         super(arguments);
 
