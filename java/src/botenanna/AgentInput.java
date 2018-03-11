@@ -36,6 +36,7 @@ public class AgentInput {
     public final boolean myIsDemolished;
     public final boolean myIsSupersonic;
     public final boolean myIsCarOnGround;
+    public final boolean myIsMidAir;
     public final boolean myIsCarUpsideDown;
 
     /* ENEMY */
@@ -53,6 +54,7 @@ public class AgentInput {
     public final boolean enemyIsDemolished;
     public final boolean enemyIsSupersonic;
     public final boolean enemyIsCarOnGround;
+    public final boolean enemyIsMidAir;
     public final boolean enemyIsCarUpsideDown;
 
     /* BALL */
@@ -97,6 +99,7 @@ public class AgentInput {
         this.myIsDemolished = packet.getPlayers(myPlayerIndex).getIsDemolished();
         this.myIsSupersonic = packet.getPlayers(myPlayerIndex).getIsSupersonic();
         this.myIsCarOnGround = packet.getPlayers(myPlayerIndex).getLocation().getZ() < 20;
+        this.myIsMidAir = packet.getPlayers(myPlayerIndex).getIsMidair();
         this.myIsCarUpsideDown = RLMath.carUpVector(Vector3.convert(packet.getPlayers(myPlayerIndex).getRotation())).z < 0;
 
         /* ENEMY */
@@ -114,6 +117,7 @@ public class AgentInput {
         this.enemyIsDemolished = packet.getPlayers(enemyPlayerIndex).getIsDemolished();
         this.enemyIsSupersonic = packet.getPlayers(enemyPlayerIndex).getIsSupersonic();
         this.enemyIsCarOnGround = packet.getPlayers(enemyPlayerIndex).getLocation().getZ() < 20;
+        this.enemyIsMidAir = packet.getPlayers(enemyPlayerIndex).getIsMidair();
         this.enemyIsCarUpsideDown = RLMath.carUpVector(Vector3.convert(packet.getPlayers(enemyPlayerIndex).getRotation())).z < 0;
 
 
