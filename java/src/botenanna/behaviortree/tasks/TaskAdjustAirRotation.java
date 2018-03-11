@@ -10,6 +10,9 @@ import botenanna.math.RLMath;
 
 public class TaskAdjustAirRotation extends Leaf {
 
+    /** <p>The TaskAdjustAirRotation will make the agent rotate so it land on its wheels. It assumes the car is in the air.</p>
+     * <p>Its signature is: {@code TaskAdjustAirRotation}</p>
+     * @see botenanna.behaviortree.guards.GuardIsMidAir*/
     public TaskAdjustAirRotation(String[] arguments) throws IllegalArgumentException {
         super(arguments);
 

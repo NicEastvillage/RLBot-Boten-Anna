@@ -9,6 +9,8 @@ import botenanna.behaviortree.Status;
 
 public class TaskGoForwards extends Leaf {
 
+    /** <p>Make the agent go forwards in a straight line. Mainly used for testing.</p>
+     * <p>Signature: {@code TaskGoForwards}</p>*/
     public TaskGoForwards(String[] arguments) throws IllegalArgumentException {
         super(arguments);
 
