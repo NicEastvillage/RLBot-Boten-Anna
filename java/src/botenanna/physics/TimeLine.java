@@ -34,11 +34,13 @@ public class TimeLine<T> {
         timeTracker.startTimer();
     }
 
-    /** Add a time stamp which consists of an item and an associated point in time. */
+    /** Add a time stamp which consists of an item and an associated point in time.
+     * @param time point in time in seconds. Must be zero or greater.
+     * @param item the item which will be returned at this point in time. */
     public void addTimeStamp(double time, T item) throws IllegalArgumentException {
         // Check arguments
         if (time < 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Time must be zero or greater.");
         }
 
         TimeStamp stamp = new TimeStamp(time, item);
@@ -63,19 +65,29 @@ public class TimeLine<T> {
         }
     }
 
-    /** <p>Evaluate the item associated with the elapsed time since the TimeLine was reset.</p>
-     * <p>If no item is defined at time = 0, the first defined time's item will be returned until the second item is reached.</p>*/
+    /** <p>Evaluate the item associated with the elapsed time since the TimeLine was reset using the internal TimeTracker.</p>
+     * <p>If no item is defined at time = 0, the first defined time's item will be returned until the second item is reached.</p>
+     * @return the item associated with the current time. */
     public T evaluate() {
+        return evaluate(timeTracker.getElapsedSecondsTimer());
+    }
+
+    /** <p>Evaluate the item associated with given time without using the internal TimeTracker.</p>
+     * <p>If no item is defined at time = 0, the first defined time's item will be returned until the second item is reached.</p>
+     * @param seconds the elapsed time in seconds. Must be zero or greater.
+     * @return the item associated with the given time. */
+    public T evaluate(double seconds) throws IllegalArgumentException {
+        if (seconds < 0) throw new IllegalArgumentException("Seconds must be zero or greater.");
+
         // Make sure it possible to evaluate
         if (timeStamps.size() == 0) {
-            throw new NullPointerException();
+            throw new NullPointerException("TimeLine is empty.");
         }
 
         // Find TimeStamp with last time
-        double elapsedTime = timeTracker.getElapsedSecondsTimer();
         TimeStamp active = timeStamps.get(0);
         for (int i = 0; i < timeStamps.size(); i++) {
-            if (timeStamps.get(i).time < elapsedTime) {
+            if (timeStamps.get(i).time <= seconds) {
                 active = timeStamps.get(i);
             } else {
                 // Break when reaching unreached TimeStamps
