@@ -144,7 +144,7 @@ public class AgentInput {
         this.gamePlayerCount = packet.getPlayersCount();
 
         /* UTILS*/
-        this.angleToBall = RLMath.carsAngleToPoint(new Vector2(this.ballLocation), this.myRotation.yaw, new Vector2(this.ballLocation));
+        this.angleToBall = RLMath.carsAngleToPoint(new Vector2(this.myLocation), this.myRotation.yaw, new Vector2(this.ballLocation));
     }
 
     /** Used to access GameTickPacket */

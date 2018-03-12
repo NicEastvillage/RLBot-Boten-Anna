@@ -39,6 +39,10 @@ public class Bot {
                GuardIsMidAir
                TaskAdjustAirRotation ball_land_pos
              Sequencer2
+               GuardIsDistanceLessThan my_pos ball_pos 320
+               GuardIsDoubleLessThan ang_ball 0.05 true
+               TaskDashForward
+             Sequence3
                Selector
                  GuardIsBallOnMyHalf
                  GuardIsDistanceLessThan my_pos ball_pos 1200
@@ -51,18 +55,24 @@ public class Bot {
         sequence1.addChild(new GuardIsMidAir(new String[0]));
         sequence1.addChild(new TaskAdjustAirRotation(new String[] {"ball_land_pos"}));
 
+        Node sequence2 = new Sequencer();
+        sequence2.addChild(new GuardIsDistanceLessThan(new String[] {"my_pos", "ball_pos", "520"}));
+        sequence2.addChild(new GuardIsDoubleLessThan(new String[] {"ang_ball", "0.05", "true"}));
+        sequence2.addChild(new TaskDashForward(new String[] {}));
+
         Node selector = new Selector(); // low selector
         selector.addChild(new GuardIsBallOnMyHalf(new String[0]));
         selector.addChild(new GuardIsDistanceLessThan(new String[] {"my_pos", "ball_pos", "1200"}));
         selector.addChild(new GuardIsDistanceLessThan(new String[] {"my_pos", "ball_land_pos", "1800"}));
 
-        Node sequence2 = new Sequencer();
-        sequence2.addChild(selector);
-        sequence2.addChild(new TaskGoTowardsPoint(new String[] {"ball_land_pos"}));
+        Node sequence3 = new Sequencer();
+        sequence3.addChild(selector);
+        sequence3.addChild(new TaskGoTowardsPoint(new String[] {"ball_land_pos"}));
 
         selector = new Selector(); // upper selector
         selector.addChild(sequence1);
         selector.addChild(sequence2);
+        selector.addChild(sequence3);
         selector.addChild(new TaskGoTowardsPoint(new String[] {"my_goal_box"}));
 
         BehaviorTree bhtree = new BehaviorTree();
