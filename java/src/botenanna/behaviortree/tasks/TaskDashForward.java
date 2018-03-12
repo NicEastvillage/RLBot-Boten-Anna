@@ -9,54 +9,60 @@ import botenanna.behaviortree.NodeStatus;
 import botenanna.behaviortree.Status;
 import botenanna.math.RLMath;
 import botenanna.math.Vector3;
+import botenanna.physics.TimeLine;
 
 import java.util.function.Function;
 
-//TODO/improvement: Make use of timeline and make high priority
+
 public class TaskDashForward extends Leaf {
 
+    private TimeLine<NodeStatus> timeLine;
     private boolean currentlyActive;
 
-    /** The TaskDashForward makes the car dash forward.
-     *
-     *  It's signature is non existing */
+    /** <p>The TaskDashForward makes the car dash forward.</p>
+     *  <p>It's signature is non existing </p>*/
     public TaskDashForward(String[] arguments) throws IllegalArgumentException {
         super(arguments);
 
-        currentlyActive = false;
 
         if(arguments.length != 0){
             throw new IllegalArgumentException();
         }
+
+        currentlyActive = false;
+
+        //Creating timeline object
+        timeLine = new TimeLine<>();
+
+        //Setting time stamps
+        timeLine.addTimeStamp(0, new NodeStatus(Status.RUNNING, new AgentOutput().withJump().withPitch(-1).withAcceleration(1), this, true));
+        timeLine.addTimeStamp(0.15, new NodeStatus(Status.RUNNING, new AgentOutput().withJump(false).withAcceleration(1), this, true));
+        timeLine.addTimeStamp(0.20, new NodeStatus(Status.RUNNING, new AgentOutput().withJump().withPitch(-1).withAcceleration(1), this, true));
+        timeLine.addTimeStamp(0.30, new NodeStatus(Status.RUNNING, new AgentOutput().withJump(false).withAcceleration(1), this, true));
+        timeLine.addTimeStamp(1, new NodeStatus(Status.RUNNING, new AgentOutput().withJump(false).withAcceleration(1), this, false));
+        timeLine.addTimeStamp(1.35, null);
     }
 
     @Override
     public void reset() {
         this.currentlyActive = false;
+        timeLine.reset();
     }
 
     @Override
     public NodeStatus run(AgentInput input) throws MissingNodeException {
 
-        if(currentlyActive == false){ //Starting the timer
-            input.getTimeTracker().startTimer();
+        if(currentlyActive == false){
+            timeLine.reset();
             currentlyActive = true;
-            return new NodeStatus(Status.RUNNING, new AgentOutput().withJump(false), this, true);
-        }else{
-            double timeDif = input.getTimeTracker().getElapsedSecondsTimer();
-
-            if(timeDif > 1){ //DONE, should be on ground again
-                this.reset();
-                return new NodeStatus(Status.RUNNING, new AgentOutput().withJump(false), this, false);
-            }else if(timeDif > 0.30){ //Reset
-                return new NodeStatus(Status.RUNNING, new AgentOutput().withJump(false), this, true);
-            }else if(timeDif > 0.20){ //Second jump
-                return new NodeStatus(Status.RUNNING, new AgentOutput().withJump().withPitch(-1), this, true);
-            }else if(timeDif > 0.15){ //Reset
-                return new NodeStatus(Status.RUNNING, new AgentOutput().withJump(false), this, true);
-            }else{ //First jump  //TODO: Can the first jump be 0?? When there is a guard before the this.
-                return new NodeStatus(Status.RUNNING, new AgentOutput().withJump().withPitch(-1), this, true);
-            }
+            return new NodeStatus(Status.RUNNING, new AgentOutput().withJump(false).withAcceleration(1), this, true);
         }
+
+        if (timeLine.evaluate() == null){
+            currentlyActive = false;
+            return new NodeStatus(Status.RUNNING, new AgentOutput().withJump(false).withAcceleration(1), this, true);
+        }
+
+        return timeLine.evaluate();
     }
 }

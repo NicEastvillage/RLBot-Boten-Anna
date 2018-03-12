@@ -1,11 +1,6 @@
 package botenanna.physics;
 
-import javafx.collections.ObservableList;
-import javafx.collections.transformation.SortedList;
-
-import java.sql.Time;
 import java.util.LinkedList;
-import java.util.List;
 
 /** <p>The TimeLine is able to associate items of type T with a specific time stamp. The TimeLine is then able to return an
  * item based on time passed. The return item will be the item associated with the last passed time stamp.</p>
