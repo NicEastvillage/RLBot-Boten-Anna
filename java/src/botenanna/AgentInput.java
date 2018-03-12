@@ -3,6 +3,7 @@ package botenanna;
 import botenanna.math.RLMath;
 import botenanna.math.Vector2;
 import botenanna.math.Vector3;
+import botenanna.physics.Rigidbody;
 import botenanna.physics.TimeTracker;
 import rlbot.api.GameData;
 
@@ -35,6 +36,7 @@ public class AgentInput {
     public final boolean myIsDemolished;
     public final boolean myIsSupersonic;
     public final boolean myIsCarOnGround;
+    public final boolean myIsMidAir;
     public final boolean myIsCarUpsideDown;
 
     /* ENEMY */
@@ -52,6 +54,7 @@ public class AgentInput {
     public final boolean enemyIsDemolished;
     public final boolean enemyIsSupersonic;
     public final boolean enemyIsCarOnGround;
+    public final boolean enemyIsMidAir;
     public final boolean enemyIsCarUpsideDown;
 
     /* BALL */
@@ -59,6 +62,9 @@ public class AgentInput {
     public final Vector3 ballVelocity;
     public final Vector3 ballAcceleration;
     public final boolean ballHasAcceleration;
+    public final Ball ball;
+    public final double ballLandingTime;
+    public final Vector3 ballLandingPosition;
 
     /* GAME */
     public final boolean gameIsKickOffPause;
@@ -93,6 +99,7 @@ public class AgentInput {
         this.myIsDemolished = packet.getPlayers(myPlayerIndex).getIsDemolished();
         this.myIsSupersonic = packet.getPlayers(myPlayerIndex).getIsSupersonic();
         this.myIsCarOnGround = packet.getPlayers(myPlayerIndex).getLocation().getZ() < 20;
+        this.myIsMidAir = packet.getPlayers(myPlayerIndex).getIsMidair();
         this.myIsCarUpsideDown = RLMath.carUpVector(Vector3.convert(packet.getPlayers(myPlayerIndex).getRotation())).z < 0;
 
         /* ENEMY */
@@ -110,6 +117,7 @@ public class AgentInput {
         this.enemyIsDemolished = packet.getPlayers(enemyPlayerIndex).getIsDemolished();
         this.enemyIsSupersonic = packet.getPlayers(enemyPlayerIndex).getIsSupersonic();
         this.enemyIsCarOnGround = packet.getPlayers(enemyPlayerIndex).getLocation().getZ() < 20;
+        this.enemyIsMidAir = packet.getPlayers(enemyPlayerIndex).getIsMidair();
         this.enemyIsCarUpsideDown = RLMath.carUpVector(Vector3.convert(packet.getPlayers(enemyPlayerIndex).getRotation())).z < 0;
 
 
@@ -118,6 +126,15 @@ public class AgentInput {
         this.ballVelocity = Vector3.convert(packet.getBall().getVelocity());
         this.ballAcceleration = Vector3.convert(packet.getBall().getAcceleration());
         this.ballHasAcceleration = packet.getBall().hasAcceleration();
+        this.ball = new Ball(packet.getBall());
+        double landingTime = ball.predictArrivalAtHeight(Ball.RADIUS);
+        if (Double.isNaN(landingTime)) {
+            this.ballLandingTime = 0;
+            this.ballLandingPosition = ball.getPosition();
+        } else {
+            this.ballLandingTime = landingTime;
+            this.ballLandingPosition = ball.stepped(ballLandingTime).getPosition();
+        }
 
         /* GAME */
         this.gameIsKickOffPause = packet.getGameInfo().getIsKickoffPause();

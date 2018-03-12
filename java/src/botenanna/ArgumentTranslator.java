@@ -22,6 +22,9 @@ public class ArgumentTranslator {
             case "my_goal_box": return (AgentInput a) -> a.getGoalBox(a.myPlayerIndex); // Vector3
             case "enemy_goal_box": return (AgentInput a) -> a.getGoalBox(a.enemyPlayerIndex); // Vector3
 
+            case "ball_land_time": return (AgentInput a) -> a.ballLandingTime;  // time (double)
+            case "ball_land_pos": return (AgentInput a) -> a.ballLandingPosition; // Vector3
+
             case "ang_ball": return (AgentInput a) -> a.angleToBall;            // angle (double)
 
             default: throw new UnknownBTKeyException(key);
