@@ -38,29 +38,25 @@ public class TaskDashForward extends Leaf {
     @Override
     public NodeStatus run(AgentInput input) throws MissingNodeException {
 
-        if(input.myPlayerIndex == 0){
-            if(currentlyActive == false){ //Starting the timer
-                input.getTimeTracker().startTimer();
-                currentlyActive = true;
-                return new NodeStatus(Status.RUNNING, new AgentOutput().withJump(false), this);
-            }else{
-                double timeDif = input.getTimeTracker().getElapsedSecondsTimer();
+        if(currentlyActive == false){ //Starting the timer
+            input.getTimeTracker().startTimer();
+            currentlyActive = true;
+            return new NodeStatus(Status.RUNNING, new AgentOutput().withJump(false), this);
+        }else{
+            double timeDif = input.getTimeTracker().getElapsedSecondsTimer();
 
-                if(timeDif > 1){ //DONE, should be on ground again
-                    this.reset();
-                    return new NodeStatus(Status.RUNNING, new AgentOutput().withJump(false), this);
-                }else if(timeDif > 0.30){ //Reset
-                    return new NodeStatus(Status.RUNNING, new AgentOutput().withJump(false), this);
-                }else if(timeDif > 0.20){ //Second jump
-                    return new NodeStatus(Status.RUNNING, new AgentOutput().withJump().withPitch(-1), this);
-                }else if(timeDif > 0.15){ //Reset
-                    return new NodeStatus(Status.RUNNING, new AgentOutput().withJump(false), this);
-                }else{ //First jump  //TODO: Can the first jump be 0?? When there is a guard before the this.
-                    return new NodeStatus(Status.RUNNING, new AgentOutput().withJump().withPitch(-1), this);
-                }
+            if(timeDif > 1){ //DONE, should be on ground again
+                this.reset();
+                return new NodeStatus(Status.RUNNING, new AgentOutput().withJump(false), this);
+            }else if(timeDif > 0.30){ //Reset
+                return new NodeStatus(Status.RUNNING, new AgentOutput().withJump(false), this);
+            }else if(timeDif > 0.20){ //Second jump
+                return new NodeStatus(Status.RUNNING, new AgentOutput().withJump().withPitch(-1), this);
+            }else if(timeDif > 0.15){ //Reset
+                return new NodeStatus(Status.RUNNING, new AgentOutput().withJump(false), this);
+            }else{ //First jump  //TODO: Can the first jump be 0?? When there is a guard before the this.
+                return new NodeStatus(Status.RUNNING, new AgentOutput().withJump().withPitch(-1), this);
             }
         }
-
-        return new NodeStatus(Status.RUNNING, new AgentOutput(), this); //Should not get here
     }
 }

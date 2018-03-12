@@ -35,7 +35,11 @@ public class Bot {
 
         /* Current tree is:
            Selector
-             Sequencer
+             Sequencer2
+               GuardIsDistanceLessThan my_pos ball_pos 320
+               GuardIsDoubleLessThan ang_ball 0.05 true
+               TaskDashForward
+             Sequence
                Selector
                  GuardIsBallOnMyHalf
                  GuardIsDistanceLessThan my_pos ball_pos 1200
@@ -53,7 +57,13 @@ public class Bot {
         sequence.addChild(selector);
         sequence.addChild(new TaskGoTowardsPoint(new String[] {"ball_land_pos"}));
 
+        Node sequence2 = new Sequencer();
+        sequence2.addChild(new GuardIsDistanceLessThan(new String[] {"my_pos", "ball_pos", "520"}));
+        sequence2.addChild(new GuardIsDoubleLessThan(new String[] {"ang_ball", "0.05", "true"}));
+        sequence2.addChild(new TaskDashForward(new String[] {}));
+
         selector = new Selector(); // upper selector
+        selector.addChild(sequence2);
         selector.addChild(sequence);
         selector.addChild(new TaskGoTowardsPoint(new String[] {"my_goal_box"}));
 
