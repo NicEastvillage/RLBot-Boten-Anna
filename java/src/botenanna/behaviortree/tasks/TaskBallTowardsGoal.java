@@ -38,19 +38,19 @@ public class TaskBallTowardsGoal extends Leaf {
         // TODO For now we always to full throttle forwards, though that not be the shortest route. Maybe we should slide in some cases?
         // TODO Also, the bot will overshoot. In some cases we want the bot to stop, or get to pointFunc at a specific time (e.g. when ball lands)
 
-        int playerIndex = input.myPlayerIndex;
+        Vector3 expectedBallLocation = input.ballLocation.plus(input.ballVelocity.scale(0.29));
 
         // Creates Vector needed to adjust shooting depended on left and right goal post
-        Vector2 ballToRightGoalPostVector = AgentInput.BLUE_GOALPOST_RIGHT.minus(input.ballLocation.asVector2());
+        Vector2 ballToRightGoalPostVector = AgentInput.BLUE_GOALPOST_RIGHT.minus(expectedBallLocation.asVector2());
         ballToRightGoalPostVector = ballToRightGoalPostVector.getNormalized();
         ballToRightGoalPostVector = ballToRightGoalPostVector.scale(-80);
-        ballToRightGoalPostVector = ballToRightGoalPostVector.plus(input.ballLocation.asVector2());
+        ballToRightGoalPostVector = ballToRightGoalPostVector.plus(expectedBallLocation.asVector2());
 
         // Creates Vector needed to adjust shooting depended on left and right goal post
-        Vector2 ballToLeftGoalPostVector = AgentInput.BLUE_GOALPOST_LEFT.minus(input.ballLocation.asVector2());
+        Vector2 ballToLeftGoalPostVector = AgentInput.BLUE_GOALPOST_LEFT.minus(expectedBallLocation.asVector2());
         ballToLeftGoalPostVector = ballToLeftGoalPostVector.getNormalized();
         ballToLeftGoalPostVector = ballToLeftGoalPostVector.scale(-80);
-        ballToLeftGoalPostVector = ballToLeftGoalPostVector.plus(input.ballLocation.asVector2());
+        ballToLeftGoalPostVector = ballToLeftGoalPostVector.plus(expectedBallLocation.asVector2());
 
         // Get the needed positions and rotations
         Vector3 myPos = input.myLocation;
