@@ -50,6 +50,7 @@ public class Bot {
              TaskGoTowardsPoint my_goal_box
         */
 
+
         Node sequence1 = new Sequencer();
         sequence1.addChild(new GuardIsMidAir(new String[0]));
         sequence1.addChild(new TaskAdjustAirRotation(new String[] {"ball_land_pos"}));
@@ -69,8 +70,8 @@ public class Bot {
         sequence3.addChild(new TaskBallTowardsGoal(new String[] {""}));
 
         selector = new Selector(); // upper selector
-        selector.addChild(sequence1);
-        selector.addChild(sequence2);
+        //selector.addChild(sequence1);
+        //selector.addChild(sequence2);
         selector.addChild(sequence3);
         selector.addChild(new TaskGoTowardsPoint(new String[] {"my_goal_box"}));
 
