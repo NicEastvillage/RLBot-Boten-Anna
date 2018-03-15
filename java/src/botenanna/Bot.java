@@ -68,7 +68,6 @@ public class Bot {
      * @return an AgentOutput of what the agent want to do
      */
     public AgentOutput process(AgentInput packet) {
-
         return behaviorTree.evaluate(packet);
     }
 

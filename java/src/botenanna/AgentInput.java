@@ -17,6 +17,9 @@ public class AgentInput {
     public static final Vector3 BLUE_GOAL_BOX = Vector3.BACKWARDS.scale(5000);
     public static final Vector3 ORANGE_GOAL_BOX = Vector3.FORWARD.scale(5000);
 
+    public static final Vector2[] BIG_BOOST_PADS = {new Vector2(-3070, 4100), new Vector2(3070,-4100), new Vector2(-3070,-4100),new Vector2(-3580,0), new Vector2(3580,0), new Vector2(3070, 4100)};
+
+
     private GameData.GameTickPacket packet;
     private TimeTracker timeTracker;
 
@@ -69,6 +72,9 @@ public class AgentInput {
 
     /* UTILS */
     public final double angleToBall;
+    public final Vector3 nearestBoostpad;
+    public final Vector3 bestBoostpad;
+    public final Vector2[] listOfBoostpads;
 
 
     /** The constructor.
@@ -128,6 +134,11 @@ public class AgentInput {
 
         /* UTILS*/
         this.angleToBall = RLMath.carsAngleToPoint(new Vector2(this.ballLocation), this.myRotation.yaw, new Vector2(this.ballLocation));
+        this.angleToBoost = RLMath.carsAngleToPoint(new Vector2(this.ballLocation), this.myRotation.yaw, BIG_BOOST_PADS[3]);
+    }
+
+    public Vector3 bestBoostPad() {
+
     }
 
     /** Used to access GameTickPacket */
