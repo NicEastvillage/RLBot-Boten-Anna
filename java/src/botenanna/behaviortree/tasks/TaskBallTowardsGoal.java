@@ -12,7 +12,7 @@ import java.util.function.Function;
 
 public class TaskBallTowardsGoal extends Leaf {
 
-    private Function<AgentInput, Object> pointFunc;
+    // private Function<AgentInput, Object> pointFunc;
 
     /** The TaskGoTowardsPoint is the simple version of going to a specific point.
      * In the current version the agent won’t slide and it will overshoot the point.
@@ -21,11 +21,11 @@ public class TaskBallTowardsGoal extends Leaf {
     public TaskBallTowardsGoal(String[] arguments) throws IllegalArgumentException {
         super(arguments);
 
-        if (arguments.length != 0) {
-            throw new IllegalArgumentException();
-        }
+        //if (arguments.length != 0) {
+       //     throw new IllegalArgumentException();
+      //  }
 
-        pointFunc = ArgumentTranslator.get(arguments[0]);
+       // pointFunc = ArgumentTranslator.get(arguments[0]);
     }
 
     @Override
