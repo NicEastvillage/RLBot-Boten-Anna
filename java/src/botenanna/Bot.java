@@ -63,7 +63,7 @@ public class Bot {
         Node selector = new Selector(); // low selector
         selector.addChild(new GuardIsBallOnMyHalf(new String[0]));
         selector.addChild(new GuardHasGoalOpportunity(new String[0]));
-        //selector.addChild(new GuardIsDistanceLessThan(new String[] {"my_pos", "ball_pos", "1200"}));
+        selector.addChild(new GuardIsDistanceLessThan(new String[] {"my_pos", "ball_pos", "850"}));
 
         Node sequence3 = new Sequencer();
         sequence3.addChild(selector);
