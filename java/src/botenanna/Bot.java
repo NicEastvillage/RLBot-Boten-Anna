@@ -3,6 +3,7 @@ package botenanna;
 import botenanna.behaviortree.*;
 import botenanna.behaviortree.composites.Selector;
 import botenanna.behaviortree.composites.Sequencer;
+import botenanna.behaviortree.decorators.Invert;
 import botenanna.behaviortree.tasks.*;
 import botenanna.behaviortree.guards.*;
 import botenanna.math.RLMath;
@@ -35,6 +36,13 @@ public class Bot {
 
         /* Current tree is:
            Selector
+             Sequencer0
+               GuardIsKickoff
+               Invert0
+                 Sequencer01
+                   GuardHasBoost 0
+                   TaskGoTowardsPoint ball_land_pos false true
+               TaskDashForward
              Sequencer1
                GuardIsMidAir
                TaskAdjustAirRotation ball_land_pos
@@ -50,6 +58,18 @@ public class Bot {
                TaskGoTowardsPoint ball_land_pos
              TaskGoTowardsPoint my_goal_box
         */
+
+        Node sequence01 = new Sequencer();
+        sequence01.addChild(new GuardHasBoost(new String[] {"0"}));
+        sequence01.addChild(new TaskGoTowardsPoint(new String[] {"ball_pos", "false", "true"}));
+
+        Node invert0 = new Invert();
+        invert0.addChild(sequence01);
+
+        Node sequence0 = new Sequencer();
+        sequence0.addChild(new GuardIsKickoff(new String[0]));
+        sequence0.addChild(invert0);
+        sequence0.addChild(new TaskDashForward(new String[0]));
 
         Node sequence1 = new Sequencer();
         sequence1.addChild(new GuardIsMidAir(new String[0]));
@@ -70,6 +90,7 @@ public class Bot {
         sequence3.addChild(new TaskGoTowardsPoint(new String[] {"ball_land_pos"}));
 
         selector = new Selector(); // upper selector
+        selector.addChild(sequence0);
         selector.addChild(sequence1);
         selector.addChild(sequence2);
         selector.addChild(sequence3);

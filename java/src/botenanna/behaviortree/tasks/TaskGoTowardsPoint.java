@@ -16,25 +16,31 @@ public class TaskGoTowardsPoint extends Leaf {
 
     private Function<AgentInput, Object> pointFunc;
     private boolean allowSlide = true;
+    private boolean useBoost = false;
 
     /** <p>The TaskGoTowardsPoint is the simple version of going to a specific point.
      * By default the agent will slide if the angle to the point is too high. This can be toggled through arguments
-     * so the agent never slides.</p>
+     * so the agent never slides.
+     * By default this will be done without boost. </p>
      *
      * <p>NOTE: The agent will overshoot the point.</p>
      *
-     * <p>It's signature is {@code TaskGoTowardsPoint <point:Vector3> [allowSlide:BOOLEAN]}</p>*/
+     * <p>It's signature is {@code TaskGoTowardsPoint <point:Vector3> [allowSlide:BOOLEAN] [useBoost:BOOLEAN]}</p>*/
     public TaskGoTowardsPoint(String[] arguments) throws IllegalArgumentException {
         super(arguments);
 
-        if (arguments.length == 0 || arguments.length > 2) {
+        if (arguments.length == 0 || arguments.length > 3) {
             throw new IllegalArgumentException();
         }
 
         pointFunc = ArgumentTranslator.get(arguments[0]);
 
-        if (arguments.length == 2) {
+        if (arguments.length >= 2) {
             allowSlide = Boolean.parseBoolean(arguments[1]);
+        }
+
+        if(arguments.length == 3){
+            useBoost = Boolean.parseBoolean(arguments[2]);
         }
     }
 
@@ -56,15 +62,20 @@ public class TaskGoTowardsPoint extends Leaf {
         // Smooth the angle to a steering amount - this avoids wobbling
         double steering = RLMath.steeringSmooth(ang);
 
-        AgentOutput outout = new AgentOutput().withAcceleration(1).withSteer(steering);
+        AgentOutput output;
+
+        if(useBoost)
+            output = new AgentOutput().withAcceleration(1).withSteer(steering).withBoost();
+        else
+            output = new AgentOutput().withAcceleration(1).withSteer(steering);
 
         if (allowSlide) {
             // Do slide for sharp turning
             if (ang > SLIDE_ANGLE || ang < -SLIDE_ANGLE) {
-                outout.withSlide();
+                output.withSlide();
             }
         }
 
-        return new NodeStatus(Status.RUNNING, outout, this);
+        return new NodeStatus(Status.RUNNING, output, this);
     }
 }
