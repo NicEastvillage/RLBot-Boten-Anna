@@ -88,6 +88,16 @@ public class Vector3 {
         return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2) + Math.pow(this.z, 2));
     }
 
+    /** @return the distance to another vector squared. Sometimes you don't have to find the square root, then this is faster. */
+    public double getDistanceToSqr(Vector3 vector){
+        return this.minus(vector).getMagnitudeSqr();
+    }
+
+    /** @return the distance to another vector */
+    public double getDistanceTo(Vector3 vector){
+        return this.minus(vector).getMagnitude();
+    }
+
     /** @return a vector with the same direction, but a length of one. If this is a zero vector, this returns a new zero vector. */
     public Vector3 getNormalized() {
         if (isZero()) return new Vector3();

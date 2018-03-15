@@ -21,12 +21,13 @@ public class AgentInput {
     private GameData.GameTickPacket packet;
     private TimeTracker timeTracker;
 
-    /* CAR */
+    /* ME */
     public final int myPlayerIndex;
     public final int myTeam;
     public final Vector3 myLocation;
     public final Vector3 myVelocity;
     public final Vector3 myRotation;
+    public final Vector3 myAngularVelocity;
     public final Vector3 myUpVector;
     public final Vector3 myFrontVector;
     public final Vector3 mySideVector;
@@ -38,6 +39,7 @@ public class AgentInput {
     public final boolean myIsCarOnGround;
     public final boolean myIsMidAir;
     public final boolean myIsCarUpsideDown;
+    public final double myDistanceToBall;
 
     /* ENEMY */
     public final int enemyPlayerIndex;
@@ -45,6 +47,7 @@ public class AgentInput {
     public final Vector3 enemyLocation;
     public final Vector3 enemyVelocity;
     public final Vector3 enemyRotation;
+    public final Vector3 enemyAngularVelocity;
     public final Vector3 enemyUpVector;
     public final Vector3 enemyFrontVector;
     public final Vector3 enemySideVector;
@@ -56,6 +59,7 @@ public class AgentInput {
     public final boolean enemyIsCarOnGround;
     public final boolean enemyIsMidAir;
     public final boolean enemyIsCarUpsideDown;
+    public final double enemyDistanceToBall;
 
     /* BALL */
     public final Vector3 ballLocation;
@@ -84,12 +88,13 @@ public class AgentInput {
         this.packet = packet;
         this.timeTracker = timeTracker;
 
-        /* CAR */
+        /* ME */
         this.myPlayerIndex = packet.getPlayerIndex();
         this.myTeam = packet.getPlayers(myPlayerIndex).getTeam();
         this.myLocation = Vector3.convert(packet.getPlayers(myPlayerIndex).getLocation());
         this.myVelocity = Vector3.convert(packet.getPlayers(myPlayerIndex).getVelocity());
         this.myRotation = Vector3.convert(packet.getPlayers(myPlayerIndex).getRotation());
+        this.myAngularVelocity = Vector3.convert(packet.getPlayers(myPlayerIndex).getAngularVelocity());
         this.myUpVector = RLMath.carUpVector(Vector3.convert(packet.getPlayers(myPlayerIndex).getRotation()));
         this.myFrontVector = RLMath.carFrontVector(Vector3.convert(packet.getPlayers(myPlayerIndex).getRotation()));
         this.mySideVector = RLMath.carSideVector(Vector3.convert(packet.getPlayers(myPlayerIndex).getRotation()));
@@ -101,6 +106,7 @@ public class AgentInput {
         this.myIsCarOnGround = packet.getPlayers(myPlayerIndex).getLocation().getZ() < 20;
         this.myIsMidAir = packet.getPlayers(myPlayerIndex).getIsMidair();
         this.myIsCarUpsideDown = RLMath.carUpVector(Vector3.convert(packet.getPlayers(myPlayerIndex).getRotation())).z < 0;
+        this.myDistanceToBall = Vector3.convert(packet.getPlayers(myPlayerIndex).getLocation()).getDistanceTo(Vector3.convert(packet.getBall().getLocation()));
 
         /* ENEMY */
         this.enemyPlayerIndex = this.myPlayerIndex == 1 ? 0 :  1;
@@ -108,6 +114,7 @@ public class AgentInput {
         this.enemyLocation = Vector3.convert(packet.getPlayers(enemyPlayerIndex).getLocation());
         this.enemyVelocity = Vector3.convert(packet.getPlayers(enemyPlayerIndex).getVelocity());
         this.enemyRotation = Vector3.convert(packet.getPlayers(enemyPlayerIndex).getRotation());
+        this.enemyAngularVelocity = Vector3.convert(packet.getPlayers(enemyPlayerIndex).getAngularVelocity());
         this.enemyUpVector = RLMath.carUpVector(Vector3.convert(packet.getPlayers(enemyPlayerIndex).getRotation()));
         this.enemyFrontVector = RLMath.carFrontVector(Vector3.convert(packet.getPlayers(enemyPlayerIndex).getRotation()));
         this.enemySideVector = RLMath.carSideVector(Vector3.convert(packet.getPlayers(enemyPlayerIndex).getRotation()));
@@ -118,7 +125,8 @@ public class AgentInput {
         this.enemyIsSupersonic = packet.getPlayers(enemyPlayerIndex).getIsSupersonic();
         this.enemyIsCarOnGround = packet.getPlayers(enemyPlayerIndex).getLocation().getZ() < 20;
         this.enemyIsMidAir = packet.getPlayers(enemyPlayerIndex).getIsMidair();
-        this.enemyIsCarUpsideDown = RLMath.carUpVector(Vector3.convert(packet.getPlayers(enemyPlayerIndex).getRotation())).z < 0;
+        this.enemyIsCarUpsideDown = RLMath.carUpVector(Vector3.convert(packet.getPlayers(enemyPlayerIndex).getRotation())).z < 0;;
+        this.enemyDistanceToBall = Vector3.convert(packet.getPlayers(enemyPlayerIndex).getLocation()).getDistanceTo(Vector3.convert(packet.getBall().getLocation()));
 
 
         /* BALL */

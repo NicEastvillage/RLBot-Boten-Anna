@@ -55,7 +55,7 @@ public class RLMath {
     /** Takes the car rotation and creates a vector pointing to the side relative to the car.
      *  @param carRotation the rotation vector for the car.
      *  @return a vector pointing to the side relative to the car. */
-    public static Vector3  carSideVector(Vector3 carRotation){
+    public static Vector3 carSideVector(Vector3 carRotation){
         return carUpVector(carRotation).cross(carFrontVector(carRotation));
     }
 }
