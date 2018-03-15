@@ -3,6 +3,7 @@ package botenanna;
 import botenanna.behaviortree.*;
 import botenanna.behaviortree.composites.Selector;
 import botenanna.behaviortree.composites.Sequencer;
+import botenanna.behaviortree.decorators.Invert;
 import botenanna.behaviortree.tasks.*;
 import botenanna.behaviortree.guards.*;
 import botenanna.math.RLMath;
@@ -37,6 +38,10 @@ public class Bot {
            Selector
              Sequencer0
                GuardIsKickoff
+               Invert0
+                 Sequencer01
+                   GuardHasBoost 0
+                   TaskGoTowardsPoint ball_land_pos false true
                TaskDashForward
              Sequencer1
                GuardIsMidAir
@@ -54,8 +59,16 @@ public class Bot {
              TaskGoTowardsPoint my_goal_box
         */
 
+        Node sequence01 = new Sequencer();
+        sequence01.addChild(new GuardHasBoost(new String[] {"0"}));
+        sequence01.addChild(new TaskGoTowardsPoint(new String[] {"ball_pos", "false", "true"}));
+
+        Node invert0 = new Invert();
+        invert0.addChild(sequence01);
+
         Node sequence0 = new Sequencer();
         sequence0.addChild(new GuardIsKickoff(new String[0]));
+        sequence0.addChild(invert0);
         sequence0.addChild(new TaskDashForward(new String[0]));
 
         Node sequence1 = new Sequencer();
