@@ -38,7 +38,7 @@ public class TaskBallTowardsGoal extends Leaf {
         // TODO For now we always to full throttle forwards, though that not be the shortest route. Maybe we should slide in some cases?
         // TODO Also, the bot will overshoot. In some cases we want the bot to stop, or get to pointFunc at a specific time (e.g. when ball lands)
 
-        Vector3 expectedBallLocation = input.ballLocation.plus(input.ballVelocity.scale(0.29));
+        Vector3 expectedBallLocation = input.ballLocation.plus(input.ballVelocity.scale(0.5));
 
         // Creates Vector needed to adjust shooting depended on left and right goal post
         Vector2 ballToRightGoalPostVector = AgentInput.BLUE_GOALPOST_RIGHT.minus(expectedBallLocation.asVector2());
