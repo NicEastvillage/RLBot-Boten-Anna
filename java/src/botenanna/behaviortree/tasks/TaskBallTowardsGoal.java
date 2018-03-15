@@ -40,17 +40,36 @@ public class TaskBallTowardsGoal extends Leaf {
 
         Vector3 expectedBallLocation = input.ballLocation.plus(input.ballVelocity.scale(0.4));
 
-        // Creates Vector needed to adjust shooting depended on left and right goal post
-        Vector2 ballToRightGoalPostVector = AgentInput.BLUE_GOALPOST_RIGHT.minus(expectedBallLocation.asVector2());
-        ballToRightGoalPostVector = ballToRightGoalPostVector.getNormalized();
-        ballToRightGoalPostVector = ballToRightGoalPostVector.scale(-85);
-        ballToRightGoalPostVector = ballToRightGoalPostVector.plus(expectedBallLocation.asVector2());
+        Vector2 ballToRightGoalPostVector = new Vector2(0,0);
+        Vector2 ballToLeftGoalPostVector = new Vector2(0,0);
 
-        // Creates Vector needed to adjust shooting depended on left and right goal post
-        Vector2 ballToLeftGoalPostVector = AgentInput.BLUE_GOALPOST_LEFT.minus(expectedBallLocation.asVector2());
-        ballToLeftGoalPostVector = ballToLeftGoalPostVector.getNormalized();
-        ballToLeftGoalPostVector = ballToLeftGoalPostVector.scale(-85);
-        ballToLeftGoalPostVector = ballToLeftGoalPostVector.plus(expectedBallLocation.asVector2());
+        if (input.myTeam == 1) {
+            // Creates Vector needed to adjust shooting depended on left and right goal post
+            ballToRightGoalPostVector = AgentInput.BLUE_GOALPOST_RIGHT.minus(expectedBallLocation.asVector2());
+            ballToRightGoalPostVector = ballToRightGoalPostVector.getNormalized();
+            ballToRightGoalPostVector = ballToRightGoalPostVector.scale(-82);
+            ballToRightGoalPostVector = ballToRightGoalPostVector.plus(expectedBallLocation.asVector2());
+
+            // Creates Vector needed to adjust shooting depended on left and right goal post
+            ballToLeftGoalPostVector = AgentInput.BLUE_GOALPOST_LEFT.minus(expectedBallLocation.asVector2());
+            ballToLeftGoalPostVector = ballToLeftGoalPostVector.getNormalized();
+            ballToLeftGoalPostVector = ballToLeftGoalPostVector.scale(-82);
+            ballToLeftGoalPostVector = ballToLeftGoalPostVector.plus(expectedBallLocation.asVector2());
+        }
+
+        else if (input.myTeam == 0) {
+            // Creates Vector needed to adjust shooting depended on left and right goal post
+            ballToRightGoalPostVector = AgentInput.RED_GOALPOST_RIGHT.minus(expectedBallLocation.asVector2());
+            ballToRightGoalPostVector = ballToRightGoalPostVector.getNormalized();
+            ballToRightGoalPostVector = ballToRightGoalPostVector.scale(-82);
+            ballToRightGoalPostVector = ballToRightGoalPostVector.plus(expectedBallLocation.asVector2());
+
+            // Creates Vector needed to adjust shooting depended on left and right goal post
+            ballToLeftGoalPostVector = AgentInput.RED_GOALPOST_LEFT.minus(expectedBallLocation.asVector2());
+            ballToLeftGoalPostVector = ballToLeftGoalPostVector.getNormalized();
+            ballToLeftGoalPostVector = ballToLeftGoalPostVector.scale(-82);
+            ballToLeftGoalPostVector = ballToLeftGoalPostVector.plus(expectedBallLocation.asVector2());
+        }
 
         // Get the needed positions and rotations
         Vector3 myPos = input.myLocation;
@@ -58,12 +77,22 @@ public class TaskBallTowardsGoal extends Leaf {
 
         double ang = 0;
 
-        // Statements to determine where the agent should hit the ball
-        if(AgentInput.BLUE_GOALPOST_RIGHT.minus(myPos.asVector2()).getMagnitude() > AgentInput.BLUE_GOALPOST_LEFT.minus(myPos.asVector2()).getMagnitude()) {
-            ang = RLMath.carsAngleToPoint(myPos.asVector2(), myRotation.yaw, ballToRightGoalPostVector);
+        if(input.myTeam == 1) {
+            // Statements to determine where the agent should hit the ball
+            if (AgentInput.BLUE_GOALPOST_RIGHT.minus(myPos.asVector2()).getMagnitude() > AgentInput.BLUE_GOALPOST_LEFT.minus(myPos.asVector2()).getMagnitude()) {
+                ang = RLMath.carsAngleToPoint(myPos.asVector2(), myRotation.yaw, ballToRightGoalPostVector);
+            } else {
+                ang = RLMath.carsAngleToPoint(myPos.asVector2(), myRotation.yaw, ballToLeftGoalPostVector);
+            }
         }
-        else {
-            ang = RLMath.carsAngleToPoint(myPos.asVector2(), myRotation.yaw, ballToLeftGoalPostVector);
+
+        else if(input.myTeam == 0) {
+            // Statements to determine where the agent should hit the ball
+            if (AgentInput.RED_GOALPOST_RIGHT.minus(myPos.asVector2()).getMagnitude() > AgentInput.RED_GOALPOST_LEFT.minus(myPos.asVector2()).getMagnitude()) {
+                ang = RLMath.carsAngleToPoint(myPos.asVector2(), myRotation.yaw, ballToRightGoalPostVector);
+            } else {
+                ang = RLMath.carsAngleToPoint(myPos.asVector2(), myRotation.yaw, ballToLeftGoalPostVector);
+            }
         }
 
         // Smooth the angle to a steering amount - this avoids wobbling
@@ -71,7 +100,7 @@ public class TaskBallTowardsGoal extends Leaf {
 
         boolean boost = false;
 
-        if(input.ballLocation.asVector2().minus(myPos.asVector2()).getMagnitude() < 600) {
+        if(expectedBallLocation.asVector2().minus(myPos.asVector2()).getMagnitude() < 500 && 0.5 > input.angleToBall && input.angleToBall > -0.5) {
             boost = true;
         }
 

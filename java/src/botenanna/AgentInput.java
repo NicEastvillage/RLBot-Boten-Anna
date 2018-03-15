@@ -19,6 +19,8 @@ public class AgentInput {
     public static final Vector3 ORANGE_GOAL_BOX = Vector3.FORWARD.scale(5000);
     public static final Vector2 BLUE_GOALPOST_LEFT = new Vector2(-720, -5200);
     public static final Vector2 BLUE_GOALPOST_RIGHT = new Vector2(720, -5200);
+    public static final Vector2 RED_GOALPOST_LEFT = new Vector2(-720, 5200);
+    public static final Vector2 RED_GOALPOST_RIGHT = new Vector2(720, 5200);
 
 
     private GameData.GameTickPacket packet;
