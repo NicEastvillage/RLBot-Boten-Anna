@@ -38,8 +38,8 @@ public class Bot {
              Sequencer
                Selector
                  GuardIsBallOnMyHalf
-                 GuardIsDistanceLessThan my_pos ball_pos 1200
-               TaskGoTowardsPoint ball_pos
+                 GuardHasGoalOpportunity
+               TaskBallTowardsGoal
              TaskGoTowardsPoint my_goal_box
         */
 
@@ -50,7 +50,7 @@ public class Bot {
 
         Node sequence = new Sequencer();
         sequence.addChild(selector);
-        sequence.addChild(new TaskGoTowardsPoint(new String[] {"ball_pos"}));
+        sequence.addChild(new TaskBallTowardsGoal(new String[] {""}));
 
         selector = new Selector(); // upper selector
         selector.addChild(sequence);

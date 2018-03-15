@@ -16,6 +16,9 @@ public class AgentInput {
     public static final double ARENA_WIDTH = 8240;
     public static final Vector3 BLUE_GOAL_BOX = Vector3.BACKWARDS.scale(5000);
     public static final Vector3 ORANGE_GOAL_BOX = Vector3.FORWARD.scale(5000);
+    public static final Vector2 BLUE_GOALPOST_LEFT = new Vector2(-720, -5200);
+    public static final Vector2 BLUE_GOALPOST_RIGHT = new Vector2(720, -5200);
+
 
     private GameData.GameTickPacket packet;
     private TimeTracker timeTracker;
