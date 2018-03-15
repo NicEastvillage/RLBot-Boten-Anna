@@ -21,7 +21,7 @@ public class TaskBallTowardsGoal extends Leaf {
     public TaskBallTowardsGoal(String[] arguments) throws IllegalArgumentException {
         super(arguments);
 
-        if (arguments.length != 1) {
+        if (arguments.length != 0) {
             throw new IllegalArgumentException();
         }
 
