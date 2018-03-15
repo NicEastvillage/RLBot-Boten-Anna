@@ -71,7 +71,7 @@ public class TaskBallTowardsGoal extends Leaf {
 
         boolean boost = false;
 
-        if(input.ballLocation.asVector2().minus(myPos.asVector2()).getMagnitude() < 500) {
+        if(input.ballLocation.asVector2().minus(myPos.asVector2()).getMagnitude() < 600) {
             boost = true;
         }
 
