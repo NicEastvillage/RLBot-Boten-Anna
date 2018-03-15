@@ -12,20 +12,30 @@ import java.util.function.Function;
 
 public class TaskGoTowardsPoint extends Leaf {
 
-    private Function<AgentInput, Object> pointFunc;
+    public static final double SLIDE_ANGLE = 1.7;
 
-    /** The TaskGoTowardsPoint is the simple version of going to a specific point.
-     * In the current version the agent won’t slide and it will overshoot the point.
+    private Function<AgentInput, Object> pointFunc;
+    private boolean allowSlide = true;
+
+    /** <p>The TaskGoTowardsPoint is the simple version of going to a specific point.
+     * By default the agent will slide if the angle to the point is too high. This can be toggled through arguments
+     * so the agent never slides.</p>
      *
-     * It's signature is {@code TaskGoTowardsPoint <point:Vector3>} */
+     * <p>NOTE: The agent will overshoot the point.</p>
+     *
+     * <p>It's signature is {@code TaskGoTowardsPoint <point:Vector3> [allowSlide:BOOLEAN]}</p>*/
     public TaskGoTowardsPoint(String[] arguments) throws IllegalArgumentException {
         super(arguments);
 
-        if (arguments.length != 1) {
+        if (arguments.length == 0 || arguments.length > 2) {
             throw new IllegalArgumentException();
         }
 
         pointFunc = ArgumentTranslator.get(arguments[0]);
+
+        if (arguments.length == 2) {
+            allowSlide = Boolean.parseBoolean(arguments[1]);
+        }
     }
 
     @Override
@@ -35,10 +45,6 @@ public class TaskGoTowardsPoint extends Leaf {
 
     @Override
     public NodeStatus run(AgentInput input) throws MissingNodeException {
-        // TODO For now we always to full throttle forwards, though that not be the shortest route. Maybe we should slide in some cases?
-        // TODO Also, the bot will overshoot. In some cases we want the bot to stop, or get to pointFunc at a specific time (e.g. when ball lands)
-
-        int playerIndex = input.myPlayerIndex;
 
         // Get the needed positions and rotations
         Vector3 myPos = input.myLocation;
@@ -50,6 +56,15 @@ public class TaskGoTowardsPoint extends Leaf {
         // Smooth the angle to a steering amount - this avoids wobbling
         double steering = RLMath.steeringSmooth(ang);
 
-        return new NodeStatus(Status.RUNNING, new AgentOutput().withAcceleration(1).withSteer(steering), this);
+        AgentOutput outout = new AgentOutput().withAcceleration(1).withSteer(steering);
+
+        if (allowSlide) {
+            // Do slide for sharp turning
+            if (ang > SLIDE_ANGLE || ang < -SLIDE_ANGLE) {
+                outout.withSlide();
+            }
+        }
+
+        return new NodeStatus(Status.RUNNING, outout, this);
     }
 }
