@@ -69,6 +69,12 @@ public class TaskBallTowardsGoal extends Leaf {
         // Smooth the angle to a steering amount - this avoids wobbling
         double steering = RLMath.steeringSmooth(ang);
 
-        return new NodeStatus(Status.RUNNING, new AgentOutput().withAcceleration(1).withSteer(steering), this);
+        boolean boost = false;
+
+        if(input.ballLocation.asVector2().minus(myPos.asVector2()).getMagnitude() < 500) {
+            boost = true;
+        }
+
+        return new NodeStatus(Status.RUNNING, new AgentOutput().withAcceleration(1).withSteer(steering).withBoost(boost), this);
     }
 }
