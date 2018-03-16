@@ -33,7 +33,9 @@ public class TaskBallTowardsGoal extends Leaf {
         // TODO Else try the difference of acceleration on car and ball vector with directions(and distance), and multiply/divide with seconds the predict
         // TODO If balls vector towards goal is bad adjust car before shooting.
 
-        double predictSeconds = (input.ballVelocity.getMagnitude()/input.myVelocity.getMagnitude())*(input.myDistanceToBall*0.0005);
+        //double predictSeconds = (input.ballVelocity.getMagnitude()/input.myVelocity.getMagnitude())*(input.myDistanceToBall*0.0005);
+
+        double predictSeconds = (input.myDistanceToBall/850);
 
         if (predictSeconds > 5){
             predictSeconds = 5;
@@ -90,7 +92,7 @@ public class TaskBallTowardsGoal extends Leaf {
         //When the agent should boost
         boolean boost = false;
 
-        if(600 > expectedBallLocation.asVector2().minus(myPos.asVector2()).getMagnitude() && 1.5 > input.angleToBall && input.angleToBall > -1.5) {
+        if(1500 > expectedBallLocation.asVector2().minus(myPos.asVector2()).getMagnitude() && 1.5 > input.angleToBall && input.angleToBall > -1.5) {
             boost = true;
         }
 
