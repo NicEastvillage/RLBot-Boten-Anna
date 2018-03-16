@@ -33,7 +33,13 @@ public class TaskBallTowardsGoal extends Leaf {
         // TODO Else try the difference of acceleration on car and ball vector with directions(and distance), and multiply/divide with seconds the predict
         // TODO If balls vector towards goal is bad adjust car before shooting.
 
-        Vector3 expectedBallLocation = input.ballLocation.plus(input.ballVelocity.scale((input.ballVelocity.getMagnitude()/input.myVelocity.getMagnitude())*(input.myDistanceToBall*0.0005)));
+        double predictSeconds = (input.ballVelocity.getMagnitude()/input.myVelocity.getMagnitude())*(input.myDistanceToBall*0.0005);
+
+        if (predictSeconds > 7){
+            predictSeconds = 7;
+        }
+
+        Vector3 expectedBallLocation = input.ballLocation.plus(input.ballVelocity.scale(predictSeconds));
 
         Vector2 ballToRightGoalPostVector = new Vector2(0,0);
         Vector2 ballToLeftGoalPostVector = new Vector2(0,0);
