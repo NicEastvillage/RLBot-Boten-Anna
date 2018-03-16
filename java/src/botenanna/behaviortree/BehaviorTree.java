@@ -18,7 +18,13 @@ public class BehaviorTree implements Node {
 
         if (topNode == null) throw new MissingNodeException(this);
 
-        NodeStatus newNodeStatus = topNode.run(input);
+        NodeStatus newNodeStatus;
+        // Check if last status has high priority
+        if (lastNodeStatus != null && lastNodeStatus.isHighPriority) {
+            newNodeStatus = lastNodeStatus.creator.run(input);
+        } else {
+            newNodeStatus = topNode.run(input);
+        }
 
         // If newNodeStatus's creator is not the same as the lastNodeStatus's creator, then
         // lastNodeStatus's creator and all dependencies will be reset.

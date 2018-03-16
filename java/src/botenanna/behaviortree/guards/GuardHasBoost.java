@@ -12,7 +12,7 @@ public class GuardHasBoost extends Leaf {
     /** The GuardHasBoost returns SUCCESS when the agent has more than a given amount of boost.
      * If nothing is specified, that amount will be 50%.
      *
-     * The signature is: {@code GuardHasBoost [amount:int]} */
+     * The signature is: {@code GuardHasBoost [amount:INT]} */
     public GuardHasBoost(String[] arguments) throws IllegalArgumentException {
         super(arguments);
 
