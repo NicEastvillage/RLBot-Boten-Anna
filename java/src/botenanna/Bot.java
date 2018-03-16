@@ -56,11 +56,15 @@ public class Bot {
                  GuardIsDistanceLessThan my_pos ball_pos 1200
                  GuardIsDistanceLessThan my_pos ball_land_pos 1800
                TaskGoTowardsPoint ball_land_pos
+             Sequence4
+                Invert
+                    GuardHasBoot (70)
+                TaskGoTowards best_boostpad
              TaskGoTowardsPoint my_goal_box
         */
 
         Node sequence01 = new Sequencer();
-        sequence01.addChild(new GuardHasBoost(new String[] {"0"}));
+        sequence01.addChild(new GuardHasBoost(new String[] {"20"}));
         sequence01.addChild(new TaskGoTowardsPoint(new String[] {"ball_pos", "false", "true"}));
 
         Node invert0 = new Invert();
@@ -87,13 +91,20 @@ public class Bot {
 
         Node sequence3 = new Sequencer();
         sequence3.addChild(selector);
-        sequence3.addChild(new TaskGoTowardsPoint(new String[] {"ball_land_pos"}));
+        sequence3.addChild(new TaskGoTowardsPoint(new String[] {"ball_land_pos", "true", "true"}));
+
+        Node sequence4 = new Sequencer();
+        Node invert1 = new Invert();
+        invert1.addChild(new GuardHasBoost(new String[] {"70"}));
+        sequence4.addChild(invert1);
+        sequence4.addChild(new TaskGoTowardsPoint(new String[] {"best_boost", "true", "false"}));
 
         selector = new Selector(); // upper selector
         selector.addChild(sequence0);
         selector.addChild(sequence1);
         selector.addChild(sequence2);
         selector.addChild(sequence3);
+        selector.addChild(sequence4);
         selector.addChild(new TaskGoTowardsPoint(new String[] {"my_goal_box"}));
 
         BehaviorTree bhtree = new BehaviorTree();

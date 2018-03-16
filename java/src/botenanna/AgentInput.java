@@ -18,7 +18,7 @@ public class AgentInput {
     public static final Vector3 BLUE_GOAL_BOX = Vector3.BACKWARDS.scale(5000);
     public static final Vector3 ORANGE_GOAL_BOX = Vector3.FORWARD.scale(5000);
 
-    public static final Vector2[] BIG_BOOST_PADS = {new Vector2(-3070, 4100), new Vector2(3070,-4100), new Vector2(-3070,-4100),new Vector2(-3580,0), new Vector2(3580,0), new Vector2(3070, 4100)};
+    public static final Vector3[] BIG_BOOST_PADS = {new Vector3(-3070, 4100), new Vector3(3070,-4100), new Vector3(-3070,-4100),new Vector3(-3580,0), new Vector3(3580,0), new Vector3(3070, 4100)};
 
 
     private GameData.GameTickPacket packet;
@@ -82,10 +82,6 @@ public class AgentInput {
 
     /* UTILS */
     public final double angleToBall;
-    /*public final Vector3 nearestBoostpad;
-    public final Vector3 bestBoostpad;
-    public final Vector2[] listOfBoostpads;*/
-
 
     /** The constructor.
      * @param packet the GameTickPacket.
@@ -161,7 +157,31 @@ public class AgentInput {
         this.angleToBall = RLMath.carsAngleToPoint(new Vector2(this.myLocation), this.myRotation.yaw, new Vector2(this.ballLocation));
     }
 
-    //public Vector3 bestBoostPad()
+    public Vector3 getBestBoostPad(){
+        double bestBoostUtility = 0;
+        Vector3 bestBoostPad = null;
+        int allBoostPads = packet.getBoostPadsCount();
+/*        int[] bigBoostIndex = {7,8,9,10,11,12}; // Index of big boosts*/
+
+        for (int i = 0; i < allBoostPads; i++) {
+            GameData.BoostInfo boost = packet.getBoostPads(i);
+            Vector3 boostLocation = Vector3.convert(boost.getLocation());
+
+            if (boost.getIsActive()){
+                double angleToBoost = RLMath.carsAngleToPoint(new Vector2(this.myLocation), this.myRotation.yaw, boostLocation.asVector2());
+                double distance = this.myLocation.getDistanceTo(boostLocation);
+                double distFunc = ((10280 - distance) / 10280); // Map width
+                double newBoostUtility = (Math.cos(angleToBoost) * distFunc); // Utility formula
+
+                if (newBoostUtility > bestBoostUtility){
+                    bestBoostUtility = newBoostUtility;
+                    bestBoostPad = boostLocation;
+                }
+            }
+        }
+
+        return bestBoostPad; // Return the boostPad with highest utility
+    }
 
     /** Used to access GameTickPacket */
     public GameData.GameTickPacket getPacket() {
