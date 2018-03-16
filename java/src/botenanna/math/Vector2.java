@@ -1,6 +1,7 @@
 package botenanna.math;
 
 
+import java.util.Objects;
 import java.util.Vector;
 
 /** A vector with two components: x and y */
@@ -93,6 +94,12 @@ public class Vector2 {
         Vector2 that = (Vector2) other;
 
         return this.minus(that).isZero();
+    }
+
+    /** Generate a hash for this vector. */
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
     }
 
     /** @return "Vec2(x, y)" */
