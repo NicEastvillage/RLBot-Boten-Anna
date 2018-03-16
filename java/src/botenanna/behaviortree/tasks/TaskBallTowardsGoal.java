@@ -29,9 +29,11 @@ public class TaskBallTowardsGoal extends Leaf {
     @Override
     public NodeStatus run(AgentInput input) throws MissingNodeException {
 
+        // TODO Improve predictions by multiplying speed of ball with a scale to how much the agent should predict into the future.
+        // TODO Else try the difference of acceleration on car and ball vector with directions(and distance), and multiply/divide with seconds the predict
         // TODO If balls vector towards goal is bad adjust car before shooting.
 
-        Vector3 expectedBallLocation = input.ballLocation.plus(input.ballVelocity.scale(0.4));
+        Vector3 expectedBallLocation = input.ballLocation.plus(input.ballVelocity.scale(input.ballVelocity.getMagnitude()/input.myVelocity.getMagnitude()));
 
         Vector2 ballToRightGoalPostVector = new Vector2(0,0);
         Vector2 ballToLeftGoalPostVector = new Vector2(0,0);
@@ -82,7 +84,7 @@ public class TaskBallTowardsGoal extends Leaf {
         //When the agent should boost
         boolean boost = false;
 
-        if(expectedBallLocation.asVector2().minus(myPos.asVector2()).getMagnitude() < 600 && 1.5 > input.angleToBall && input.angleToBall > -1.5) {
+        if(600 > expectedBallLocation.asVector2().minus(myPos.asVector2()).getMagnitude() && 1.5 > input.angleToBall && input.angleToBall > -1.5) {
             boost = true;
         }
 
