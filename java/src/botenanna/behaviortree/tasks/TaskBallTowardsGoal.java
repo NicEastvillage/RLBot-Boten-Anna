@@ -35,11 +35,7 @@ public class TaskBallTowardsGoal extends Leaf {
 
         //double predictSeconds = (input.ballVelocity.getMagnitude()/input.myVelocity.getMagnitude())*(input.myDistanceToBall*0.0005);
 
-        double predictSeconds = (input.myDistanceToBall/1200);
-
-        if (input.myDistanceToBall < 300){
-            predictSeconds = 0.2;
-        }
+        double predictSeconds = (input.myDistanceToBall/1500);
 
         //if (predictSeconds > 5){
         //    predictSeconds = 5;
@@ -96,7 +92,7 @@ public class TaskBallTowardsGoal extends Leaf {
         //When the agent should boost
         boolean boost = false;
 
-        if(1500 > expectedBallLocation.asVector2().minus(myPos.asVector2()).getMagnitude() && 1.5 > input.angleToBall && input.angleToBall > -1.5) {
+        if(800 > expectedBallLocation.asVector2().minus(myPos.asVector2()).getMagnitude() && 1.5 > input.angleToBall && input.angleToBall > -1.5) {
             boost = true;
         }
 
