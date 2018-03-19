@@ -7,6 +7,11 @@ import botenanna.behaviortree.tasks.TaskGoForwards;
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.stream.Stream;
 
 public class BehaviourTreeBuilder {
 
@@ -50,16 +55,74 @@ public class BehaviourTreeBuilder {
     public BehaviorTree build(File file) throws FileNotFoundException, IOException {
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            Queue<String> queue = fileToQueue(reader);
             BehaviorTree bt = new BehaviorTree();
-            readTreeRecursive(bt, 0, reader);
+            readTreeRecursive(bt, -1, queue);
             return bt;
         }
     }
 
     // Inspiration: https://stackoverflow.com/questions/6075974/python-file-parsing-build-tree-from-text-file?rq=1
-    private Node readTreeRecursive(Node parent, int level, BufferedReader reader) {
-        TaskGoForwards tgf = new TaskGoForwards(new String[0]);
-        parent.addChild(tgf);
-        return tgf;
+    private void readTreeRecursive(Node parent, int level, Queue<String> queue) throws IOException {
+        while (queue.size() > 0) {
+            String line = queue.peek();
+            int indent = readIndent(line);
+
+            // Break if this line belongs to another parent
+            if (indent <= level) {
+                break;
+            }
+
+            if (indent == level + 1) {
+                // Node in this line is a child of the parent
+                Node node = translateLineToNode(queue.remove());
+                parent.addChild(node);
+                // Check if the node has children (recursion!)
+                readTreeRecursive(node, indent, queue);
+            } else {
+                // Error in indentation
+                throw new BehaviourTreeReadException("Wrong indentation in behaviour tree source file.");
+            }
+        }
+    }
+
+    private Node translateLineToNode(String line) {
+        String[] parts = line.replace("\t", "").split(" ");
+        String[] args = Arrays.copyOfRange(parts, 1, parts.length);
+        return NodeLibrary.nodeFromString(parts[0], args);
+    }
+
+    private Queue<String> fileToQueue(BufferedReader reader) throws IOException {
+        Queue<String> queue = new LinkedList<>();
+
+        // Add lines to queue
+        while (true) {
+            String line = reader.readLine();
+            if (line != null) {
+                queue.add(line);
+            } else {
+                break;
+            }
+        }
+
+        return queue;
+    }
+
+    private int readIndent(String line) throws BehaviourTreeReadException {
+        // Validate
+        if (line.length() == 0) {
+            throw new BehaviourTreeReadException("Empty line met when reading behaviour tree source file.");
+        }
+
+        // Count lines
+        int indent = 0;
+        for (int i = 0; i < line.length(); i++) {
+            if (line.charAt(i) == '\t') {
+                indent++;
+            } else {
+                break;
+            }
+        }
+        return indent;
     }
 }
