@@ -1,5 +1,6 @@
 package botenanna;
 
+import botenanna.behaviortree.BehaviorTree;
 import botenanna.physics.TimeTracker;
 import io.grpc.stub.StreamObserver;
 import rlbot.api.BotGrpc;
@@ -48,7 +49,8 @@ public class GrpcService extends BotGrpc.BotImplBase {
             synchronized (this) {
                 if (!registeredBots.containsKey(playerIndex)) {
                     int teamIndex = request.getPlayers(playerIndex).getTeam() % 2;
-                    Bot bot = new Bot(playerIndex, teamIndex);
+                    BehaviorTree tree = GrpcServer.statusWindow.getBtBuilder().build();
+                    Bot bot = new Bot(playerIndex, teamIndex, tree);
                     registeredBots.put(playerIndex, bot);
                 }
             }

@@ -2,6 +2,7 @@ package botenanna.behaviortree;
 
 import botenanna.AgentInput;
 import botenanna.AgentOutput;
+import botenanna.behaviortree.builder.BehaviourTreeBuildingException;
 
 public class BehaviorTree implements Node {
 

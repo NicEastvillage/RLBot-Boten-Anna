@@ -1,5 +1,6 @@
 package botenanna.overlayWindow;
 
+import botenanna.behaviortree.builder.BehaviourTreeBuilder;
 import botenanna.math.*;
 import rlbot.api.GameData;
 
@@ -9,6 +10,8 @@ import java.awt.event.KeyAdapter;
 
 /** Debug/Status window. Displays a window that shows the stats of a car and the ball. */
 public class StatusWindow extends JFrame {
+
+    private BehaviourTreeBuilder btBuilder;
 
     private JLabel carLocation;
     private JLabel carVelocity;
@@ -34,6 +37,10 @@ public class StatusWindow extends JFrame {
 
     /** Creating the window adding content/layout */
     public StatusWindow(){
+
+        // Pick a file for building behaviour trees
+        btBuilder = new BehaviourTreeBuilder(this);
+        btBuilder.setFileWithChooser();
 
         //Creating window frame
         JFrame frame = new JFrame("Status StatusWindow"); //Creating the frame
@@ -223,5 +230,10 @@ public class StatusWindow extends JFrame {
      * @return a formatted string used in labels describing rotation. */
     private String formatLabelVectorRotation(String labelName, Vector3 vector){
         return labelName + String.format(" (P:% 8.2f, Y:% 8.2f, R:% 8.2f)", vector.pitch, vector.yaw, vector.roll);
+    }
+
+    /** Get the behaviour tree builder. */
+    public BehaviourTreeBuilder getBtBuilder() {
+        return btBuilder;
     }
 }

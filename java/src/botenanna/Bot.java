@@ -25,10 +25,10 @@ public class Bot {
     private BehaviorTree behaviorTree;
 
     /** An Rocket League agent. */
-    public Bot(int playerIndex, int teamIndex) {
+    public Bot(int playerIndex, int teamIndex, BehaviorTree tree) {
         this.playerIndex = playerIndex;
         team = (teamIndex == 0 ? Team.BLUE : Team.ORANGE);
-        behaviorTree = buildBehaviourTree();
+        behaviorTree = tree;
     }
 
     /** Hardcoded building of a BehaviourTree */
