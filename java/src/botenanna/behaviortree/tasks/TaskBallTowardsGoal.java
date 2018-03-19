@@ -51,10 +51,12 @@ public class TaskBallTowardsGoal extends Leaf {
         Vector2 ballToLeftGoalPostVector = new Vector2(0,0);
         Vector2 rightGoalPost = new Vector2(0,0);
         Vector2 leftGoalPost = new Vector2(0,0);
+        Vector2 middleOfGoal;
 
         if (input.myTeam == 1) {
             ballToRightGoalPostVector = AgentInput.BLUE_GOALPOST_RIGHT.minus(expectedBallLocation.asVector2());
             ballToLeftGoalPostVector = AgentInput.BLUE_GOALPOST_LEFT.minus(expectedBallLocation.asVector2());
+            middleOfGoal = new Vector2(0,-5200);
             rightGoalPost = AgentInput.BLUE_GOALPOST_RIGHT;
             leftGoalPost = AgentInput.BLUE_GOALPOST_LEFT;
         }
@@ -63,6 +65,7 @@ public class TaskBallTowardsGoal extends Leaf {
             ballToLeftGoalPostVector = AgentInput.RED_GOALPOST_LEFT.minus(expectedBallLocation.asVector2());
             rightGoalPost = AgentInput.RED_GOALPOST_RIGHT;
             leftGoalPost = AgentInput.RED_GOALPOST_LEFT;
+            middleOfGoal = new Vector2(0,5200);
         }
             // Creates Vector needed to adjust shooting depended on left and right goal post
             ballToRightGoalPostVector = ballToRightGoalPostVector.getNormalized();
@@ -82,12 +85,14 @@ public class TaskBallTowardsGoal extends Leaf {
         double ang = 0;
 
         // Statements to determine where the agent should hit the ball
-        if (rightGoalPost.minus(myPos.asVector2()).getMagnitude() > leftGoalPost.minus(myPos.asVector2()).getMagnitude()) {
-            ang = RLMath.carsAngleToPoint(myPos.asVector2(), myRotation.yaw, ballToRightGoalPostVector);
-        }
-        else {
-            ang = RLMath.carsAngleToPoint(myPos.asVector2(), myRotation.yaw, ballToLeftGoalPostVector);
-        }
+        //if (rightGoalPost.minus(myPos.asVector2()).getMagnitude() > leftGoalPost.minus(myPos.asVector2()).getMagnitude()) {
+        //    ang = RLMath.carsAngleToPoint(myPos.asVector2(), myRotation.yaw, ballToRightGoalPostVector);
+        //}
+        //else {
+        //    ang = RLMath.carsAngleToPoint(myPos.asVector2(), myRotation.yaw, ballToLeftGoalPostVector);
+        //}
+
+        ang = RLMath.carsAngleToPoint(myPos.asVector2(), myRotation.yaw, middleOfGoal);
 
         // Smooth the angle to a steering amount - this avoids wobbling
         double steering = RLMath.steeringSmooth(ang);
