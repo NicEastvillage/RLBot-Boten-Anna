@@ -37,9 +37,9 @@ public class TaskBallTowardsGoal extends Leaf {
 
         double predictSeconds = (input.myDistanceToBall/2200);
 
-        if(input.myDistanceToBall < 250) {
-            predictSeconds = 0.1;
-        }
+       // if(input.myDistanceToBall < 250) {
+       //     predictSeconds = 0.1;
+       // }
 
         //if (predictSeconds > 5){
         //    predictSeconds = 5;
