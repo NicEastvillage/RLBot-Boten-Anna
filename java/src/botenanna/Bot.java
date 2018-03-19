@@ -110,4 +110,10 @@ public class Bot {
 
         return behaviorTree.evaluate(packet);
     }
+
+    /** Getter for the behavior tree
+     * @return the behaviorTree    */
+    public BehaviorTree getBehaviorTree() {
+        return behaviorTree;
+    }
 }
