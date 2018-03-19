@@ -77,6 +77,10 @@ public class TaskBallTowardsGoal extends Leaf {
             ballToLeftGoalPostVector = ballToLeftGoalPostVector.scale(-80);
             ballToLeftGoalPostVector = ballToLeftGoalPostVector.plus(expectedBallLocation.asVector2());
 
+            middleOfGoal = middleOfGoal.getNormalized();
+            middleOfGoal = middleOfGoal.scale(-80);
+            middleOfGoal = middleOfGoal.plus(expectedBallLocation.asVector2());
+
 
         // Get the needed positions and rotations
         Vector3 myPos = input.myLocation.plus(input.myFrontVector.scale(70));
