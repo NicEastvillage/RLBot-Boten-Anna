@@ -1,7 +1,7 @@
 package botenanna.behaviortree.decorators;
 
-import botenanna.behaviortree.BehaviourTreeBuildingException;
 import botenanna.behaviortree.Node;
+import botenanna.behaviortree.builder.BehaviourTreeBuildingException;
 
 /** Decorators are nodes that only have one child node. */
 public abstract class Decorator implements Node {
