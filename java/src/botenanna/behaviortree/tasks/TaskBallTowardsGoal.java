@@ -66,12 +66,12 @@ public class TaskBallTowardsGoal extends Leaf {
         }
             // Creates Vector needed to adjust shooting depended on left and right goal post
             ballToRightGoalPostVector = ballToRightGoalPostVector.getNormalized();
-            ballToRightGoalPostVector = ballToRightGoalPostVector.scale(1);
+            ballToRightGoalPostVector = ballToRightGoalPostVector.scale(-20);
             ballToRightGoalPostVector = ballToRightGoalPostVector.plus(expectedBallLocation.asVector2());
 
             // Creates Vector needed to adjust shooting depended on left and right goal post
             ballToLeftGoalPostVector = ballToLeftGoalPostVector.getNormalized();
-            ballToLeftGoalPostVector = ballToLeftGoalPostVector.scale(1);
+            ballToLeftGoalPostVector = ballToLeftGoalPostVector.scale(-20);
             ballToLeftGoalPostVector = ballToLeftGoalPostVector.plus(expectedBallLocation.asVector2());
 
 
