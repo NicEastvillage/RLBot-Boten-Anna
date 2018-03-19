@@ -67,6 +67,9 @@ public class TaskBallTowardsGoal extends Leaf {
             leftGoalPost = AgentInput.RED_GOALPOST_LEFT;
             middleOfGoal = new Vector2(0,5200);
         }
+
+            middleOfGoal = middleOfGoal.minus(expectedBallLocation.asVector2());
+
             // Creates Vector needed to adjust shooting depended on left and right goal post
             ballToRightGoalPostVector = ballToRightGoalPostVector.getNormalized();
             ballToRightGoalPostVector = ballToRightGoalPostVector.scale(-80);
