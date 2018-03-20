@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class GrpcService extends BotGrpc.BotImplBase {
-
+    public Bot bot;
     private TimeTracker timeTracker = new TimeTracker();
     private Map<Integer, Bot> registeredBots = new HashMap<>();
 
@@ -30,7 +30,7 @@ public class GrpcService extends BotGrpc.BotImplBase {
      * It returns a ControllerState, which is then sent to Rocket League.
      * In other words, THIS IS WHERE THE MAGIC HAPPENS
      */
-    private GameData.ControllerState evaluateGameTick(GameData.GameTickPacket request) {
+    public GameData.ControllerState evaluateGameTick(GameData.GameTickPacket request) {
         try {
             int playerIndex = request.getPlayerIndex();
 
@@ -55,11 +55,12 @@ public class GrpcService extends BotGrpc.BotImplBase {
                 }
             }
 
-            // Update status window with new data
-            GrpcServer.statusWindow.updateData(request);
-
             // This is the bot that needs to think
             Bot bot = registeredBots.get(playerIndex);
+
+
+            // Update status window with new data
+            GrpcServer.statusWindow.updateData(input, bot);
 
             return bot.process(input).toControllerState();
 
