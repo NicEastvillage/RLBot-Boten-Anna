@@ -56,9 +56,14 @@ public class TaskBallTowardsGoal extends Leaf {
         double predict = 0.1;
         predictSeconds = 0;
         Vector3 expectedBall;
+        double velocity
         while(predictSeconds < 0.1){
             expectedBall = input.ballLocation.plus(input.ballVelocity.scale(predict));
-            if (-200 < expectedBall.minus(input.myLocation).getMagnitude() - 1300*predict && expectedBall.minus(input.myLocation).getMagnitude() - 1300*predict < 200) {
+            if (input.myVelocity.getMagnitude() < 800){
+                velocity = 800;
+            }
+            else velocity = input.myVelocity.getMagnitude();
+            if (-200 < expectedBall.minus(input.myLocation).getMagnitude() - velocity*predict && expectedBall.minus(input.myLocation).getMagnitude() - velocity*predict < 200) {
                 predictSeconds = predict;
             }
             predict += 0.1;
@@ -131,6 +136,6 @@ public class TaskBallTowardsGoal extends Leaf {
             boost = true;
         }
 
-        return new NodeStatus(Status.RUNNING, new AgentOutput().withAcceleration(1).withSteer(steering).withBoost(boost), this);
+        return new NodeStatus(Status.RUNNING, new AgentOutput().withAcceleration(1).withSteer(steering), this);
     }
 }
