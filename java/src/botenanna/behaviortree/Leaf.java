@@ -1,5 +1,7 @@
 package botenanna.behaviortree;
 
+import botenanna.behaviortree.builder.BehaviourTreeBuildingException;
+
 public abstract class Leaf implements Node {
 
     private String[] arguments;

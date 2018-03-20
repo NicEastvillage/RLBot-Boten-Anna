@@ -2,6 +2,7 @@ package botenanna.behaviortree;
 
 import botenanna.AgentInput;
 import botenanna.AgentOutput;
+import botenanna.behaviortree.builder.BehaviourTreeBuildingException;
 
 public class BehaviorTree implements Node {
 
@@ -62,5 +63,14 @@ public class BehaviorTree implements Node {
         }
 
         topNode = child;
+    }
+
+    /** Gets the string of the lastNodeStatus creator
+     *  @return the string of the creator     */
+    public String getLastNodeName() {
+        if (lastNodeStatus==null){
+                return "None";}
+        return String.valueOf(lastNodeStatus.creator);
+
     }
 }
