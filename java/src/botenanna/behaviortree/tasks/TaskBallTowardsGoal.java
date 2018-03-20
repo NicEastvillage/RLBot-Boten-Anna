@@ -53,7 +53,7 @@ public class TaskBallTowardsGoal extends Leaf {
             predictSeconds = 0;
       //  }
 
-        double predict = 0.1;
+        double predict = 0.05;
         predictSeconds = 0;
         Vector3 expectedBall;
         double counter = 0.1;
@@ -67,11 +67,11 @@ public class TaskBallTowardsGoal extends Leaf {
                 velocity = 800;
             }
             else velocity = input.myVelocity.getMagnitude();
-            if (-200 < expectedBall.minus(input.myLocation).getMagnitude() - velocity*predict && expectedBall.minus(input.myLocation).getMagnitude() - velocity*predict < 200) {
+            if (-100 < expectedBall.minus(input.myLocation).getMagnitude() - velocity*predict && expectedBall.minus(input.myLocation).getMagnitude() - velocity*predict < 100) {
                 predictSeconds = predict;
             }
-            predict += 0.1;
-            counter += 0.1;
+            predict += 0.05;
+            counter += 0.05;
         }
 
         if(counter < 7){
