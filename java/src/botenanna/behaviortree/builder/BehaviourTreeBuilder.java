@@ -2,16 +2,13 @@ package botenanna.behaviortree.builder;
 
 import botenanna.behaviortree.BehaviorTree;
 import botenanna.behaviortree.Node;
-import botenanna.behaviortree.tasks.TaskGoForwards;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.PriorityQueue;
-import java.util.Queue;
-import java.util.stream.Stream;
+import java.util.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class BehaviourTreeBuilder {
 
@@ -57,13 +54,13 @@ public class BehaviourTreeBuilder {
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             Queue<String> queue = fileToQueue(reader);
             BehaviorTree bt = new BehaviorTree();
-            readTreeRecursive(bt, -1, queue);
+            readTreeRecursive(bt, -1, queue, queue.size());
             return bt;
         }
     }
 
     // Inspiration: https://stackoverflow.com/questions/6075974/python-file-parsing-build-tree-from-text-file?rq=1
-    private void readTreeRecursive(Node parent, int level, Queue<String> queue) throws IOException {
+    private void readTreeRecursive(Node parent, int level, Queue<String> queue, int lineCount) throws IOException {
         while (queue.size() > 0) {
             String line = queue.peek();
             int indent = readIndent(line);
@@ -74,11 +71,17 @@ public class BehaviourTreeBuilder {
             }
 
             if (indent == level + 1) {
-                // Node in this line is a child of the parent
-                Node node = translateLineToNode(queue.remove());
-                parent.addChild(node);
-                // Check if the node has children (recursion!)
-                readTreeRecursive(node, indent, queue);
+                try {
+                    // Node in this line is a child of the parent
+                    Node node = translateLineToNode(queue.remove());
+                    parent.addChild(node);
+                    // Check if the node has children (recursion!)
+                    readTreeRecursive(node, indent, queue, lineCount);
+                } catch (BehaviourTreeUnknownNodeException e) {
+                    e.printStackTrace();
+                } catch (BehaviourTreeBuildingException e) {
+                    throw new BehaviourTreeReadException("Error occurred in line " + (lineCount - queue.size() + "."));
+                }
             } else {
                 // Error in indentation
                 throw new BehaviourTreeReadException("Wrong indentation in behaviour tree source file.");
@@ -87,9 +90,9 @@ public class BehaviourTreeBuilder {
     }
 
     private Node translateLineToNode(String line) {
-        String[] parts = line.replace("\t", "").split(" ");
-        String[] args = Arrays.copyOfRange(parts, 1, parts.length);
-        return NodeLibrary.nodeFromString(parts[0], args);
+        List<String> parts = Arrays.stream(line.replace("\t", "").split(" ")).filter(s -> s.length() != 0).collect(Collectors.toList());
+        List<String> args = parts.size() > 1 ? parts.subList(1, parts.size()) : new ArrayList<>();
+        return NodeLibrary.nodeFromString(parts.get(0), args.toArray(new String[0]));
     }
 
     private Queue<String> fileToQueue(BufferedReader reader) throws IOException {

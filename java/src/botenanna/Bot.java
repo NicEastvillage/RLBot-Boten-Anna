@@ -1,18 +1,6 @@
 package botenanna;
 
 import botenanna.behaviortree.*;
-import botenanna.behaviortree.composites.Selector;
-import botenanna.behaviortree.composites.Sequencer;
-import botenanna.behaviortree.decorators.Invert;
-import botenanna.behaviortree.tasks.*;
-import botenanna.behaviortree.guards.*;
-import botenanna.math.RLMath;
-import botenanna.math.Vector2;
-import botenanna.math.Vector3;
-import botenanna.overlayWindow.StatusWindow;
-import botenanna.physics.Rigidbody;
-import botenanna.physics.Boostpads;
-import rlbot.api.GameData;
 
 public class Bot {
 

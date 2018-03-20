@@ -5,10 +5,10 @@ import botenanna.behaviortree.MissingNodeException;
 import botenanna.behaviortree.NodeStatus;
 import botenanna.behaviortree.Status;
 
-/** <p>The Invert is a Decorator node that inverts the return value of its child. So SUCCESS' becomes FAILURES, and FAILURES
+/** <p>The Inverter is a Decorator node that inverts the return value of its child. So SUCCESS' becomes FAILURES, and FAILURES
  * become SUCCESS'. If the child returns RUNNING, this returns RUNNING as well.</p>
  * <p>Works like a negation in logic.</p> */
-public class Invert extends Decorator {
+public class Inverter extends Decorator {
 
     @Override
     public void reset() {
