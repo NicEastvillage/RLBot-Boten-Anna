@@ -53,6 +53,17 @@ public class TaskBallTowardsGoal extends Leaf {
             predictSeconds = 0;
         }
 
+        double predict = 0.1;
+        predictSeconds = 0;
+        Vector3 expectedBall;
+        while(predictSeconds < 0.1){
+            expectedBall = input.ballLocation.plus(input.ballVelocity.scale(predict);
+            if (-200 < expectedBall.minus(input.myLocation).getMagnitude() - 1300*predict && expectedBall.minus(input.myLocation).getMagnitude() - 1300*predict < 200) {
+                predictSeconds = predict;
+            }
+            predict += 0.1;
+        }
+
         Vector3 expectedBallLocation = input.ballLocation.plus(input.ballVelocity.scale(predictSeconds));
 
         Vector2 ballToRightGoalPostVector = new Vector2(0,0);
