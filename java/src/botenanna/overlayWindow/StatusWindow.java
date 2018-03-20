@@ -42,6 +42,12 @@ public class StatusWindow extends JFrame {
         // Pick a file for building behaviour trees
         btBuilder = new BehaviourTreeBuilder(this);
         btBuilder.setFileWithChooser();
+        try {
+            // Build a behaviour tree to make sure file is valid. The tree is immediate discarded
+            btBuilder.build();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         //Creating window frame
         JFrame frame = new JFrame("Status StatusWindow"); //Creating the frame

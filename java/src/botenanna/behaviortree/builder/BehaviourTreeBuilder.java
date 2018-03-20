@@ -80,11 +80,11 @@ public class BehaviourTreeBuilder {
                 } catch (BehaviourTreeUnknownNodeException e) {
                     e.printStackTrace();
                 } catch (BehaviourTreeBuildingException e) {
-                    throw new BehaviourTreeReadException("Error occurred in line " + (lineCount - queue.size() + "."));
+                    throw new BehaviourTreeReadException("Error in source file. Could not add node to parent (line " + (lineCount - queue.size() + ")."));
                 }
             } else {
                 // Error in indentation
-                throw new BehaviourTreeReadException("Wrong indentation in behaviour tree source file.");
+                throw new BehaviourTreeReadException("Wrong indentation in behaviour tree source file (line " + (lineCount - queue.size()) + ").");
             }
         }
     }

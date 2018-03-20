@@ -18,5 +18,5 @@ Selector
 			GuardIsBallOnMyHalf
 			GuardIsDistanceLessThan my_pos ball_pos 1200
 			GuardIsDistanceLessThan my_pos ball_land_pos 1800
-        TaskGoTowardsPoint ball_land_pos
-    TaskGoTowardsPoint my_goal_box
+		TaskGoTowardsPoint ball_land_pos
+	TaskGoTowardsPoint my_goal_box
