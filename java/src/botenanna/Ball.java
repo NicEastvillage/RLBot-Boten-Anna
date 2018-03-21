@@ -9,6 +9,7 @@ public class Ball extends Rigidbody {
 
     public static final double RADIUS = 92.2;
     public static final double DIAMETER = RADIUS * 2;
+    public static final double SLIDE_DECCELERATION = -230;
 
     /** Create a ball from the GameData's BallInfo. This way position, velocity,
      * acceleration, rotation and gravity is set immediately. */

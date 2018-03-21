@@ -60,15 +60,25 @@ public class TimeLine<T> {
         }
     }
 
-    /** <p>Evaluate the item associated with the elapsed time since the TimeLine was reset using the internal TimeTracker.</p>
+    /** <p>Evaluate the item associated with the elapsed time since the TimeLine was reset using the internal TimeTracker.
+     * This method will round down to nearest defined item. </p>
      * <p>If no item is defined at time = 0, the first defined time's item will be returned until the second item is reached.</p>
      * @return the item associated with the current time. */
     public T evaluate() {
         return evaluate(timeTracker.getElapsedSecondsTimer());
     }
 
-    /** <p>Evaluate the item associated with given time without using the internal TimeTracker.</p>
+    /** <p>Evaluate the item associated with the elapsed time since the TimeLine was reset using the internal TimeTracker.
+     * This method will round up to nearest defined item. </p>
+     * @return the item associated with the current time. */
+    public T evaluateUp() {
+        return evaluateUp(timeTracker.getElapsedSecondsTimer());
+    }
+
+    /** <p>Evaluate the item associated with given time without using the internal TimeTracker. This method will round
+     * down to nearest defined item. </p>
      * <p>If no item is defined at time = 0, the first defined time's item will be returned until the second item is reached.</p>
+     * <p>To get the element after a specific time, see {@code evaluateUp()}.</p>
      * @param seconds the elapsed time in seconds. Must be zero or greater.
      * @return the item associated with the given time. */
     public T evaluate(double seconds) throws IllegalArgumentException {
@@ -79,7 +89,7 @@ public class TimeLine<T> {
             throw new NullPointerException("TimeLine is empty.");
         }
 
-        // Find TimeStamp with last time
+        // Find TimeStamp at time rounded down to nearest TimeStamp time
         TimeStamp active = timeStamps.get(0);
         for (int i = 0; i < timeStamps.size(); i++) {
             if (timeStamps.get(i).time <= seconds) {
@@ -91,5 +101,30 @@ public class TimeLine<T> {
         }
 
         return active.item;
+    }
+
+    /** <p>Evaluate the item associated with given time without using the internal TimeTracker. This method will round
+     * up to nearest defined item. When given a time that matches a defined item, it will return the following item,
+     * if possible. </p>
+     * <p>To get the element before a specific time, see {@code evaluate()}.</p>
+     * @param seconds the elapsed time in seconds. Must be zero or greater.
+     * @return the item associated with the given time. */
+    public T evaluateUp(double seconds) throws IllegalArgumentException {
+        if (seconds < 0) throw new IllegalArgumentException("Seconds must be zero or greater.");
+
+        // Make sure it possible to evaluate
+        if (timeStamps.size() == 0) {
+            throw new NullPointerException("TimeLine is empty.");
+        }
+
+        // Find TimeStamp at time rounded up to nearest TimeStamp time
+        for (int i = 0; i < timeStamps.size(); i++) {
+            if (timeStamps.get(i).time > seconds) {
+                // This is the first TimeStamp with a greater time
+                return timeStamps.get(i).item;
+            }
+        }
+
+        return timeStamps.getLast().item;
     }
 }
