@@ -8,8 +8,19 @@ import botenanna.math.RLMath;
 import botenanna.math.Vector2;
 
 public class GuardHasGoalOpportunity extends Leaf {
+    /**<p>The guard will try to determine whether the agent has a goal opportunity or not.
+     * If the ball and the agent is approximately in the middle of the y axis there is a goal opportunity.
+     * There is also a goal opportunity if the agents angle is towards the ball and the goal at the same time.</p>
+     *
+     * <p>The agent also have to be at the correct side relatively to the ball, for a goal opportunity to appear.</p>
+     *
+     * <p>It's signature is {@code GuardHasGoalOpportunity}</p>*/
+
     public GuardHasGoalOpportunity(String[] arguments) throws IllegalArgumentException {
         super(arguments);
+
+        // Takes no arguments
+        if (arguments.length != 0) throw new IllegalArgumentException();
     }
 
     @Override
@@ -17,6 +28,7 @@ public class GuardHasGoalOpportunity extends Leaf {
         //Irrelevant
     }
 
+    // Calculating goal opportunities whether the agent is Team Orange or Team Blue.
     @Override
     public NodeStatus run(AgentInput input) throws MissingNodeException {
         if(input.myTeam == 1) {
