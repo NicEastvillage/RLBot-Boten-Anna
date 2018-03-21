@@ -69,12 +69,12 @@ public class TaskBallTowardsGoal extends Leaf {
             }
             else velocity = input.myVelocity.getMagnitude();
 
-            if (-50 < expectedBall.minus(input.myLocation).getMagnitude() - velocity*predict && expectedBall.minus(input.myLocation).getMagnitude() - velocity*predict < 50) {
+            if (-25 < expectedBall.minus(input.myLocation).getMagnitude() - velocity*predict && expectedBall.minus(input.myLocation).getMagnitude() - velocity*predict < 25) {
                 predictSeconds = predict;
             }
 
-            predict += 0.03;
-            counter += 0.03;
+            predict += 0.02;
+            counter += 0.02;
         }
 
         if(counter > 5){
