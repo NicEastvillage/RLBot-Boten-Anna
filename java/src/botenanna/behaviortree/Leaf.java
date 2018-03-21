@@ -1,6 +1,6 @@
 package botenanna.behaviortree;
 
-import botenanna.behaviortree.builder.BehaviourTreeBuildingException;
+import botenanna.behaviortree.builder.BehaviourTreeChildException;
 
 public abstract class Leaf implements Node {
 
@@ -12,8 +12,8 @@ public abstract class Leaf implements Node {
 
     /** Should not be called, since Leafs have no children! */
     @Override
-    public final void addChild(Node child) throws BehaviourTreeBuildingException {
-        throw new BehaviourTreeBuildingException();
+    public final void addChild(Node child) throws BehaviourTreeChildException {
+        throw new BehaviourTreeChildException();
     }
 
     /** @return the arguments this Leaf received, when it was created. */

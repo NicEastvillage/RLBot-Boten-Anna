@@ -1,5 +1,0 @@
-Selector
-	Sequencer
-		GuardIsDistanceLessThan my_pos ball_pos 1200
-		TaskDashForward
-	Subtree boten_anna_tree.txt

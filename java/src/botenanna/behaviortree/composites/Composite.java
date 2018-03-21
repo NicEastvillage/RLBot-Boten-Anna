@@ -1,7 +1,7 @@
 package botenanna.behaviortree.composites;
 
 import botenanna.behaviortree.Node;
-import botenanna.behaviortree.builder.BehaviourTreeBuildingException;
+import botenanna.behaviortree.builder.BehaviourTreeChildException;
 
 import java.util.ArrayList;
 
@@ -13,7 +13,7 @@ public abstract class Composite implements Node {
 
     /** Add a child to this Composite node */
     @Override
-    public final void addChild(Node child) throws BehaviourTreeBuildingException {
+    public final void addChild(Node child) throws BehaviourTreeChildException {
         children.add(child);
     }
 }

@@ -52,11 +52,27 @@ public class BehaviourTreeBuilder {
 
     /** Build a behaviour tree from a File. */
     public BehaviorTree build(File file) throws FileNotFoundException, IOException {
+        return build(file, new HashSet<>());
+    }
 
+    /** Build a behaviour tree from a File and a Set of already visited files. The Set will prevent it from creating
+     * infinite loops. The file cannot already be in the Set of visited file. A BehaviourTreeBuildingException is
+     * thrown if it is. */
+    public BehaviorTree build(File file, Set<File> visitedFiles) throws FileNotFoundException, IOException {
+
+        // file cannot already be visited
+        if (visitedFiles.contains(file)) {
+            throw new BehaviourTreeBuildingException("Infinite loop detected when building behaviour tree. \"" +
+                    file.getName() + "\" has already been visited.");
+        }
+
+        visitedFiles.add(file);
+
+        // Read file and construct tree from lines
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             Queue<String> queue = fileToQueue(reader);
             BehaviorTree bt = new BehaviorTree();
-            readTreeRecursive(bt, -1, queue, queue.size(), file);
+            readTreeRecursive(bt, -1, queue, queue.size(), file, visitedFiles);
             return bt;
         }
     }
@@ -67,9 +83,10 @@ public class BehaviourTreeBuilder {
      * @param level the current amount of indentation.
      * @param queue a queue of unread lines.
      * @param lineCount the original size of the queue. Used to determine in which line errors occur.
-     * @param file the File being read. Used to find and build subtrees and constructing error messages. */
+     * @param file the File being read. Used to find and build subtrees and constructing error messages.
+     * @param visitedFiles a Set of files that has already been visited. Will prevent it from doing infinite loops. */
     // Inspiration: https://stackoverflow.com/questions/6075974/python-file-parsing-build-tree-from-text-file?rq=1
-    private void readTreeRecursive(Node parent, int level, Queue<String> queue, int lineCount, File file) throws IOException {
+    private void readTreeRecursive(Node parent, int level, Queue<String> queue, int lineCount, File file, Set<File> visitedFiles) throws IOException {
         while (queue.size() > 0) {
             String line = queue.peek();
 
@@ -88,14 +105,16 @@ public class BehaviourTreeBuilder {
             if (indent == level + 1) {
                 try {
                     // Node in this line is a child of the parent
-                    Node node = translateLineToNode(queue.remove(), file);
+                    Node node = translateLineToNode(queue.remove(), file, visitedFiles);
                     parent.addChild(node);
                     // Check if the node has children (recursion!)
-                    readTreeRecursive(node, indent, queue, lineCount, file);
+                    readTreeRecursive(node, indent, queue, lineCount, file, visitedFiles);
                 } catch (BehaviourTreeUnknownNodeException e) {
                     e.printStackTrace();
-                } catch (BehaviourTreeBuildingException e) {
+                } catch (BehaviourTreeChildException e) {
                     throw new BehaviourTreeReadException("Error in source file. Could not add node to parent (" + file.getName() + ", line " + (lineCount - queue.size()) + ").");
+                } catch (BehaviourTreeBuildingException e) {
+                    e.printStackTrace();
                 }
             } else {
                 // Error in indentation
@@ -108,7 +127,7 @@ public class BehaviourTreeBuilder {
      * expects that the subtree is in the same directory or a subdirectory of the parent file's directory. If
      * {@code parentFile} is null or {@code subtreeName}'s length is zero, an IllegalArgument is thrown. An IOException
      * is thrown if the subtree file does not exist. */
-    private Node buildSubtree(File parentFile, String subtreeName) throws IOException {
+    private Node buildSubtree(File parentFile, String subtreeName, Set<File> visitedFiles) throws IOException {
         if (parentFile == null) throw new IllegalArgumentException("Parent file cannot be null.");
         if (subtreeName.length() == 0) throw new IllegalArgumentException("Length of subtree's name cannot be zero.");
 
@@ -116,13 +135,19 @@ public class BehaviourTreeBuilder {
         if (!subtree.exists()) {
             throw new FileNotFoundException("Could not find subtree \"" + subtreeName + "\".");
         }
-        return build(subtree);
+        // Infinite loop?
+        if (visitedFiles.contains(subtree)) {
+            throw new BehaviourTreeBuildingException("Executed building of tree to avoid infinite loop. \"" +
+                    parentFile.getName() + "\" contains a tree, that has already been visited.");
+        }
+        return build(subtree, visitedFiles);
     }
 
     /** Break a line into parts and create a Node from it. Can create subtrees.
      * @param line a line from a BehaviourTree source file.
      * @param file the file being read. Used to find subtrees using relative path. */
-    private Node translateLineToNode(String line, File file) throws IOException {
+    private Node translateLineToNode(String line, File file, Set<File> visitedFiles) throws IOException {
+
         List<String> parts = Arrays.stream(line.replace("\t", "").split(" ")).filter(s -> s.length() != 0).collect(Collectors.toList());
         List<String> args = parts.size() > 1 ? parts.subList(1, parts.size()) : new ArrayList<>();
 
@@ -130,7 +155,7 @@ public class BehaviourTreeBuilder {
         if (parts.get(0).equals("Subtree")) {
             if (args.size() != 1) throw new BehaviourTreeReadException("Wrong number of arguments in behaviour tree source file. Line: \"" + line + "\".");
             try {
-                return buildSubtree(file, args.get(0));
+                return buildSubtree(file, args.get(0), visitedFiles);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
