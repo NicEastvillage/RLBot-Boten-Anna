@@ -29,39 +29,18 @@ public class TaskBallTowardsGoal extends Leaf {
     @Override
     public NodeStatus run(AgentInput input) throws MissingNodeException {
 
-        // TODO Improve predictions by multiplying speed of ball with a scale to how much the agent should predict into the future.
-        // TODO Else try the difference of acceleration on car and ball vector with directions(and distance), and multiply/divide with seconds the predict
-        // TODO If balls vector towards goal is bad adjust car before shooting.
-
-        double predictSeconds; //= (input.ballVelocity.getMagnitude()/input.myVelocity.getMagnitude())*(input.myDistanceToBall/1800);
-
-        //double predictSeconds = (input.myDistanceToBall/2200);
-
-       // if(input.myDistanceToBall < 250) {
-       //     predictSeconds = 0.1;
-       // }
-
-        //if (predictSeconds > 5) {
-            predictSeconds = 5;
-       //}
-
-        //if (1 < input.angleToBall || input.angleToBall < -1) {
-            predictSeconds = 0.1;
-       // }
-
-       // if (input.myDistanceToBall < 300) {
-            predictSeconds = 0;
-      //  }
-
-        double predict = 0.05;
-        predictSeconds = 0;
         Vector3 expectedBall;
-        double counter = 0.1;
+        double predictSeconds = 0;
+        double predict = 0.02;
+        double counter = 0.02;
         double velocity;
+        boolean isBallStill = false;
+
         if(10 > input.ballVelocity.getMagnitude()){
-            predictSeconds = 999;
+            isBallStill = true;
         }
-        while(predictSeconds < 0.1 && counter <= 5){
+
+        while(predictSeconds < 0.1 && counter <= 5 && !isBallStill){
             expectedBall = input.ballLocation.plus(input.ballVelocity.scale(predict));
 
             if (input.myVelocity.getMagnitude() < 800){
@@ -81,7 +60,7 @@ public class TaskBallTowardsGoal extends Leaf {
             predictSeconds = 0;
         }
 
-        if (predictSeconds == 999){
+        if (isBallStill){
             predictSeconds = 0;
         }
 
