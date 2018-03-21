@@ -12,17 +12,20 @@ import java.util.function.Function;
 
 public class TaskBallTowardsGoal extends Leaf {
 
-    /**<p>The agent will simulate how much into the future it should predict.
+    /**<p>Make the agent try to shoot the ball towards the enemy goal, if possible. The agent will simulate how much into the future it should predict.
      *This way the agent will be able to predict and hit the ball towards the opponents goal.</p>
      *
-     * <p> The agent will always try drive towards a vector point that should be able to shoot the ball towards goal,
+     * <p> The agent will always try to drive towards a vector point that should be able to shoot the ball towards goal,
      * because of this, the agent needs to be at the correct position relative to the ball, else the agent can shoot
      * the ball towards its own goal.</p>
      *
-     * <p>It's signature is {@code TaskBallTowardsGoal}*/
+     * <p>It's signature is {@code TaskBallTowardsGoal}</p>*/
 
     public TaskBallTowardsGoal(String[] arguments) throws IllegalArgumentException {
         super(arguments);
+
+        // Takes no arguments
+        if (arguments.length != 0) throw new IllegalArgumentException();
     }
 
     @Override
