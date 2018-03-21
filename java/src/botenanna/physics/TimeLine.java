@@ -1,6 +1,9 @@
 package botenanna.physics;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /** <p>The TimeLine is able to associate items of type T with a specific time stamp. The TimeLine is then able to return an
  * item based on time passed. The return item will be the item associated with the last passed time stamp.</p>
@@ -125,6 +128,34 @@ public class TimeLine<T> {
             }
         }
 
+        return timeStamps.getLast().item;
+    }
+
+    /** Retrieve a List of all timeStamp times. */
+    public List<Double> getTimes() {
+        ArrayList<Double> list = new ArrayList<>(timeStamps.size());
+        for (TimeStamp timeStamp : timeStamps) {
+            list.add(timeStamp.time);
+        }
+        return list;
+    }
+
+    /** Retrieve a List of all timeStamp elements. */
+    public List<T> getElements() {
+        ArrayList<T> list = new ArrayList<>(timeStamps.size());
+        for (TimeStamp timeStamp : timeStamps) {
+            list.add(timeStamp.item);
+        }
+        return list;
+    }
+
+    /** Returns the last point in time of which an element is defined. */
+    public double lastTimeStampTime() {
+        return timeStamps.getLast().time;
+    }
+
+    /** Returns the element returned as the last in the TimeLine. */
+    public T lastTimeStampElement() {
         return timeStamps.getLast().item;
     }
 }

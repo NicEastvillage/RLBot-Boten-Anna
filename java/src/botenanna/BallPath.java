@@ -7,5 +7,11 @@ import java.util.ArrayList;
 
 public class BallPath {
 
-    TimeLine<Vector3> points;
+    private double duration;
+    private TimeLine<Vector3> points;
+
+    public BallPath(TimeLine<Vector3> points) {
+        this.points = points;
+        duration = points.lastTimeStampTime();
+    }
 }
