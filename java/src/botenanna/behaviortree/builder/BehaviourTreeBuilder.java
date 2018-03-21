@@ -56,7 +56,7 @@ public class BehaviourTreeBuilder {
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             Queue<String> queue = fileToQueue(reader);
             BehaviorTree bt = new BehaviorTree();
-            readTreeRecursive(bt, -1, queue, queue.size());
+            readTreeRecursive(bt, -1, queue, queue.size(), file);
             return bt;
         }
     }
@@ -66,15 +66,16 @@ public class BehaviourTreeBuilder {
      * @param parent the Node created from previous line. Can be an external node. The tree will become children of this node.
      * @param level the current amount of indentation.
      * @param queue a queue of unread lines.
-     * @param lineCount the original size of the queue. Used to determine in which line errors occur.*/
+     * @param lineCount the original size of the queue. Used to determine in which line errors occur.
+     * @param file the File being read. Used to find and build subtrees and constructing error messages. */
     // Inspiration: https://stackoverflow.com/questions/6075974/python-file-parsing-build-tree-from-text-file?rq=1
-    private void readTreeRecursive(Node parent, int level, Queue<String> queue, int lineCount) {
+    private void readTreeRecursive(Node parent, int level, Queue<String> queue, int lineCount, File file) throws IOException {
         while (queue.size() > 0) {
             String line = queue.peek();
 
             // Empty line?
             if (line.length() == 0) {
-                throw new BehaviourTreeReadException("Empty line met when reading behaviour tree source file (line " + (lineCount - queue.size()) + ").");
+                throw new BehaviourTreeReadException("Empty line met when reading behaviour tree source file (" + file.getName() + ", line " + (lineCount - queue.size()) + ").");
             }
 
             // Break if this line belongs to another parent
@@ -87,27 +88,55 @@ public class BehaviourTreeBuilder {
             if (indent == level + 1) {
                 try {
                     // Node in this line is a child of the parent
-                    Node node = translateLineToNode(queue.remove());
+                    Node node = translateLineToNode(queue.remove(), file);
                     parent.addChild(node);
                     // Check if the node has children (recursion!)
-                    readTreeRecursive(node, indent, queue, lineCount);
+                    readTreeRecursive(node, indent, queue, lineCount, file);
                 } catch (BehaviourTreeUnknownNodeException e) {
                     e.printStackTrace();
                 } catch (BehaviourTreeBuildingException e) {
-                    throw new BehaviourTreeReadException("Error in source file. Could not add node to parent (line " + (lineCount - queue.size()) + ").");
+                    throw new BehaviourTreeReadException("Error in source file. Could not add node to parent (" + file.getName() + ", line " + (lineCount - queue.size()) + ").");
                 }
             } else {
                 // Error in indentation
-                throw new BehaviourTreeReadException("Wrong indentation in behaviour tree source file (line " + (lineCount - queue.size()) + ").");
+                throw new BehaviourTreeReadException("Wrong indentation in behaviour tree source file (" + file.getName() + ", line " + (lineCount - queue.size()) + ").");
             }
         }
     }
 
-    /** Break a line into parts and create a Node from it.
-     * @param line a line from a BehaviourTree source file. */
-    private Node translateLineToNode(String line) {
+    /** Construct a behaviour tree subtree from a parent file and the name of the file of the subtree. This method
+     * expects that the subtree is in the same directory or a subdirectory of the parent file's directory. If
+     * {@code parentFile} is null or {@code subtreeName}'s length is zero, an IllegalArgument is thrown. An IOException
+     * is thrown if the subtree file does not exist. */
+    private Node buildSubtree(File parentFile, String subtreeName) throws IOException {
+        if (parentFile == null) throw new IllegalArgumentException("Parent file cannot be null.");
+        if (subtreeName.length() == 0) throw new IllegalArgumentException("Length of subtree's name cannot be zero.");
+
+        File subtree = new File(file.toPath().getParent().toString(), subtreeName);
+        if (!subtree.exists()) {
+            throw new FileNotFoundException("Could not find subtree \"" + subtreeName + "\".");
+        }
+        return build(subtree);
+    }
+
+    /** Break a line into parts and create a Node from it. Can create subtrees.
+     * @param line a line from a BehaviourTree source file.
+     * @param file the file being read. Used to find subtrees using relative path. */
+    private Node translateLineToNode(String line, File file) throws IOException {
         List<String> parts = Arrays.stream(line.replace("\t", "").split(" ")).filter(s -> s.length() != 0).collect(Collectors.toList());
         List<String> args = parts.size() > 1 ? parts.subList(1, parts.size()) : new ArrayList<>();
+
+        // Check if subtree
+        if (parts.get(0).equals("Subtree")) {
+            if (args.size() != 1) throw new BehaviourTreeReadException("Wrong number of arguments in behaviour tree source file. Line: \"" + line + "\".");
+            try {
+                return buildSubtree(file, args.get(0));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // Use NodeLibrary to construct node
         return NodeLibrary.nodeFromString(parts.get(0), args.toArray(new String[0]));
     }
 
