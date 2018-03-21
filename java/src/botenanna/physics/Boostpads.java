@@ -7,10 +7,7 @@ public class Boostpads {
     public Vector2[] bigBoostPad = {
             new Vector2(-3070, 4100), //Index 7
             new Vector2(3070,-4100), //Index 8
-            new Vector2(-3070,-4100), //Index 9
-            new Vector2(-3580,0), //Index 10
-            new Vector2(3580,0), // Index 11
-            new Vector2(3070, 4100) //Index 12
+                new Vector2(-3070,-4100),new Vector2(-3580,0), new Vector2(3580,0), new Vector2(3070, 4100)
     };
 
     public Vector2 collectNearestBoost(GameData.GameTickPacket packet, Vector2 playerPos){

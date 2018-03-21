@@ -18,10 +18,25 @@ public class TimeTracker {
 
     /** DO NOT USE. Not formatted and therefor not really useful.
      *  Use this to get the time since the GrpcService was started.
+     *  //TODO: Could be optimized, does kinda the same as getElapsedSecondsTimer()
      *  @return the time since the GrpcService was started. (Formatted with LocalDateTime)
      */
-    public LocalDateTime getGameTime() {
+    private LocalDateTime getGameTime() {
         return gameTime;
+    }
+
+    public double getSecondsSinceServerStart(){
+        LocalDateTime currentTime = LocalDateTime.now();
+        long seconds = 0;
+
+        try{
+            seconds = gameTime.until(currentTime, ChronoUnit.MILLIS);
+        } catch (NullPointerException e){
+            System.out.println("Null Pointer ex"); //TODO EDIT
+            return 0;
+        }
+
+        return seconds * 0.001;
     }
 
     /** Gets the time between now and when the method setTime() was called last.

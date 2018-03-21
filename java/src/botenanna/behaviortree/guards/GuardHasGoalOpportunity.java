@@ -38,10 +38,5 @@ public class GuardHasGoalOpportunity extends Leaf {
         }
 
         return NodeStatus.DEFAULT_FAILURE;
-        //input.ballLocation;
-        //input.angleToBall;
-        //input.enemyTeam;
-        //input.myRotation;
-        //input.getGoalDirection(input.enemyPlayerIndex); //Blue is Minus, Red is Plus
     }
 }
