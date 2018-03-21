@@ -13,10 +13,15 @@ import java.util.function.Function;
 
 public class TaskBallTowardsGoal extends Leaf {
 
-    /** The TaskGoTowardsPoint is the simple version of going to a specific point.
-     * In the current version the agent won’t slide and it will overshoot the point.
+    /**<p>The agent will simulate how much into the future it should predict.
+     *This way the agent will be able to predict and hit the ball towards the opponents goal.</p>
      *
-     * It's signature is {@code TaskGoTowardsPoint <point:Vector3>} */
+     * <p> The agent will always try drive towards a vector point that should be able to shoot the ball towards goal,
+     * because of this, the agent needs to be at the correct position relative to the ball, else the agent can shoot
+     * the ball towards its own goal.</p>
+     *
+     * <p>It's signature is {@code TaskBallTowardsGoal}*/
+
     public TaskBallTowardsGoal(String[] arguments) throws IllegalArgumentException {
         super(arguments);
     }
@@ -29,6 +34,9 @@ public class TaskBallTowardsGoal extends Leaf {
     @Override
     public NodeStatus run(AgentInput input) throws MissingNodeException {
 
+        //TODO: The agent is only trying to shoot the ball towards the middle of opponents goal, there are commented math for right and left side of the goal
+        //TODO: Do so the agent shoots towards the "easisest" place in the goal.
+
         Vector3 expectedBall;
         double predictSeconds = 0;
         double predict = 0.02;
@@ -36,13 +44,18 @@ public class TaskBallTowardsGoal extends Leaf {
         double velocity;
         boolean isBallStill = false;
 
+        //If the ball is really slow or still, skip the loop and don't predict.
         if(10 > input.ballVelocity.getMagnitude()){
             isBallStill = true;
         }
 
+        //The loop will find a spot where the distance of expected ball to car minus the carvelocity multiplied by predict is between -25 and 25.
+        //That way the agent should always be able to choose the right amount of prediction seconds, although this will probably change a little bit every tick as
+        //the carvelocity changes.
         while(predictSeconds < 0.1 && counter <= 5 && !isBallStill){
             expectedBall = input.ballLocation.plus(input.ballVelocity.scale(predict));
 
+            // If the car is not really driving, it should overextend its prediction to the future.
             if (input.myVelocity.getMagnitude() < 800){
                 velocity = 800;
             }
@@ -56,48 +69,50 @@ public class TaskBallTowardsGoal extends Leaf {
             counter += 0.02;
         }
 
-        if(counter > 5){
+        // If it runs through loop without choosing one, then don't predict (Probably not needed)
+        if(counter > 5) {
             predictSeconds = 0;
         }
 
+        // if ball is still, don't predict
         if (isBallStill){
             predictSeconds = 0;
         }
 
         Vector3 expectedBallLocation = input.ballLocation.plus(input.ballVelocity.scale(predictSeconds));
 
-        Vector2 ballToRightGoalPostVector = new Vector2(0,0);
-        Vector2 ballToLeftGoalPostVector = new Vector2(0,0);
-        Vector2 rightGoalPost = new Vector2(0,0);
-        Vector2 leftGoalPost = new Vector2(0,0);
+        //Vector2 ballToRightGoalPostVector = new Vector2(0,0);
+        //Vector2 ballToLeftGoalPostVector = new Vector2(0,0);
+        //Vector2 rightGoalPost = new Vector2(0,0);
+        //Vector2 leftGoalPost = new Vector2(0,0);
         Vector2 middleOfGoal;
 
         if (input.myTeam == 1) {
-            ballToRightGoalPostVector = AgentInput.BLUE_GOALPOST_RIGHT.minus(expectedBallLocation.asVector2());
-            ballToLeftGoalPostVector = AgentInput.BLUE_GOALPOST_LEFT.minus(expectedBallLocation.asVector2());
+            //ballToRightGoalPostVector = AgentInput.BLUE_GOALPOST_RIGHT.minus(expectedBallLocation.asVector2());
+            //ballToLeftGoalPostVector = AgentInput.BLUE_GOALPOST_LEFT.minus(expectedBallLocation.asVector2());
             middleOfGoal = new Vector2(0,-5200);
-            rightGoalPost = AgentInput.BLUE_GOALPOST_RIGHT;
-            leftGoalPost = AgentInput.BLUE_GOALPOST_LEFT;
+            //rightGoalPost = AgentInput.BLUE_GOALPOST_RIGHT;
+            //leftGoalPost = AgentInput.BLUE_GOALPOST_LEFT;
         }
         else {
-            ballToRightGoalPostVector = AgentInput.RED_GOALPOST_RIGHT.minus(expectedBallLocation.asVector2());
-            ballToLeftGoalPostVector = AgentInput.RED_GOALPOST_LEFT.minus(expectedBallLocation.asVector2());
-            rightGoalPost = AgentInput.RED_GOALPOST_RIGHT;
-            leftGoalPost = AgentInput.RED_GOALPOST_LEFT;
+            //ballToRightGoalPostVector = AgentInput.RED_GOALPOST_RIGHT.minus(expectedBallLocation.asVector2());
+            //ballToLeftGoalPostVector = AgentInput.RED_GOALPOST_LEFT.minus(expectedBallLocation.asVector2());
+            //rightGoalPost = AgentInput.RED_GOALPOST_RIGHT;
+            //leftGoalPost = AgentInput.RED_GOALPOST_LEFT;
             middleOfGoal = new Vector2(0,5200);
         }
 
             middleOfGoal = middleOfGoal.minus(expectedBallLocation.asVector2());
 
             // Creates Vector needed to adjust shooting depended on left and right goal post
-            ballToRightGoalPostVector = ballToRightGoalPostVector.getNormalized();
-            ballToRightGoalPostVector = ballToRightGoalPostVector.scale(-80);
-            ballToRightGoalPostVector = ballToRightGoalPostVector.plus(expectedBallLocation.asVector2());
+            //ballToRightGoalPostVector = ballToRightGoalPostVector.getNormalized();
+            //ballToRightGoalPostVector = ballToRightGoalPostVector.scale(-80);
+            //ballToRightGoalPostVector = ballToRightGoalPostVector.plus(expectedBallLocation.asVector2());
 
             // Creates Vector needed to adjust shooting depended on left and right goal post
-            ballToLeftGoalPostVector = ballToLeftGoalPostVector.getNormalized();
-            ballToLeftGoalPostVector = ballToLeftGoalPostVector.scale(-80);
-            ballToLeftGoalPostVector = ballToLeftGoalPostVector.plus(expectedBallLocation.asVector2());
+            //ballToLeftGoalPostVector = ballToLeftGoalPostVector.getNormalized();
+            //ballToLeftGoalPostVector = ballToLeftGoalPostVector.scale(-80);
+            //ballToLeftGoalPostVector = ballToLeftGoalPostVector.plus(expectedBallLocation.asVector2());
 
             middleOfGoal = middleOfGoal.getNormalized();
             middleOfGoal = middleOfGoal.scale(-80);
