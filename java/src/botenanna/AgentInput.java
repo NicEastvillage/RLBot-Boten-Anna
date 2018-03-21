@@ -17,6 +17,11 @@ public class AgentInput {
     public static final double ARENA_WIDTH = 8240;
     public static final Vector3 BLUE_GOAL_BOX = Vector3.BACKWARDS.scale(5000);
     public static final Vector3 ORANGE_GOAL_BOX = Vector3.FORWARD.scale(5000);
+    public static final Vector2 BLUE_GOALPOST_LEFT = new Vector2(-720, -5200);
+    public static final Vector2 BLUE_GOALPOST_RIGHT = new Vector2(720, -5200);
+    public static final Vector2 RED_GOALPOST_LEFT = new Vector2(-720, 5200);
+    public static final Vector2 RED_GOALPOST_RIGHT = new Vector2(720, 5200);
+
 
     public static final Vector3[] BIG_BOOST_PADS = {new Vector3(-3070, 4100), new Vector3(3070,-4100), new Vector3(-3070,-4100),new Vector3(-3580,0), new Vector3(3580,0), new Vector3(3070, 4100)};
 
@@ -226,4 +231,5 @@ public class AgentInput {
     public Vector3 getGoalBox(int playerIndex) {
         return playerIndex == 0 ? BLUE_GOAL_BOX : ORANGE_GOAL_BOX;
     }
+
 }
