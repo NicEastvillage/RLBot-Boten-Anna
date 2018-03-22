@@ -28,7 +28,7 @@ public class ArgumentTranslator {
 
             case "ang_ball": return (AgentInput a) -> a.angleToBall;            // angle (double)
 
-            case "middle_of_field": return (AgentInput a) -> a.MIDDLE_OF_FIELD; // Vector3
+            case "middle_of_field": return (AgentInput a) -> a.middlefield; // Vector3
 
             default: throw new UnknownBTKeyException(key);
         }
