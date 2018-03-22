@@ -22,6 +22,10 @@ public class ArgumentTranslator {
             case "my_goal_box": return (AgentInput a) -> a.getGoalBox(a.myPlayerIndex); // Vector3
             case "best_boost": return (AgentInput a) -> a.getBestBoostPad(); // Vector 3
             case "enemy_goal_box": return (AgentInput a) -> a.getGoalBox(a.enemyPlayerIndex); // Vector3
+            case "corner1.1": return (AgentInput a) ->  a.getCorner(1,1); // Vector3
+            case "corner-1.1": return (AgentInput a) ->  a.getCorner(-1,1); // Vector3
+            case "corner1.-1": return (AgentInput a) ->  a.getCorner(1,-1); // Vector3
+            case "corner-1.-1": return (AgentInput a) ->  a.getCorner(-1,-1); // Vector3
 
             case "ball_land_time": return (AgentInput a) -> a.ballLandingTime;  // time (double)
             case "ball_land_pos": return (AgentInput a) -> a.ballLandingPosition; // Vector3

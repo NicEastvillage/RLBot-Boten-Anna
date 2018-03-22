@@ -8,6 +8,10 @@ import botenanna.math.RLMath;
 import botenanna.math.Vector2;
 
 public class GuardIntercept extends Leaf {
+    /** The GuardIntercept compares the distance of the agent and the ball to the agents goal, and returns true if the player agent is the closest
+     * Can be inverted to find if the ball is the closest to the goal
+     *
+     * Its signature is {@code GuardIntercept}*/
 
 
     public GuardIntercept(String[] arguments) throws IllegalArgumentException {

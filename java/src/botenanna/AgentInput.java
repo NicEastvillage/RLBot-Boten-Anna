@@ -23,6 +23,7 @@ public class AgentInput {
     public static final Vector2 RED_GOALPOST_RIGHT = new Vector2(720, 5200);
 
 
+
     public static final Vector3[] BIG_BOOST_PADS = {new Vector3(-3070, 4100), new Vector3(3070,-4100), new Vector3(-3070,-4100),new Vector3(-3580,0), new Vector3(3580,0), new Vector3(3070, 4100)};
 
 
@@ -232,7 +233,12 @@ public class AgentInput {
         return playerIndex == 0 ? BLUE_GOAL_BOX : ORANGE_GOAL_BOX;
     }
 
-    /** @return a double for the time to collision between ball and car  */
+    /** @return the vector of the big boost in the quadrant requested */
+    public Vector3 getCorner(int x, int y){
+        return new Vector3(x * 3070, y * 4100);
+        }
+
+        /** @return a double for the time to collision between ball and car  */
     public double getCollisionTime() {
 
         // TODO CLEAN UP THE CODE AND IMPROVE PREDICTION
