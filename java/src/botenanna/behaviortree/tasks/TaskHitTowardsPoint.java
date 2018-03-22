@@ -55,6 +55,7 @@ private Function<AgentInput, Object> pointFunc;
         //TODO Change current target to target aquired though arguments
         //TODO Version 2 add 3d and expand on circlePoint
         Vector3 target = (Vector3) pointFunc.apply(input);
+        target =  target.plus(input.ballLandingPosition);
         boolean withBoost =true;
         if (corner!=0){
             target= input.getGoalBox(input.myPlayerIndex).plus(new Vector3(4000*corner,0,0));
@@ -111,7 +112,10 @@ private Function<AgentInput, Object> pointFunc;
     }
 
     Vector2 searchAngle(AgentInput input, Vector2 target){
-        return input.ballLandingPosition.asVector2().plus(input.ballVelocity.asVector2().plus(target).getNormalized().scale(-input.ballVelocity.getMagnitude()));
+        Vector2 ballPos = input.ballLandingPosition.asVector2();
+        Vector2 ballV = input.ballVelocity.asVector2();
+
+        return ballPos.plus(ballV.plus(target).getNormalized().scale(-1));
     }
 
     Vector2 findCirclePoint(Vector3 myPos, Vector2 ballPos){
