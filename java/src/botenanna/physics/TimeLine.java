@@ -11,7 +11,7 @@ public interface TimeLine<T> {
     void addTimeStep(double time, T item);
 
     /** Returns the item associated with a specific time. */
-    T evaluate(double time) throws IllegalArgumentException, NullPointerException;
+    T evaluate(double time) throws NullPointerException;
 
     /** Returns a List of all defined times. */
     List<Double> getTimes();

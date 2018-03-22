@@ -47,17 +47,12 @@ public class SteppedTimeLineTest {
         assertEquals(Integer.valueOf(-40), steppedTimeLine.evaluate(0));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void evaluate05() {
         SteppedTimeLine<String> steppedTimeLine = new SteppedTimeLine<>();
         steppedTimeLine.addTimeStep(-1, "Foo");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void evaluate06() {
-        SteppedTimeLine<String> steppedTimeLine = new SteppedTimeLine<>();
-        steppedTimeLine.addTimeStep(0, "Foo");
-        steppedTimeLine.evaluate(-1);
+        assertEquals("Foo", steppedTimeLine.evaluate(1));
+        assertEquals("Foo", steppedTimeLine.evaluate(-5));
     }
 
     @Test
@@ -94,16 +89,17 @@ public class SteppedTimeLineTest {
         assertEquals(Integer.valueOf(-10), steppedTimeLine.evaluateUp(0));
     }
 
+    @Test
+    public void evaluateUp05() {
+        SteppedTimeLine<String> steppedTimeLine = new SteppedTimeLine<>();
+        steppedTimeLine.addTimeStep(0, "Foo");
+        assertEquals("Foo", steppedTimeLine.evaluateUp(-1));
+        assertEquals("Foo", steppedTimeLine.evaluateUp(1));
+    }
+
     @Test(expected = NullPointerException.class)
     public void evaluateUp04() {
         SteppedTimeLine<String> steppedTimeLine = new SteppedTimeLine<>();
         steppedTimeLine.evaluateUp(0);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void evaluateUp06() {
-        SteppedTimeLine<String> steppedTimeLine = new SteppedTimeLine<>();
-        steppedTimeLine.addTimeStep(0, "Foo");
-        steppedTimeLine.evaluateUp(-1);
     }
 }
