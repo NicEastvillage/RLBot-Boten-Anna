@@ -21,6 +21,7 @@ public class AgentInput {
     public static final Vector2 BLUE_GOALPOST_RIGHT = new Vector2(720, -5200);
     public static final Vector2 RED_GOALPOST_LEFT = new Vector2(-720, 5200);
     public static final Vector2 RED_GOALPOST_RIGHT = new Vector2(720, 5200);
+    public static final Vector2 MIDDLE_OF_FIELD = new Vector2(0,0);
 
 
     public static final Vector3[] BIG_BOOST_PADS = {new Vector3(-3070, 4100), new Vector3(3070,-4100), new Vector3(-3070,-4100),new Vector3(-3580,0), new Vector3(3580,0), new Vector3(3070, 4100)};

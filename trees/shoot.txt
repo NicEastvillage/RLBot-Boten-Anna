@@ -6,5 +6,5 @@ Selector
 		Selector
 			Inverter
 				GuardIsBallOnMyHalf
-		TaskGoTowardsPoint my_goal_box
+		TaskGoTowardsPoint middle_of_field
 	TaskGoTowardsPoint ball_land_pos
