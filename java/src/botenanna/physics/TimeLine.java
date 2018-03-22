@@ -29,4 +29,7 @@ public interface TimeLine<T> {
 
     /** Return the last defined item. */
     T getLastItem();
+
+    /** Returns whether any items are defined. */
+    boolean isEmpty();
 }

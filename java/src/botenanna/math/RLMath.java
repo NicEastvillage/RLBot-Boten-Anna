@@ -64,4 +64,10 @@ public class RLMath {
     public static double lerp(double a, double b, double t) {
         return a + (b - a) * t;
     }
+
+    /** Find the time {@code t} that produces value {@code v} when linearly interpolating from {@code a} to {@code b} with time {@code t}.
+     * That means if {@code v = a} this will return {@code 0} and if {@code v = b} this will return {@code 1}. */
+    public static double invLerp(double a, double b, double v) {
+        return b - a != 0 ? v - a / (b - a) : a;
+    }
 }
