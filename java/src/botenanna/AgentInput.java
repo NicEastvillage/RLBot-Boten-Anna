@@ -84,7 +84,7 @@ public class AgentInput {
     public final boolean gameIsOvertime;
     public final boolean gameIsRoundActive;
     public final int gamePlayerCount;
-    public final Vector2 middlefield;
+    public final Vector3 middlefield;
 
     /* UTILS */
     public final double angleToBall;
@@ -158,7 +158,7 @@ public class AgentInput {
         this.gameIsOvertime = packet.getGameInfo().getIsOvertime();
         this.gameIsRoundActive = packet.getGameInfo().getIsRoundActive();
         this.gamePlayerCount = packet.getPlayersCount();
-        this.middlefield = new Vector2(0,0);
+        this.middlefield = new Vector3(0,0,0);
 
         /* UTILS*/
         this.angleToBall = RLMath.carsAngleToPoint(new Vector2(this.myLocation), this.myRotation.yaw, new Vector2(this.ballLocation));
