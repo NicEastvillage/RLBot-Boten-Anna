@@ -18,7 +18,7 @@ import static java.lang.Math.cos;
 
 public class TaskHitTowardsPoint extends Leaf{
 
-private static double carPotentialSpeed = 46;
+private static double carPotentialSpeed = 1300;
 private double precision = 100;
 
 private static final double SLIDE_ANGLE = 1.7;
@@ -33,7 +33,7 @@ private Function<AgentInput, Object> pointFunc;
         pointFunc = ArgumentTranslator.get(arguments[0]);
 
         if (arguments.length == 2) {
-            precision = Double.parseDouble(arguments[1]);
+            precision = Math.toRadians(Double.parseDouble(arguments[1]));
         }
 
     }
@@ -52,16 +52,16 @@ private Function<AgentInput, Object> pointFunc;
         //TODO Change precicion in arguments
         //TODO Version 2 add 3d and expand on ballPoint
         Vector3 target = (Vector3) pointFunc.apply(input);
-        ;
+
 
         // Finds the target based on the given aim
         Vector3 ballVelocity = input.ballVelocity;
         Vector3 myPos = input.myLocation;
         //Predicts the ball position
-        Vector2 ballPos = input.ballLocation.plus(input.ballVelocity.scale(RLMath.predictSeconds(ballVelocity, input.ballLocation, input.myVelocity,myPos,input.myFrontVector))).asVector2();
+        Vector2 ballPos = input.ballLocation.asVector2();//.plus(input.ballVelocity.scale(RLMath.predictSeconds(ballVelocity, input.ballLocation, input.myVelocity,myPos,input.myFrontVector))).asVector2();
         Vector2 point =  findCirclePoint(myPos,ballPos);
 
-       if (angleToTarget(ballPos, ballVelocity, point, target.asVector2())){
+       if (!angleToTarget(ballPos, ballVelocity, point, target.asVector2())){
            point = searchAngle(input,point);
        }
 
@@ -88,18 +88,18 @@ private Function<AgentInput, Object> pointFunc;
     boolean angleToTarget(Vector2 ballPos, Vector3 ballV, Vector2 ballPoint, Vector2 target) {
 
         // Direction of the force, vector  from point to ball CoM
-        Vector2 direction = ballPoint.minus(ballPos);
-        double directionMag = direction.getMagnitude();
+        Vector2 direction = ballPoint.minus(ballPos).getNormalized();
+        //double directionMag = direction.getMagnitude();
 
-        if (direction.isZero()) {
-            directionMag = 1;
-        }
+        //if (direction.isZero()) {
+        //    directionMag = 1;
+        //}
 
         // Calculate it as a unit vector
-        Vector2 unitVector = new Vector2(direction.x / directionMag, direction.y / directionMag);
+        //Vector2 unitVector = new Vector2(direction.x / directionMag, direction.y / directionMag);
 
             //Find the possible momentum.
-        Vector2 maxMomentum = new Vector2(unitVector.x * carPotentialSpeed, unitVector.y * carPotentialSpeed);
+        Vector2 maxMomentum = new Vector2(direction.x * carPotentialSpeed, direction.y * carPotentialSpeed);
 
         // Momentum vector gives the power from the current velocity to the direction of the ball
         Vector2 appliedForce = maxMomentum.plus(ballV.asVector2());//maxMomentum.plus(input.ballVelocity.asVector2());
@@ -109,28 +109,28 @@ private Function<AgentInput, Object> pointFunc;
         double atanTarget = atan2(target.y - ballPos.y, target.x - ballPos.x);
         double ang =  atanTarget - atanForce;
 
-
-        return ang < Math.toRadians(precision/2);
+        if (ang > Math.PI) ang -= 2 * Math.PI;
+        return ang <= precision;
 
     }
 
     Vector2 searchAngle(AgentInput input, Vector2 target){
-        Vector2 angleVector = input.ballVelocity.asVector2().minus(target).scale(-1).getNormalized();
-        return angleVector.scale(3);
+
+        return input.ballVelocity.asVector2().plus(target).getNormalized().scale(-1).scale(400);
     }
 
     Vector2 findCirclePoint(Vector3 myPos, Vector2 ballPos){
         // The size of a circle point
-        double circlePoint = new Vector2(ballPos.x+94*cos(0),ballPos.y+94*cos(0)).getMagnitude();
+        double circlePoint = new Vector2(ballPos.x+40*cos(0),ballPos.y+40*cos(0)).getMagnitude();
 
         // Vector car to ball
-        Vector2  carToBall = myPos.asVector2().minus(ballPos);
+        Vector2  carToBall = myPos.asVector2().minus(ballPos).getNormalized();
 
         // Finds the unitvector of the car and adds the size of the circlepoint Circlevektor
-        Vector2 carUnit = new Vector2((carToBall.x/carToBall.getMagnitude())*circlePoint,(carToBall.y/carToBall.getMagnitude())*circlePoint);
+        Vector2 carUnit = new Vector2(carToBall.x*circlePoint,carToBall.y*circlePoint);
 
         //Finds the vector from
-        return myPos.asVector2().plus(carUnit.scale(-1));
+        return carToBall.plus(carUnit.scale(-1));
     }
 
 }
