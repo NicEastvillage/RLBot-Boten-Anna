@@ -3,67 +3,66 @@ package botenanna.physics;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-/** <p>The TimeLine is able to associate items of type T with a specific time stamp. The TimeLine is then able to return an
- * item based on time passed. The return item will be the item associated with the last passed time stamp.</p>
+/** <p>The SteppedTimeLine is able to associate items of type T with a specific point in time. The SteppedTimeLine is then able to return an
+ * item based on time passed. The return item will be the item associated with the last passed time step.</p>
  *
- * <p>The TimeLine can be reset to start over.</p>
+ * <p>The SteppedTimeLine can be reset to start over.</p>
  *
  * <p>If no item is defined at time = 0, the first defined time's item will be returned until the second item is reached.</p>*/
-public class TimeLine<T> {
+public class SteppedTimeLine<T> {
 
-    /** The TimeStamp is a nested class for the TimeLine. It is used to associate a time with the item of T of the TimeLine */
-    private class TimeStamp {
+    /** The TimeStep is a nested class for the SteppedTimeLine. It is used to associate a time with the item of T of the SteppedTimeLine */
+    private class TimeStep {
         public final double time;
         public final T item;
 
-        public TimeStamp(double time, T item) {
+        public TimeStep(double time, T item) {
             this.time = time;
             this.item = item;
         }
     }
 
     private TimeTracker timeTracker = new TimeTracker();
-    private LinkedList<TimeStamp> timeStamps = new LinkedList<>();
+    private LinkedList<TimeStep> timeSteps = new LinkedList<>();
 
     /** Reset the timeline. */
     public void reset() {
         timeTracker.startTimer();
     }
 
-    /** Add a time stamp which consists of an item and an associated point in time.
+    /** Add a time step which consists of an item and an associated point in time.
      * @param time point in time in seconds. Must be zero or greater.
      * @param item the item which will be returned at this point in time. */
-    public void addTimeStamp(double time, T item) throws IllegalArgumentException {
+    public void addTimeStep(double time, T item) throws IllegalArgumentException {
         // Check arguments
         if (time < 0) {
             throw new IllegalArgumentException("Time must be zero or greater.");
         }
 
-        TimeStamp stamp = new TimeStamp(time, item);
+        TimeStep stamp = new TimeStep(time, item);
 
-        // If no timeStamps are present, just insert this one
-        if (timeStamps.size() == 0) {
-            timeStamps.add(stamp);
+        // If no timeSteps are present, just insert this one
+        if (timeSteps.size() == 0) {
+            timeSteps.add(stamp);
             return;
         }
 
-        // Find position to insert time stamp.
-        // We assume it is placed at the end, because you usually add TimeStamps in order
-        for (int i = timeStamps.size() - 1; i >= 0; i++) {
-            TimeStamp other = timeStamps.get(i);
+        // Find position to insert time step.
+        // We assume it is placed at the end, because you usually add TimeSteps in order
+        for (int i = timeSteps.size() - 1; i >= 0; i++) {
+            TimeStep other = timeSteps.get(i);
             if (other.time < time) {
-                timeStamps.add(i + 1, stamp);
+                timeSteps.add(i + 1, stamp);
                 return;
             } else if (i == 0) {
-                timeStamps.add(0, stamp);
+                timeSteps.add(0, stamp);
                 return;
             }
         }
     }
 
-    /** <p>Evaluate the item associated with the elapsed time since the TimeLine was reset using the internal TimeTracker.
+    /** <p>Evaluate the item associated with the elapsed time since the SteppedTimeLine was reset using the internal TimeTracker.
      * This method will round down to nearest defined item. </p>
      * <p>If no item is defined at time = 0, the first defined time's item will be returned until the second item is reached.</p>
      * @return the item associated with the current time. */
@@ -71,7 +70,7 @@ public class TimeLine<T> {
         return evaluate(timeTracker.getElapsedSecondsTimer());
     }
 
-    /** <p>Evaluate the item associated with the elapsed time since the TimeLine was reset using the internal TimeTracker.
+    /** <p>Evaluate the item associated with the elapsed time since the SteppedTimeLine was reset using the internal TimeTracker.
      * This method will round up to nearest defined item. </p>
      * @return the item associated with the current time. */
     public T evaluateUp() {
@@ -88,17 +87,17 @@ public class TimeLine<T> {
         if (seconds < 0) throw new IllegalArgumentException("Seconds must be zero or greater.");
 
         // Make sure it possible to evaluate
-        if (timeStamps.size() == 0) {
-            throw new NullPointerException("TimeLine is empty.");
+        if (timeSteps.size() == 0) {
+            throw new NullPointerException("SteppedTimeLine is empty.");
         }
 
-        // Find TimeStamp at time rounded down to nearest TimeStamp time
-        TimeStamp active = timeStamps.get(0);
-        for (int i = 0; i < timeStamps.size(); i++) {
-            if (timeStamps.get(i).time <= seconds) {
-                active = timeStamps.get(i);
+        // Find TimeStep at time rounded down to nearest TimeStep time
+        TimeStep active = timeSteps.get(0);
+        for (int i = 0; i < timeSteps.size(); i++) {
+            if (timeSteps.get(i).time <= seconds) {
+                active = timeSteps.get(i);
             } else {
-                // Break when reaching unreached TimeStamps
+                // Break when reaching unreached TimeSteps
                 break;
             }
         }
@@ -116,46 +115,46 @@ public class TimeLine<T> {
         if (seconds < 0) throw new IllegalArgumentException("Seconds must be zero or greater.");
 
         // Make sure it possible to evaluate
-        if (timeStamps.size() == 0) {
-            throw new NullPointerException("TimeLine is empty.");
+        if (timeSteps.size() == 0) {
+            throw new NullPointerException("SteppedTimeLine is empty.");
         }
 
-        // Find TimeStamp at time rounded up to nearest TimeStamp time
-        for (int i = 0; i < timeStamps.size(); i++) {
-            if (timeStamps.get(i).time > seconds) {
-                // This is the first TimeStamp with a greater time
-                return timeStamps.get(i).item;
+        // Find TimeStep at time rounded up to nearest TimeStep time
+        for (int i = 0; i < timeSteps.size(); i++) {
+            if (timeSteps.get(i).time > seconds) {
+                // This is the first TimeStep with a greater time
+                return timeSteps.get(i).item;
             }
         }
 
-        return timeStamps.getLast().item;
+        return timeSteps.getLast().item;
     }
 
-    /** Retrieve a List of all timeStamp times. */
+    /** Retrieve a List of all step times. */
     public List<Double> getTimes() {
-        ArrayList<Double> list = new ArrayList<>(timeStamps.size());
-        for (TimeStamp timeStamp : timeStamps) {
-            list.add(timeStamp.time);
+        ArrayList<Double> list = new ArrayList<>(timeSteps.size());
+        for (TimeStep timeStep : timeSteps) {
+            list.add(timeStep.time);
         }
         return list;
     }
 
-    /** Retrieve a List of all timeStamp elements. */
+    /** Retrieve a List of all step elements. */
     public List<T> getElements() {
-        ArrayList<T> list = new ArrayList<>(timeStamps.size());
-        for (TimeStamp timeStamp : timeStamps) {
-            list.add(timeStamp.item);
+        ArrayList<T> list = new ArrayList<>(timeSteps.size());
+        for (TimeStep timeStep : timeSteps) {
+            list.add(timeStep.item);
         }
         return list;
     }
 
-    /** Returns the last point in time of which an element is defined. */
-    public double lastTimeStampTime() {
-        return timeStamps.getLast().time;
+    /** Returns the last point in time of which an element is defined. This is equal to the SteppedTimeLines length */
+    public double lastStepTime() {
+        return timeSteps.getLast().time;
     }
 
-    /** Returns the element returned as the last in the TimeLine. */
-    public T lastTimeStampElement() {
-        return timeStamps.getLast().item;
+    /** Returns the element returned at the last step in the SteppedTimeLine. This is also the element return at infinity. */
+    public T lastStepElement() {
+        return timeSteps.getLast().item;
     }
 }
