@@ -49,10 +49,9 @@ private Function<AgentInput, Object> pointFunc;
 
 
         //TODO Change current target to target aquired though arguments
-        //TODO Change precicion in arguments
-        //TODO Version 2 add 3d and expand on ballPoint
+        //TODO Version 2 add 3d and expand on circlePoint
         Vector3 target = (Vector3) pointFunc.apply(input);
-
+        boolean withBoost =true;
 
         // Finds the target based on the given aim
         Vector3 ballVelocity = input.ballVelocity;
@@ -63,6 +62,7 @@ private Function<AgentInput, Object> pointFunc;
 
        if (!angleToTarget(ballPos, ballVelocity, point, target.asVector2())){
            point = searchAngle(input,point);
+           withBoost=false;
        }
 
         //Same as drive towards point, it will  turn toward the point and drive there.
@@ -77,7 +77,8 @@ private Function<AgentInput, Object> pointFunc;
             }
         //Speed boost with boost if the car is too slow
         if (input.ballLocation.z<100 && input.myVelocity.asVector2().getMagnitude()<carPotentialSpeed
-                && RLMath.carsAngleToPoint(ballPos, input.myRotation.yaw,input.ballLandingPosition.asVector2())>0.2){
+                && RLMath.carsAngleToPoint(ballPos, input.myRotation.yaw,input.ballLandingPosition.asVector2())>0.2
+                && withBoost){
             output.withBoost();
         }
 
@@ -120,6 +121,7 @@ private Function<AgentInput, Object> pointFunc;
     }
 
     Vector2 findCirclePoint(Vector3 myPos, Vector2 ballPos){
+        // TODO Can be expanded to find specific points and predict the balls movement more closely
         // The size of a circle point
         double circlePoint = new Vector2(ballPos.x+40*cos(0),ballPos.y+40*cos(0)).getMagnitude();
 
@@ -130,7 +132,7 @@ private Function<AgentInput, Object> pointFunc;
         Vector2 carUnit = new Vector2(carToBall.x*circlePoint,carToBall.y*circlePoint);
 
         //Finds the vector from
-        return carToBall.plus(carUnit.scale(-1));
+        return ballPos.plus(carUnit.scale(-1));
     }
 
 }
