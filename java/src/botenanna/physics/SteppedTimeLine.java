@@ -10,7 +10,7 @@ import java.util.List;
  * <p>The SteppedTimeLine can be reset to start over.</p>
  *
  * <p>If no item is defined at time = 0, the first defined time's item will be returned until the second item is reached.</p>*/
-public class SteppedTimeLine<T> {
+public class SteppedTimeLine<T> implements TimeLine<T> {
 
     /** The TimeStep is a nested class for the SteppedTimeLine. It is used to associate a time with the item of T of the SteppedTimeLine */
     private class TimeStep {
@@ -130,7 +130,7 @@ public class SteppedTimeLine<T> {
         return timeSteps.getLast().item;
     }
 
-    /** Retrieve a List of all step times. */
+    /** Retrieve a List of all step times in chronological order. */
     public List<Double> getTimes() {
         ArrayList<Double> list = new ArrayList<>(timeSteps.size());
         for (TimeStep timeStep : timeSteps) {
@@ -139,8 +139,8 @@ public class SteppedTimeLine<T> {
         return list;
     }
 
-    /** Retrieve a List of all step elements. */
-    public List<T> getElements() {
+    /** Retrieve a List of all items in chronological order. */
+    public List<T> getItems() {
         ArrayList<T> list = new ArrayList<>(timeSteps.size());
         for (TimeStep timeStep : timeSteps) {
             list.add(timeStep.item);
@@ -148,13 +148,23 @@ public class SteppedTimeLine<T> {
         return list;
     }
 
+    /** Returns the first point in time of which an element is defined. */
+    public double getFirstTime() {
+        return timeSteps.getFirst().time;
+    }
+
+    /** Returns the item returned at the first step in the SteppedTimeLine. This is also the element return at infinity. */
+    public T getFirstItem() {
+        return timeSteps.getFirst().item;
+    }
+
     /** Returns the last point in time of which an element is defined. This is equal to the SteppedTimeLines length */
-    public double lastStepTime() {
+    public double getLastTime() {
         return timeSteps.getLast().time;
     }
 
-    /** Returns the element returned at the last step in the SteppedTimeLine. This is also the element return at infinity. */
-    public T lastStepElement() {
+    /** Returns the item returned at the last step in the SteppedTimeLine. This is also the item return at infinity. */
+    public T getLastItem() {
         return timeSteps.getLast().item;
     }
 }

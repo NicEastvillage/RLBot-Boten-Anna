@@ -9,7 +9,7 @@ public class InterpolatedTimeLine {
 
     public InterpolatedTimeLine(SteppedTimeLine<Vector3> points) {
         this.points = points;
-        duration = points.lastStepTime();
+        duration = points.getLastTime();
     }
 
 
