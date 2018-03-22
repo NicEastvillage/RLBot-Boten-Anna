@@ -232,4 +232,48 @@ public class AgentInput {
         return playerIndex == 0 ? BLUE_GOAL_BOX : ORANGE_GOAL_BOX;
     }
 
+    /** @return a double for the time to collision between ball and car  */
+    public double getCollisionTime() {
+
+        // TODO CLEAN UP THE CODE AND IMPROVE PREDICTION
+        Vector3 expectedBall;
+        double predictSeconds = 0;
+        double predict = 0.02;
+        double counter = 0.02;
+        double velocity;
+        boolean isBallStill = false;
+
+        //If the ball is really slow or still, skip the loop and don't predict.
+        if (10 > ballVelocity.getMagnitude()) {
+            isBallStill = true;
+        }
+
+        //The loop will find a spot where the distance of expected ball to car minus the carvelocity multiplied by predict is between -25 and 25.
+        //That way the agent should always be able to choose the right amount of prediction seconds, although this will probably change a little bit every tick as
+        //the carvelocity changes.
+        while (predictSeconds < 0.1 && counter <= 5 && !isBallStill) {
+            expectedBall = ballLocation.plus(ballVelocity.scale(predict));
+
+            // If the car is not really driving, it should overextend its prediction to the future.
+            if (myVelocity.getMagnitude() < 800) {
+                velocity = 800;
+            } else velocity = myVelocity.getMagnitude();
+
+            if (-25 < expectedBall.minus(myLocation.plus(myFrontVector.scale(70))).getMagnitude() - velocity * predict && expectedBall.minus(myLocation.plus(myFrontVector.scale(70))).getMagnitude() - velocity * predict < 25) {
+                predictSeconds = predict;
+            }
+
+            predict += 0.02;
+            counter += 0.02;
+        }
+        // If it runs through loop without choosing one, then don't predict (Probably not needed)
+        if (counter > 5) {
+            predictSeconds = 0;
+        }
+        // if ball is still, don't predict
+        if (isBallStill) {
+            predictSeconds = 0;
+        }
+        return predictSeconds;
+    }
 }

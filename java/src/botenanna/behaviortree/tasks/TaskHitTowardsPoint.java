@@ -63,7 +63,7 @@ private Function<AgentInput, Object> pointFunc;
         Vector3 ballVelocity = input.ballVelocity;
         Vector3 myPos = input.myLocation;
         //Predicts the ball position
-        Vector2 ballPos = input.ballLocation.asVector2();//.plus(input.ballVelocity.scale(RLMath.predictSeconds(ballVelocity, input.ballLocation, input.myVelocity,myPos,input.myFrontVector))).asVector2();
+        Vector2 ballPos = input.ballLandingPosition.plus(input.ballVelocity.scale(input.getCollisionTime())).asVector2();//.plus(input.ballVelocity.scale(RLMath.predictSeconds(ballVelocity, input.ballLocation, input.myVelocity,myPos,input.myFrontVector))).asVector2();
         Vector2 point =  findCirclePoint(myPos,ballPos);
 
        if (!angleToTarget(ballPos, ballVelocity, point, target.asVector2())){

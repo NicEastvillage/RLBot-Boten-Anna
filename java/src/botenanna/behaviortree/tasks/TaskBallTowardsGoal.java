@@ -38,7 +38,7 @@ public class TaskBallTowardsGoal extends Leaf {
 
         //TODO: The agent is only trying to shoot the ball towards the middle of opponents goal, there are commented math for right and left side of the goal
         //TODO: Do so the agent shoots towards the "easisest" place in the goal.
-
+        /*
         Vector3 expectedBall;
         double predictSeconds = 0;
         double predict = 0.02;
@@ -79,7 +79,8 @@ public class TaskBallTowardsGoal extends Leaf {
         // if ball is still, don't predict
         if (isBallStill){
             predictSeconds = 0;
-        }
+        }*/
+        double predictSeconds = input.getCollisionTime();
         Vector3 expectedBallLocation = input.ballLocation.plus(input.ballVelocity.scale(predictSeconds));
 
         //Vector2 ballToRightGoalPostVector = new Vector2(0,0);
