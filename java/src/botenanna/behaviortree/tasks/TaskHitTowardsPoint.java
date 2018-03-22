@@ -116,7 +116,7 @@ private Function<AgentInput, Object> pointFunc;
 
     Vector2 searchAngle(AgentInput input, Vector2 target){
 
-        return input.ballVelocity.asVector2().plus(target).getNormalized().scale(-1).scale(400);
+        return input.ballLandingPosition.asVector2().plus(input.ballVelocity.asVector2().plus(target).getNormalized().scale(-300));
     }
 
     Vector2 findCirclePoint(Vector3 myPos, Vector2 ballPos){
