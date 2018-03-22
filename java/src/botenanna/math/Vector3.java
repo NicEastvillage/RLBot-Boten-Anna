@@ -114,7 +114,7 @@ public class Vector3 {
     /** Linearly interpolate from {@code this} to {@code other} with time {@code t}, such that {@code t = 0} will return
      * {@code this} and {@code t = 1} will return {@code other}.
      * @return a Vector3 that is linearly interpolated from {@code this} to {@code other} with time {@code t}.*/
-    public Vector3 lerp(Vector3 other, double time) {
+    public Vector3 lerpTo(Vector3 other, double time) {
         return lerp(this, other, time);
     }
 

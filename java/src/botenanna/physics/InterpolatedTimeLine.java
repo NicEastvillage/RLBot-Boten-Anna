@@ -1,6 +1,8 @@
 package botenanna.physics;
 
+import botenanna.math.LerpFunction;
 import botenanna.math.RLMath;
+import botenanna.math.Vector3;
 
 import java.util.List;
 
