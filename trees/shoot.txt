@@ -1,10 +1,10 @@
 Selector
 	Sequencer
-	    GuardHasGoalOpportunity
-	    TaskBallTowardsGoal
+		GuardHasGoalOpportunity
+		TaskBallTowardsGoal
 	Sequencer
 		Selector
-		    Inverter
-                GuardIsBallOnMyHalf
-        TaskGoTowardsPoint my_goal_box
-    TaskGoTowardsPoint ball_land_pos
+			Inverter
+			GuardIsBallOnMyHalf
+		TaskGoTowardsPoint my_goal_box
+	TaskGoTowardsPoint ball_land_pos
