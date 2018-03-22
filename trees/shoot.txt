@@ -5,6 +5,6 @@ Selector
 	Sequencer
 		Selector
 			Inverter
-			GuardIsBallOnMyHalf
+				GuardIsBallOnMyHalf
 		TaskGoTowardsPoint my_goal_box
 	TaskGoTowardsPoint ball_land_pos
