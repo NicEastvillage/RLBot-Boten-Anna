@@ -54,7 +54,7 @@ public class TaskBallTowardsGoal extends Leaf {
         //The loop will find a spot where the distance of expected ball to car minus the carvelocity multiplied by predict is between -25 and 25.
         //That way the agent should always be able to choose the right amount of prediction seconds, although this will probably change a little bit every tick as
         //the carvelocity changes.
-        while(predictSeconds < 0.1 && counter <= 5 && !isBallStill){
+        while(predictSeconds < 0.02 && counter <= 5 && !isBallStill){
             expectedBall = input.ballLocation.plus(input.ballVelocity.scale(predict));
 
             // If the car is not really driving, it should overextend its prediction to the future.

@@ -6,6 +6,7 @@ import botenanna.behaviortree.MissingNodeException;
 import botenanna.behaviortree.NodeStatus;
 import botenanna.math.RLMath;
 import botenanna.math.Vector2;
+import botenanna.math.Vector3;
 
 public class GuardHasGoalOpportunity extends Leaf {
     /**<p>The guard will try to determine whether the agent has a goal opportunity or not.
@@ -31,24 +32,69 @@ public class GuardHasGoalOpportunity extends Leaf {
     // Calculating goal opportunities whether the agent is Team Orange or Team Blue.
     @Override
     public NodeStatus run(AgentInput input) throws MissingNodeException {
-        if(input.myTeam == 1) {
+
+        double predict = 0;
+        double predictSeconds = 0;
+        Vector3 expectedBall;
+
+        if (input.myTeam == 1) {
             double RightGoalPost = RLMath.carsAngleToPoint(new Vector2(input.myLocation), input.myRotation.yaw, AgentInput.BLUE_GOALPOST_RIGHT);
             double LeftGoalPost = RLMath.carsAngleToPoint(new Vector2(input.myLocation), input.myRotation.yaw, AgentInput.BLUE_GOALPOST_LEFT);
-            if (input.myLocation.x <= 900 && input.myLocation.x >= -900 && input.ballLocation.x <= 900 && input.ballLocation.x >= -900 && input.myLocation.y >= input.ballLocation.y)
-                return NodeStatus.DEFAULT_SUCCESS;
-            if (input.angleToBall < 0.5 && input.angleToBall > -0.5 && RightGoalPost < 0.5 && LeftGoalPost > -0.5)
-                return NodeStatus.DEFAULT_SUCCESS;
+            //if (input.myLocation.x <= 900 && input.myLocation.x >= -900 && input.ballLocation.x <= 900 && input.ballLocation.x >= -900 && input.myLocation.y >= input.ballLocation.y)
+            //    return NodeStatus.DEFAULT_SUCCESS;
+            //if (input.angleToBall < 0.5 && input.angleToBall > -0.5 && RightGoalPost < 0.5 && LeftGoalPost > -0.5) {
+            //    if (input.ballVelocity.getMagnitude() < 500 && input.myDistanceToBall < 2000) {
+            //        return NodeStatus.DEFAULT_SUCCESS;
+            //    }
+            //
+
+            while (predict <= 7 && predictSeconds < 0.1) {
+                expectedBall = input.ballLocation.plus(input.ballVelocity.scale(predict));
+                if (-50 < expectedBall.minus(input.myLocation.plus(input.myFrontVector.scale(70))).getMagnitude() - 2200 * predict && expectedBall.minus(input.myLocation.plus(input.myFrontVector.scale(70))).getMagnitude() - 2200 * predict < 50) {
+
+                    expectedBall = input.ballLocation.plus(input.ballVelocity.scale(predict));
+                    double angleToExpectedBall = RLMath.carsAngleToPoint(input.myLocation.asVector2(), input.myRotation.yaw, expectedBall.asVector2());
+
+                    if (predictSeconds >= 0.1 && angleToExpectedBall < 0.5 && angleToExpectedBall > -0.5 && RightGoalPost < 0.5 && LeftGoalPost > -0.5) {
+                        return NodeStatus.DEFAULT_SUCCESS;
+                    }
+
+                    if (input.myLocation.x <= 900 && input.myLocation.x >= -900 && expectedBall.x <= 900 && expectedBall.x >= -900 && input.myLocation.y >= input.ballLocation.y) {
+                        return NodeStatus.DEFAULT_SUCCESS;
+                    }
+                    predictSeconds = predict;
+                }
+                predict += 0.1;
+            }
         }
 
-        if(input.myTeam == 0) {
+        if (input.myTeam == 0) {
             double RightGoalPost = RLMath.carsAngleToPoint(new Vector2(input.myLocation), input.myRotation.yaw, AgentInput.RED_GOALPOST_RIGHT);
             double LeftGoalPost = RLMath.carsAngleToPoint(new Vector2(input.myLocation), input.myRotation.yaw, AgentInput.RED_GOALPOST_LEFT);
-            if (input.myLocation.x <= 900 && input.myLocation.x >= -900 && input.ballLocation.x <= 900 && input.ballLocation.x >= -900 && input.myLocation.y <= input.ballLocation.y)
-                return NodeStatus.DEFAULT_SUCCESS;
-            if (input.angleToBall < 0.5 && input.angleToBall > -0.5 && RightGoalPost < 0.5 && LeftGoalPost > -0.5)
-                return NodeStatus.DEFAULT_SUCCESS;
-        }
+            //if (input.myLocation.x <= 900 && input.myLocation.x >= -900 && input.ballLocation.x <= 900 && input.ballLocation.x >= -900 && input.myLocation.y <= input.ballLocation.y)
+            //    return NodeStatus.DEFAULT_SUCCESS;
+            //if (input.angleToBall < 0.5 && input.angleToBall > -0.5 && RightGoalPost < 0.5 && LeftGoalPost > -0.5)
+            //    return NodeStatus.DEFAULT_SUCCESS;
 
+            while (predict <= 7 && predictSeconds < 0.1) {
+                expectedBall = input.ballLocation.plus(input.ballVelocity.scale(predict));
+                if (-50 < expectedBall.minus(input.myLocation.plus(input.myFrontVector.scale(70))).getMagnitude() - 2200 * predict && expectedBall.minus(input.myLocation.plus(input.myFrontVector.scale(70))).getMagnitude() - 2200 * predict < 50) {
+
+                    expectedBall = input.ballLocation.plus(input.ballVelocity.scale(predict));
+                    double angleToExpectedBall = RLMath.carsAngleToPoint(input.myLocation.asVector2(), input.myRotation.yaw, expectedBall.asVector2());
+
+                    if (predictSeconds >= 0.1 && angleToExpectedBall < 0.5 && angleToExpectedBall > -0.5 && RightGoalPost < 0.5 && LeftGoalPost > -0.5) {
+                        return NodeStatus.DEFAULT_SUCCESS;
+                    }
+
+                    if (input.myLocation.x <= 900 && input.myLocation.x >= -900 && expectedBall.x <= 900 && expectedBall.x >= -900 && input.myLocation.y <= input.ballLocation.y) {
+                        return NodeStatus.DEFAULT_SUCCESS;
+                    }
+                    predictSeconds = predict;
+                }
+                predict += 0.1;
+            }
+        }
         return NodeStatus.DEFAULT_FAILURE;
     }
-}
+    }
