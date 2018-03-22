@@ -21,21 +21,30 @@ public class InterpolatedTimeLine<T> implements TimeLine<T> {
         this.steps = new SteppedTimeLine<>();
     }
 
+    /** Add a time step which consists of an item and an associated point in time.
+     * @param time point in time in seconds. Must be zero or greater.
+     * @param item the item which will be returned at this point in time. */
     @Override
     public void addTimeStep(double time, T item) {
         steps.addTimeStep(time, item);
     }
 
+    /** <p>Evaluate the InterpolatedTimeLine at {@code time} which will find nearest defined TimeStep before and after
+     * {@code time} and Interpolate between them with the LerpFunction provided at creation.</p>
+     * <p>If no item is defined at time = 0, the first defined time's item will be returned until the first item
+     * is reached. Similarly, after the last defined item's time, the last item will be returned.</p>
+     * A NullPointerException will be thrown if the InterpolatedTimeLine is empty. */
     @Override
     public T evaluate(double time) throws IllegalArgumentException, NullPointerException {
         if (isEmpty()) throw new NullPointerException("TimeLine is empty.");
         if (time < 0) throw new IllegalArgumentException("The argument time must be 0 or greater.");
 
+        // Find steps before and after given time
         SteppedTimeLine<T>.TimeStep first = steps.evaluateTrue(time);
         SteppedTimeLine<T>.TimeStep second = steps.evaluateUpTrue(time);
 
+        // Calculate the relative time between first and second step. Then lerp with that time
         double relativeTime = RLMath.invLerp(first.time, second.time, time);
-
         return lerpFunction.lerp(first.item, second.item, relativeTime);
     }
 
