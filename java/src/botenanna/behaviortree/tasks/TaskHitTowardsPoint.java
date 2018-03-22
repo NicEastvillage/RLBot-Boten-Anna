@@ -51,7 +51,6 @@ private Function<AgentInput, Object> pointFunc;
     @Override
     public NodeStatus run(AgentInput input) throws MissingNodeException {
 
-
         //TODO Change current target to target aquired though arguments
         //TODO Version 2 add 3d and expand on circlePoint
         Vector3 target = (Vector3) pointFunc.apply(input);
@@ -92,7 +91,6 @@ private Function<AgentInput, Object> pointFunc;
         return new NodeStatus(Status.RUNNING, output,  this);
     }
 
-
     boolean angleToTarget(Vector2 ballPos, Vector3 ballV, Vector2 ballPoint, Vector2 target) {
 
         // Direction of the force, vector  from point to ball CoM
@@ -115,7 +113,7 @@ private Function<AgentInput, Object> pointFunc;
         Vector2 ballPos = input.ballLandingPosition.asVector2();
         Vector2 ballV = input.ballVelocity.asVector2();
 
-        return ballPos.plus(ballV.plus(target).getNormalized().scale(-1));
+        return ballPos.plus(ballV.plus(target).getNormalized().scale(-1*input.ballVelocity.getMagnitude()*input.myDistanceToBall));
     }
 
     Vector2 findCirclePoint(Vector3 myPos, Vector2 ballPos){
