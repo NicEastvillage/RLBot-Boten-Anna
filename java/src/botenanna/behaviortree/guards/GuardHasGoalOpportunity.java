@@ -47,10 +47,16 @@ public class GuardHasGoalOpportunity extends Leaf {
             //        return NodeStatus.DEFAULT_SUCCESS;
             //    }
             //
-
+            double velocity;
             while (predict <= 7 && predictSeconds < 0.1) {
                 expectedBall = input.ballLocation.plus(input.ballVelocity.scale(predict));
-                if (-50 < expectedBall.minus(input.myLocation.plus(input.myFrontVector.scale(70))).getMagnitude() - 2200 * predict && expectedBall.minus(input.myLocation.plus(input.myFrontVector.scale(70))).getMagnitude() - 2200 * predict < 50) {
+                if(input.myVelocity.getMagnitude() < 800){
+                    velocity = 800;
+                }
+                else {
+                    velocity = input.myVelocity.getMagnitude();
+                }
+                if (-50 < expectedBall.minus(input.myLocation.plus(input.myFrontVector.scale(70))).getMagnitude() - velocity * predict && expectedBall.minus(input.myLocation.plus(input.myFrontVector.scale(70))).getMagnitude() - velocity * predict < 50) {
 
                     expectedBall = input.ballLocation.plus(input.ballVelocity.scale(predict));
                     double angleToExpectedBall = RLMath.carsAngleToPoint(input.myLocation.asVector2(), input.myRotation.yaw, expectedBall.asVector2());
@@ -76,9 +82,14 @@ public class GuardHasGoalOpportunity extends Leaf {
             //if (input.angleToBall < 0.5 && input.angleToBall > -0.5 && RightGoalPost < 0.5 && LeftGoalPost > -0.5)
             //    return NodeStatus.DEFAULT_SUCCESS;
 
+            double velocity;
             while (predict <= 7 && predictSeconds < 0.1) {
                 expectedBall = input.ballLocation.plus(input.ballVelocity.scale(predict));
-                if (-50 < expectedBall.minus(input.myLocation.plus(input.myFrontVector.scale(70))).getMagnitude() - 2200 * predict && expectedBall.minus(input.myLocation.plus(input.myFrontVector.scale(70))).getMagnitude() - 2200 * predict < 50) {
+                if(input.myVelocity.getMagnitude() < 800){
+                    velocity = 800;
+                }
+                else velocity = input.myVelocity.getMagnitude();
+                if (-50 < expectedBall.minus(input.myLocation.plus(input.myFrontVector.scale(70))).getMagnitude() - velocity * predict && expectedBall.minus(input.myLocation.plus(input.myFrontVector.scale(70))).getMagnitude() - velocity * predict < 50) {
 
                     expectedBall = input.ballLocation.plus(input.ballVelocity.scale(predict));
                     double angleToExpectedBall = RLMath.carsAngleToPoint(input.myLocation.asVector2(), input.myRotation.yaw, expectedBall.asVector2());
