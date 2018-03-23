@@ -1,5 +1,9 @@
 package botenanna.math;
 
+import botenanna.AgentInput;
+
+import java.util.Vector;
+
 /** A helper class for all math related to Rocket League */
 public class RLMath {
 
@@ -18,7 +22,6 @@ public class RLMath {
         if (angDiff > Math.PI) angDiff -= 2 * Math.PI; // Fix ang between -PI and +PI
 
         return angDiff;
-
     }
 
     /** Translate an angular difference to a smooth steering to avoid wobbly driving. A positive
@@ -28,4 +31,34 @@ public class RLMath {
     public static double steeringSmooth(double angle) {
         return 2.0 / (1 + Math.pow(2.71828182845 , -5 * angle)) - 1; // 2/(1+e^(-5x)) - 1
     }
+
+    /** Takes the car rotation and create a vector pointing up relative to the car.
+     *  @param carRotation the rotation vector for the car.
+     *  @return a vector pointing up relative to the car. */
+    public static Vector3 carUpVector(Vector3 carRotation) {
+        double roofX = Math.cos(carRotation.roll) * Math.sin(carRotation.pitch) * Math.cos(carRotation.yaw) + Math.sin(carRotation.roll) * Math.sin(carRotation.yaw);
+        double roofY = Math.cos(carRotation.yaw) * Math.sin(carRotation.roll) - Math.cos(carRotation.roll) * Math.sin(carRotation.pitch) * Math.sin(carRotation.yaw);
+        double roofZ = Math.cos(carRotation.roll) * Math.cos(carRotation.pitch);
+
+        return new Vector3(roofX, roofY, roofZ);
+    }
+
+    /** Takes the car rotation and create a vector pointing forward relative to the car.
+     *  @param carRotation the rotation vector for the car.
+     *  @return a vector pointing forward relative to the car. */
+    public static Vector3 carFrontVector(Vector3 carRotation){
+        double noseX = -1 * Math.cos(carRotation.pitch) * Math.cos(carRotation.yaw);
+        double noseY = Math.cos(carRotation.pitch) * Math.sin(carRotation.yaw);
+        double noseZ = Math.sin(carRotation.pitch);
+
+        return new Vector3(noseX, noseY, noseZ);
+    }
+
+    /** Takes the car rotation and creates a vector pointing to the side relative to the car.
+     *  @param carRotation the rotation vector for the car.
+     *  @return a vector pointing to the side relative to the car. */
+    public static Vector3 carSideVector(Vector3 carRotation){
+        return carUpVector(carRotation).cross(carFrontVector(carRotation));
+    }
+
 }

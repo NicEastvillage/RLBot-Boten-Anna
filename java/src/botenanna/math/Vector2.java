@@ -1,6 +1,7 @@
 package botenanna.math;
 
 
+import java.util.Objects;
 import java.util.Vector;
 
 /** A vector with two components: x and y */
@@ -62,6 +63,16 @@ public class Vector2 {
         return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2));
     }
 
+    /** @return the distance to another vector squared. Sometimes you don't have to find the square root, then this is faster. */
+    public double getDistanceToSqr(Vector2 vector){
+        return this.minus(vector).getMagnitudeSqr();
+    }
+
+    /** @return the distance to another vector */
+    public double getDistanceTo(Vector2 vector) {
+        return this.minus(vector).getMagnitude();
+    }
+
     /** @return a vector with the same direction, but a length of one. If this is a zero vector, this returns a new zero vector. */
     public Vector2 getNormalized() {
         if (isZero()) return new Vector2();
@@ -83,6 +94,12 @@ public class Vector2 {
         Vector2 that = (Vector2) other;
 
         return this.minus(that).isZero();
+    }
+
+    /** Generate a hash for this vector. */
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
     }
 
     /** @return "Vec2(x, y)" */

@@ -1,14 +1,21 @@
 package botenanna.overlayWindow;
 
+import botenanna.behaviortree.builder.BehaviourTreeBuilder;
+import botenanna.AgentInput;
+import botenanna.Bot;
 import botenanna.math.*;
 import rlbot.api.GameData;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 /** Debug/Status window. Displays a window that shows the stats of a car and the ball. */
 public class StatusWindow extends JFrame {
+
+    private BehaviourTreeBuilder btBuilder;
 
     private JLabel carLocation;
     private JLabel carVelocity;
@@ -16,6 +23,8 @@ public class StatusWindow extends JFrame {
     private JLabel ballLocation;
     private JLabel ballVelocity;
     private JLabel angleToBall;
+    private JLabel currentTask;
+
     private JButton buttonPlay0;
     private JButton buttonPlay1;
     private JButton buttonPlay2;
@@ -34,6 +43,16 @@ public class StatusWindow extends JFrame {
 
     /** Creating the window adding content/layout */
     public StatusWindow(){
+
+        // Pick a file for building behaviour trees
+        btBuilder = new BehaviourTreeBuilder(this);
+        btBuilder.setFileWithChooser();
+        try {
+            // Build a behaviour tree to make sure file is valid. The tree is immediate discarded
+            btBuilder.build();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         //Creating window frame
         JFrame frame = new JFrame("Status StatusWindow"); //Creating the frame
@@ -61,6 +80,7 @@ public class StatusWindow extends JFrame {
         JPanel line4 = new JPanel();  lineCounter++;
         JPanel line5 = new JPanel();  lineCounter++;
         JPanel line6 = new JPanel();  lineCounter++;
+        JPanel line7 = new JPanel();  lineCounter++;
 
         //Setting layout and alignment to left
         topBar.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -70,6 +90,7 @@ public class StatusWindow extends JFrame {
         line4.setLayout(new FlowLayout(FlowLayout.LEFT));
         line5.setLayout(new FlowLayout(FlowLayout.LEFT));
         line6.setLayout(new FlowLayout(FlowLayout.LEFT));
+        line7.setLayout(new FlowLayout(FlowLayout.LEFT));
 
         //Adding default content to labels
         carLocation = new JLabel("Car Location(x, y, z)");
@@ -78,6 +99,7 @@ public class StatusWindow extends JFrame {
         ballLocation = new JLabel("Ball Location(x, y, z)");
         ballVelocity = new JLabel("Ball Velocity(x, y, z)");
         angleToBall = new JLabel("Angle to ball()");
+        currentTask = new JLabel("Running Task: ");
 
         //Creating buttons
         buttonPlay0 = new JButton("Player 1");
@@ -102,6 +124,7 @@ public class StatusWindow extends JFrame {
         ballLocation.setFont(font);
         ballVelocity.setFont(font);
         angleToBall.setFont(font);
+        currentTask.setFont(font);
         //Adding the labels and buttons to the panels
         topBar.add(buttonPlay0);
         topBar.add(buttonPlay1);
@@ -113,6 +136,7 @@ public class StatusWindow extends JFrame {
         line4.add(ballLocation);
         line5.add(ballVelocity);
         line6.add(angleToBall);
+        line7.add(currentTask);
 
         //Creating main panel and adding label panels (stack on y-axis)
         JPanel mainPanel = new JPanel();
@@ -125,6 +149,7 @@ public class StatusWindow extends JFrame {
         mainPanel.add(line4);
         mainPanel.add(line5);
         mainPanel.add(line6);
+        mainPanel.add(line7);
 
         //Adding main panel to frame
         pane.add(mainPanel);
@@ -132,12 +157,13 @@ public class StatusWindow extends JFrame {
     }
 
     /** Updates the labels with the given game data.
-     * @param gameDataPacket a packet with information about the current state of the game. */
-    public void updateData(GameData.GameTickPacket gameDataPacket){
+     * @param input a packet with information about the current output of the game.
+     * @param bot a bot passed from tinguy*/
+    public void updateData(AgentInput input, Bot bot){
 
-        if(selectedPlayer < gameDataPacket.getPlayersCount()){
+        if(selectedPlayer < input.gamePlayerCount){
             //Car info:
-            GameData.PlayerInfo car = gameDataPacket.getPlayers(selectedPlayer); //Gets the car info
+            GameData.PlayerInfo car = input.getPacket().getPlayers(selectedPlayer); //Gets the car info
             Vector3 carLocationVector = Vector3.convert(car.getLocation()); //Gets car location vector
             updateLabelCarLocation(carLocationVector);//Updating car location label
             Vector3 carVelocityVector = Vector3.convert(car.getVelocity()); //Gets car velocity vector
@@ -145,11 +171,13 @@ public class StatusWindow extends JFrame {
             Vector3 carRotationVector = Vector3.convert(car.getRotation()); //Gets car rotation vector
             updateLabelCarRotation(carRotationVector); //Update car rotation label
 
+            //TaskInfo
+            updateLabelCurrentTask(bot.getBehaviorTree().getLastNodeName());
+
             //Ball info:
-            GameData.BallInfo ball = gameDataPacket.getBall(); //Gets ball info
-            Vector3 ballLocationVector = Vector3.convert(ball.getLocation()); //Gets ball location vector
+            Vector3 ballLocationVector = input.ballLocation; //Gets ball location vector
             updateLabelBallLocation(ballLocationVector); //Updating ball location label
-            Vector3 ballVelocityVector = Vector3.convert(ball.getVelocity()); //Gets ball velocity vector
+            Vector3 ballVelocityVector = input.ballVelocity; //Gets ball velocity vector
             updateLabelBallVelocity(ballVelocityVector); //Update ball velocity label
 
             //Angle between car and ball:
@@ -175,6 +203,11 @@ public class StatusWindow extends JFrame {
     public void updateLabelCarVelocity(Vector3 playerVecVelocity){
         carVelocity.setText(formatLabelVectorXYZ("Car Velocity", playerVecVelocity));
 
+    }
+    /** Updates the current task for the chosen bot with a formatted string.
+     *  @param  task a string with the name of the task   */
+    public void updateLabelCurrentTask(String task){
+        currentTask.setText(formatLabelString("Running Task",task ));
     }
 
     /** Updates the car rotation label with formatted string.
@@ -217,11 +250,29 @@ public class StatusWindow extends JFrame {
         return labelName + String.format(" (x:% 8.2f, y:% 8.2f, z:% 8.2f)", vector.x, vector.y, vector.z);
     }
 
+    /** Formats a string to be used in a label.
+     * @param labelName a string used to describe the string.
+     * @param name the name of the task.
+     * @return a formatted string used in a label.
+     */
+    private String formatLabelString(String labelName, String name){
+        List<String> formatName = Arrays.asList(name.split("Task"));
+        if (formatName.isEmpty()) {
+            return labelName + name;
+        }
+            return labelName + " " + formatName.get(formatName.size()-1).replaceAll("\\P{L}+", "");
+    }
+
     /** Formats a string used in a label to describe rotation (pitch, yaw and roll).
      * @param labelName a string used to describe the vector.
      * @param vector a 3D-vector vector describing pitch, yaw and roll.
      * @return a formatted string used in labels describing rotation. */
     private String formatLabelVectorRotation(String labelName, Vector3 vector){
         return labelName + String.format(" (P:% 8.2f, Y:% 8.2f, R:% 8.2f)", vector.pitch, vector.yaw, vector.roll);
+    }
+
+    /** Get the behaviour tree builder. */
+    public BehaviourTreeBuilder getBtBuilder() {
+        return btBuilder;
     }
 }
