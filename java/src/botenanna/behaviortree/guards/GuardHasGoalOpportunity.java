@@ -89,7 +89,7 @@ public class GuardHasGoalOpportunity extends Leaf {
                     velocity = 800;
                 }
                 else velocity = input.myVelocity.getMagnitude();
-                if (-50 < expectedBall.minus(input.myLocation.plus(input.myFrontVector.scale(70))).getMagnitude() - velocity * predict && expectedBall.minus(input.myLocation.plus(input.myFrontVector.scale(70))).getMagnitude() - velocity * predict < 50) {
+                if (-300 < expectedBall.minus(input.myLocation.plus(input.myFrontVector.scale(70))).getMagnitude() - velocity * predict && expectedBall.minus(input.myLocation.plus(input.myFrontVector.scale(70))).getMagnitude() - velocity * predict < 300) {
 
                     expectedBall = input.ballLocation.plus(input.ballVelocity.scale(predict));
                     double angleToExpectedBall = RLMath.carsAngleToPoint(input.myLocation.asVector2(), input.myRotation.yaw, expectedBall.asVector2());
