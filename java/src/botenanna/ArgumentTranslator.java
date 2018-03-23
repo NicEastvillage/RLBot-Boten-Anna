@@ -32,7 +32,7 @@ public class ArgumentTranslator {
 
             case "middle_of_field": return (AgentInput a) -> a.middlefield; // Vector3
             case "plus_middle_of_field": return (AgentInput a) -> a.middlefield.plus(new Vector3(1800,0,0));
-            case "minus_middle_of_field": return (AgentInput a) -> a.middlefield.minus(new Vector3 (1800,0,0);
+            case "minus_middle_of_field": return (AgentInput a) -> a.middlefield.minus(new Vector3 (1800,0,0));
 
             default: throw new UnknownBTKeyException(key);
         }
