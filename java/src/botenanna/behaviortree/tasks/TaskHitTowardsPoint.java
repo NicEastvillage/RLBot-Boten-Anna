@@ -61,7 +61,6 @@ public class TaskHitTowardsPoint extends Leaf{
         Vector3 target = (Vector3) pointFunc.apply(input);
         target =  target.plus(input.ballLandingPosition);
 
-
         //Ball
         Vector2 ballPos = input.ballLandingPosition.plus(input.ballVelocity.scale(input.getCollisionTime())).asVector2();
         Vector3 ballVelocity = input.ballVelocity;
@@ -85,7 +84,7 @@ public class TaskHitTowardsPoint extends Leaf{
                 output.withSlide();
             }
         //Speed boost towards hit
-        if (input.ballLocation.z<100 && input.myVelocity.asVector2().getMagnitude()<carPotentialSpeed
+        if (input.myVelocity.asVector2().getMagnitude()<carPotentialSpeed
                 && RLMath.carsAngleToPoint(ballPos, input.myRotation.yaw,input.ballLandingPosition.asVector2())>0.2
                 && withBoost){
             output.withBoost();
@@ -120,20 +119,16 @@ public class TaskHitTowardsPoint extends Leaf{
     }
 
     /** Searches for vector2 point on the far side of the target and ball velocity vectors
-     * @param input Agentinput from framework
-     * @param target is the target for the task
      * @return a vector2 on the far side of the target and velocity scaled based on the distance/velocity to the ball.
      */
     Vector2 searchAngle(AgentInput input, Vector2 target){
         //Ball
         Vector2 ballPos = input.ballLandingPosition.asVector2();
         Vector2 ballV = input.ballVelocity.asVector2();
-            return ballPos.plus(ballV.plus(target).getNormalized().scale(-1*((input.myDistanceToBall*400)/(input.ballVelocity.getMagnitude()+1))));
+            return ballPos.plus(ballV.plus(target).getNormalized().scale(-1*((input.myDistanceToBall*400)/(input.ballVelocity.getMagnitude()+1))*input.getGoalDirection(input.myPlayerIndex)));
     }
 
     /** Finds a vector2 point on the ball*
-     * @param myPos car position
-     * @param ballPos ball position
      * @return  a Vector2 point on the ball in the direction of the car.
      */
     Vector2 findCirclePoint(Vector3 myPos, Vector2 ballPos){

@@ -238,6 +238,11 @@ public class AgentInput {
         return new Vector3(x * 3070, y * 4100);
         }
 
+    /** @return a veector relative to the players team  */
+    public Vector3 getMyCorner(int x){
+        return new Vector3(x*3070, 4100*getGoalDirection(myPlayerIndex));
+    }
+
         /** @return a double for the time to collision between ball and car  */
     public double getCollisionTime() {
 
