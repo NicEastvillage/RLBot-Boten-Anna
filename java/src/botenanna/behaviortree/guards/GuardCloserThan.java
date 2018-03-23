@@ -11,15 +11,14 @@ import java.util.function.Function;
 
 
 public class GuardCloserThan extends Leaf {
+private Function<AgentInput, Object> to;
 private Function<AgentInput, Object> fromA;
-private Function<AgentInput, Object> pointB;
-private Function<AgentInput, Object> fromC;
+private Function<AgentInput, Object> fromB;
 
-
-    /** The GuardCloserThan compares to Vector3 ands returns whether the distance between those are less than
+    /** The GuardCloserThan compares 3 Vector3 and returns whether the distance between those are less than
      * a given distance. Can be inverted to check if distance is greater than instead.
      *
-     * Its signature is {@code GuardCloserThan <fromA:Vector3> <to:Vector3> <fromC>}*/
+     * Its signature is {@code GuardCloserThan <to:Vector3> <fromA:Vector3> <fromB:Vector3>}*/
 
     public GuardCloserThan(String[] arguments) throws IllegalArgumentException {
         super(arguments);
@@ -28,9 +27,9 @@ private Function<AgentInput, Object> fromC;
             throw new IllegalArgumentException();
         }
 
-        fromA = ArgumentTranslator.get(arguments[0]);
-        pointB = ArgumentTranslator.get(arguments[2]);
-        fromC = ArgumentTranslator.get(arguments[1]);
+        to = ArgumentTranslator.get(arguments[0]);
+        fromA = ArgumentTranslator.get(arguments[2]);
+        fromB = ArgumentTranslator.get(arguments[1]);
     }
     @Override
     public void reset() {
@@ -40,9 +39,9 @@ private Function<AgentInput, Object> fromC;
     @Override
     public NodeStatus run(AgentInput input) throws MissingNodeException {
         Vector3 A = (Vector3) fromA.apply(input);
-        Vector3 B = (Vector3) pointB.apply(input);
-        Vector3 C = (Vector3) fromC.apply(input);
-        if (A.getDistanceTo(B)<C.getDistanceTo(B)) {
+        Vector3 B = (Vector3) fromB.apply(input);
+        Vector3 C = (Vector3) to.apply(input);
+        if (A.getDistanceTo(C)<B.getDistanceTo(C)) {
             return NodeStatus.DEFAULT_SUCCESS;
         }
         return NodeStatus.DEFAULT_FAILURE;

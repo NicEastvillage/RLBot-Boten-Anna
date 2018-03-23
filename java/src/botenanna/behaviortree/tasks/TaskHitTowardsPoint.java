@@ -24,7 +24,7 @@ public class TaskHitTowardsPoint extends Leaf{
     private boolean withBoost = true;
     private double precision = 1;
 
-    /**<p>Make the agent try to hit the ball towards a given  point, if possible. If this is not possible it will try to find a better angle
+    /**<p>TaskHitTowardsPoint makes the agent try to hit the ball towards a given  point, if possible. If this is not possible it will try to find a better angle
      *The agent will simulate how much into the future it should predict.
      *This way the agent will be able to predict and hit the ball.</p>
      *
