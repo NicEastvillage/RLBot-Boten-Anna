@@ -98,7 +98,7 @@ public class GuardHasGoalOpportunity extends Leaf {
                         return NodeStatus.DEFAULT_SUCCESS;
                     }
 
-                    if (input.myLocation.x <= 900 && input.myLocation.x >= -900 && expectedBall.x <= 900 && expectedBall.x >= -900 && input.myLocation.y <= input.ballLocation.y) {
+                    if (predictSeconds >= 0.1 && input.myLocation.x <= 900 && input.myLocation.x >= -900 && expectedBall.x <= 900 && expectedBall.x >= -900 && input.myLocation.y <= input.ballLocation.y) {
                         return NodeStatus.DEFAULT_SUCCESS;
                     }
                     predictSeconds = predict;
