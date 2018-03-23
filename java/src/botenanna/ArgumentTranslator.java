@@ -1,5 +1,7 @@
 package botenanna;
 
+import botenanna.math.Vector3;
+
 import java.util.function.Function;
 
 /** The ArgumentTranslators purpose is to translate the node arguments into Function objects, that allow quick
@@ -29,6 +31,8 @@ public class ArgumentTranslator {
             case "ang_ball": return (AgentInput a) -> a.angleToBall;            // angle (double)
 
             case "middle_of_field": return (AgentInput a) -> a.middlefield; // Vector3
+            case "plus_middle_of_field": return (AgentInput a) -> a.middlefield.plus(new Vector3(1800,0,0));
+            case "minus_middle_of_field": return (AgentInput a) -> a.middlefield.minus(new Vector3 (1800,0,0);
 
             default: throw new UnknownBTKeyException(key);
         }

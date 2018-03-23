@@ -3,8 +3,14 @@ Selector
 		GuardHasGoalOpportunity
 		TaskBallTowardsGoal
 	Sequencer
+		Inverter
+			GuardIsBallOnMyHalf
 		Selector
-			Inverter
-				GuardIsBallOnMyHalf
+			Sequencer
+				GuardIsDistanceLessThan my_pos plus_middle_of_field 1800
+				TaskGoTowardsPoint plus_middle_of_field
+			Sequencer
+				GuardIsDistanceLessThan my_pos minus_middle_of_field 1800
+				TaskGoTowardsPoint minus_middle_of_field 1800
 		TaskGoTowardsPoint middle_of_field
-	TaskGoTowardsPoint ball_land_pos
+	TaskBallTowardsGoal
