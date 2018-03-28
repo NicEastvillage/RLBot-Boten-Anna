@@ -118,7 +118,7 @@ public class BehaviourTreeBuilder {
                 }
             } else {
                 // Error in indentation
-                throw new BehaviourTreeReadException("Wrong indentation in behaviour tree source file (" + file.getName() + ", line " + (lineCount - queue.size()) + ").");
+                throw new BehaviourTreeReadException("Wrong indentation in behaviour tree source file (" + file.getName() + ", line " + (lineCount - queue.size()) + ", indent " + indent + ").");
             }
         }
     }
@@ -184,15 +184,19 @@ public class BehaviourTreeBuilder {
         return queue;
     }
 
-    /** Calculate the number of tabs leading a String.
+    /** Read the number of tabs (or 4x space) leading a String.
      * @param line a String
      * @return the number of tabs leading the String. */
     private int readIndent(String line) throws BehaviourTreeReadException {
+        int TAB_SIZE = 4;
         // Count lines
         int indent = 0;
         for (int i = 0; i < line.length(); i++) {
             if (line.charAt(i) == '\t') {
                 indent++;
+            } else if (i + TAB_SIZE <= line.length() && line.substring(i, i + TAB_SIZE).equals("    ")) {
+                indent++;
+                i += TAB_SIZE - 1;
             } else {
                 break;
             }
