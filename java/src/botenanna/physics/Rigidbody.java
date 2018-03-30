@@ -1,5 +1,6 @@
 package botenanna.physics;
 
+import botenanna.AgentInput;
 import botenanna.math.Vector2;
 import botenanna.math.Vector3;
 import rlbot.api.GameData;
@@ -130,6 +131,75 @@ public class Rigidbody implements Cloneable {
         if (arrivalTime < 0) return Double.NaN; // time is in the past -> will never get there
 
         return arrivalTime;
+    }
+
+    /** @return the time until arrival at any wall. Can be NaN. */
+    public double predictArrivalAtAnyWall() {
+        double[] arrivalTimes = {
+                predictArrivalAtWallXPositive(),
+                predictArrivalAtWallXNegative(),
+                predictArrivalAtWallYPositive(),
+                predictArrivalAtWallYNegative()
+        };
+        double earliestTimeOfArrival = Double.NaN;
+        for (int i = 0; i < arrivalTimes.length; i++) {
+            if (!Double.isNaN(arrivalTimes[i]) && arrivalTimes[i] < earliestTimeOfArrival) {
+                earliestTimeOfArrival = arrivalTimes[i];
+            }
+        }
+        return earliestTimeOfArrival;
+    }
+
+    /** @return the time until arrival at wall at x positive. */
+    public double predictArrivalAtWallXPositive() {
+        if (position.x < AgentInput.ARENA_LENGTH / 2) {
+            if (velocity.x > 0) {
+                return (AgentInput.ARENA_LENGTH / 2 - position.x) / velocity.x;
+            } else {
+                return Double.NaN;
+            }
+        }
+        // We assume that if the RigidBody is outside of the field, it will be pushed in immediately
+        return 0;
+    }
+
+    /** @return the time until arrival at wall at x negative. */
+    public double predictArrivalAtWallXNegative() {
+        if (position.x > -AgentInput.ARENA_LENGTH / 2) {
+            if (velocity.x < 0) {
+                return (-AgentInput.ARENA_LENGTH / 2 - position.x) / velocity.x;
+            } else {
+                return Double.NaN;
+            }
+        }
+        // We assume that if the RigidBody is outside of the field, it will be pushed in immediately
+        return 0;
+    }
+
+    /** @return the time until arrival at wall at y positive. */
+    public double predictArrivalAtWallYPositive() {
+        if (position.y < AgentInput.ARENA_WIDTH / 2) {
+            if (velocity.y > 0) {
+                return (AgentInput.ARENA_WIDTH / 2 - position.y) / velocity.y;
+            } else {
+                return Double.NaN;
+            }
+        }
+        // We assume that if the RigidBody is outside of the field, it will be pushed in immediately
+        return 0;
+    }
+
+    /** @return the time until arrival at wall at y negative. */
+    public double predictArrivalAtWallYNegative() {
+        if (position.y > -AgentInput.ARENA_WIDTH / 2) {
+            if (velocity.y < 0) {
+                return (-AgentInput.ARENA_WIDTH / 2 - position.y) / velocity.y;
+            } else {
+                return Double.NaN;
+            }
+        }
+        // We assume that if the RigidBody is outside of the field, it will be pushed in immediately
+        return 0;
     }
     //endregion
 
