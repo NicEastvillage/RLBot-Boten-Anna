@@ -60,7 +60,7 @@ public class GrpcService extends BotGrpc.BotImplBase {
 
 
             // Update status window with new data
-            // GrpcServer.statusWindow.updateData(input, bot); // FIXME Link with new debug window
+            BotenAnna.instance.updateBotInfoDisplay(bot, input);
 
             return bot.process(input).toControllerState();
 
