@@ -133,6 +133,26 @@ public class Rigidbody implements Cloneable {
     }
     //endregion
 
+    /** Get the path which this RigidBody will travel.
+     * @param duration must be zero or positive.
+     * @param stepsize must be positive. A smaller step size will increase the accuracy of the Path. */
+    public Path getPath(double duration, double stepsize) {
+        if (duration < 0) throw new IllegalArgumentException("Duration must be zero or positive.");
+        if (stepsize <= 0) throw new IllegalArgumentException("Step size must be positive.");
+
+        Rigidbody simulation = this.clone();
+
+        Path path = new Path();
+
+        for (double time = 0; time <= duration; time += stepsize) {
+            simulation.step(stepsize);
+            Vector3 pos = simulation.getPosition();
+            path.addTimeStep(time, pos);
+        }
+
+        return path;
+    }
+
     /** Clone this Rigidbody.
      * @return a Rigidbody with the same position, velocity, acceleration and gravity */
     @Override
