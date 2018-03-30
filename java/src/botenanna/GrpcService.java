@@ -49,7 +49,7 @@ public class GrpcService extends BotGrpc.BotImplBase {
             synchronized (this) {
                 if (!registeredBots.containsKey(playerIndex)) {
                     int teamIndex = request.getPlayers(playerIndex).getTeam() % 2;
-                    BehaviorTree tree = null; // GrpcServer.statusWindow.getBtBuilder().build(); // FIXME Fetch BehaviourTree from somewhere else
+                    BehaviorTree tree = BotenAnna.defaultBTBuilder.build();
                     Bot bot = new Bot(playerIndex, teamIndex, tree);
                     registeredBots.put(playerIndex, bot);
                 }
