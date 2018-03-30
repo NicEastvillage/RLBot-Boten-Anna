@@ -29,6 +29,7 @@ public class BehaviourTreeBuilder {
         // Open file window
         FileChooser fc = new FileChooser();
         fc.setTitle("Open Behaviour Tree Source File");
+        fc.setInitialDirectory(new File(System.getProperty("user.home"), "documents/"));
         file = fc.showOpenDialog(parent);
     }
 
