@@ -1,10 +1,8 @@
 package botenanna;
 
-import botenanna.overlayWindow.StatusWindow;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -13,12 +11,20 @@ import java.util.stream.Stream;
 
 public class GrpcServer {
 
-    static final int DEFAULT_PORT = 25368;
-    private static int port;
-    private final Server server;
-    public static StatusWindow statusWindow = new StatusWindow();
+    private static final int DEFAULT_PORT = 25368;
+    private static final String PORT_FILE_NAME = "port.txt";
 
-    private GrpcServer() throws IOException {
+    private final int port;
+    private final Server server;
+
+    public GrpcServer() throws IOException {
+
+        // Scenario: you finished your bot and submitted it to a tournament. Your opponent hard-coded the same
+        // as you, and the match can't start because of the conflict. Because of this line, you can ask the
+        // organizer make a file called "port.txt" in the same directory as your .jar, and put some other number in it.
+        // This matches code in JavaAgent.py
+        port = readPortFromFile().orElse(DEFAULT_PORT);
+
         server = ServerBuilder.forPort(port).addService(new GrpcService()).build();
     }
 
@@ -40,44 +46,9 @@ public class GrpcServer {
         }
     }
 
-    /**
-     * Await termination on the main thread since the grpc library uses daemon threads.
-     */
-    private void blockUntilShutdown() throws InterruptedException {
-        if (server != null) {
-            server.awaitTermination();
-        }
-    }
-
-    /**
-     * Main method.  This comment makes the linter happy.
-     */
-    public static void main(String[] args) throws Exception {
-
+    private static Optional<Integer> readPortFromFile() {
         try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        // Scenario: you finished your bot and submitted it to a tournament. Your opponent hard-coded the same
-        // as you, and the match can't start because of the conflict. Because of this line, you can ask the
-        // organizer make a file called "port.txt" in the same directory as your .jar, and put some other number in it.
-        // This matches code in JavaAgent.py
-        port = readPortFromFile().orElse(DEFAULT_PORT);
-
-        GrpcServer server = new GrpcServer();
-        server.start();
-
-        System.out.println(String.format("Grpc server started on port %s. Listening for Rocket League data!", port));
-
-
-        server.blockUntilShutdown();
-    }
-
-    public static Optional<Integer> readPortFromFile() {
-        try {
-            Stream<String> lines = Files.lines(Paths.get("port.txt"));
+            Stream<String> lines = Files.lines(Paths.get(PORT_FILE_NAME));
             Optional<String> firstLine = lines.findFirst();
             return firstLine.map(Integer::parseInt);
         } catch (NumberFormatException e) {
@@ -86,5 +57,9 @@ public class GrpcServer {
         } catch (Throwable e) {
             return Optional.empty();
         }
+    }
+
+    public int getPort() {
+        return port;
     }
 }
