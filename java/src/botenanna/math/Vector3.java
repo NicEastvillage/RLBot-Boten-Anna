@@ -135,6 +135,11 @@ public class Vector3 {
         return String.format("Vec3(" + x + ", " + y + ", " + z + ")");
     }
 
+    /** @return "(x, y, z)" where each number is formatted "% 7.2f"*/
+    public String toStringFixedSize() {
+        return String.format("(% 7.2f, % 7.2f, % 7.2f)", x, y, z);
+    }
+
     /** Convert from GameData to our Vector3. */
     public static Vector3 convert(GameData.Vector3 vec) {
         return new Vector3(vec.getX(), vec.getY(), vec.getZ());

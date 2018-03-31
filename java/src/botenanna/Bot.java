@@ -28,6 +28,14 @@ public class Bot {
         return behaviorTree.evaluate(packet);
     }
 
+    public int getPlayerIndex() {
+        return playerIndex;
+    }
+
+    public Team getTeam() {
+        return team;
+    }
+
     /** Getter for the behavior tree
      * @return the behaviorTree    */
     public BehaviorTree getBehaviorTree() {

@@ -82,7 +82,7 @@ public class BotenAnna extends Application {
 
     public void updateBotInfoDisplay(Bot bot) {
         if (!botInfoDisplays.containsKey(bot)) {
-            BotInfoDisplay display = new BotInfoDisplay();
+            BotInfoDisplay display = new BotInfoDisplay(bot);
             root.getChildren().add(display);
             botInfoDisplays.put(bot, display);
         }
