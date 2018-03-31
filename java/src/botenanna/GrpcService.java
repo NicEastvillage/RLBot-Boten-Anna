@@ -55,7 +55,7 @@ public class GrpcService extends BotGrpc.BotImplBase {
             synchronized (this) {
                 if (!registeredBots.containsKey(playerIndex)) {
                     int teamIndex = request.getPlayers(playerIndex).getTeam() % 2;
-                    BehaviorTree tree = BotenAnna.defaultBTBuilder.build();
+                    BehaviorTree tree = BotenAnna.defaultBTBuilder.buildUsingDefault();
                     Bot bot = new Bot(playerIndex, teamIndex, tree);
                     registeredBots.put(playerIndex, bot);
                 }

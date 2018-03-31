@@ -80,10 +80,10 @@ public class BotenAnna extends Application {
 
     private void createDefaultBehaviourTreeBuilder(Stage stage) {
         defaultBTBuilder = new BehaviourTreeBuilder(stage);
-        defaultBTBuilder.setFileWithChooser();
+        defaultBTBuilder.setupDefaultFile();
         try {
             // Build a behaviour tree to make sure file is valid. The tree is immediately discarded
-            defaultBTBuilder.build();
+            defaultBTBuilder.buildUsingDefault();
         } catch (Exception e) {
             System.out.println("Error when opening behaviour tree source file: " + e.getMessage());
             System.exit(-1);
