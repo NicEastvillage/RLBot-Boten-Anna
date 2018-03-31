@@ -2,6 +2,8 @@ package botenanna.behaviortree.builder;
 
 import botenanna.behaviortree.BehaviorTree;
 import botenanna.behaviortree.Node;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,12 +14,12 @@ import java.util.stream.Collectors;
 
 public class BehaviourTreeBuilder {
 
-    private Component parent;
+    private Stage parent;
     private File file;
 
     /** A BehaviourTreeBuilder is an assisting tool for building BehaviourTrees from files. The file can be specified
      * with a FileChooser. */
-    public BehaviourTreeBuilder(Component parent) {
+    public BehaviourTreeBuilder(Stage parent) {
         this.parent = parent;
     }
 
@@ -25,22 +27,17 @@ public class BehaviourTreeBuilder {
      * window, where the user can specify which file to open. */
     public void setFileWithChooser() throws MissingBehaviourTreeException {
         // Open file window
-        JFileChooser fc = new JFileChooser();
-        int status = fc.showOpenDialog(parent);
-        if (status == JFileChooser.APPROVE_OPTION) {
-            // Build from file
-            file = fc.getSelectedFile();
-        } else {
-            // User did not choose a file or error occurred
-            throw new MissingBehaviourTreeException("User did not choose a file or error occurred.");
-        }
+        FileChooser fc = new FileChooser();
+        fc.setTitle("Open Behaviour Tree Source File");
+        fc.setInitialDirectory(new File(System.getProperty("user.home"), "documents/"));
+        file = fc.showOpenDialog(parent);
     }
 
     /** Build a BehaviourTree from the file specified with the {@code setFileWithChooser} method. Throws a MissingBehaviourTreeException
      * if the file has not been specified.
      * @return a BehaviourTree. */
     public BehaviorTree build() throws MissingBehaviourTreeException, FileNotFoundException, IOException {
-        if (file == null) throw new MissingBehaviourTreeException("File not specified yet.");
+        if (file == null) throw new MissingBehaviourTreeException("Default file not specified.");
         return build(file);
     }
 

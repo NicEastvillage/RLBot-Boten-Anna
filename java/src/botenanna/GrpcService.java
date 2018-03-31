@@ -8,11 +8,17 @@ import rlbot.api.GameData;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ArrayBlockingQueue;
 
 public class GrpcService extends BotGrpc.BotImplBase {
     public Bot bot;
     private TimeTracker timeTracker = new TimeTracker();
     private Map<Integer, Bot> registeredBots = new HashMap<>();
+    private ArrayBlockingQueue<Bot> botUpdateQueue;
+
+    public GrpcService(ArrayBlockingQueue<Bot> botUpdateQueue) {
+        this.botUpdateQueue = botUpdateQueue;
+    }
 
     /**
      * This is where we receive a message from the grpc server, and we wanna send
@@ -49,7 +55,7 @@ public class GrpcService extends BotGrpc.BotImplBase {
             synchronized (this) {
                 if (!registeredBots.containsKey(playerIndex)) {
                     int teamIndex = request.getPlayers(playerIndex).getTeam() % 2;
-                    BehaviorTree tree = GrpcServer.statusWindow.getBtBuilder().build();
+                    BehaviorTree tree = BotenAnna.defaultBTBuilder.build();
                     Bot bot = new Bot(playerIndex, teamIndex, tree);
                     registeredBots.put(playerIndex, bot);
                 }
@@ -57,10 +63,10 @@ public class GrpcService extends BotGrpc.BotImplBase {
 
             // This is the bot that needs to think
             Bot bot = registeredBots.get(playerIndex);
+            bot.setLastInputReceived(input);
 
-
-            // Update status window with new data
-            GrpcServer.statusWindow.updateData(input, bot);
+            // Put bot in queue, so window can show the new state of the bot
+            botUpdateQueue.put(bot);
 
             return bot.process(input).toControllerState();
 
