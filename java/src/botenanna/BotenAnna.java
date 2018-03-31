@@ -1,6 +1,7 @@
 package botenanna;
 
 import botenanna.behaviortree.builder.BehaviourTreeBuilder;
+import botenanna.overlayWindow.BallInfoDisplay;
 import botenanna.overlayWindow.BotInfoDisplay;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -21,8 +22,10 @@ public class BotenAnna extends Application {
     public static BehaviourTreeBuilder defaultBTBuilder;
 
     private Pane root;
+    private Pane botInfoDisplayRoot;
     private GrpcServer grpc;
     private Map<Bot, BotInfoDisplay> botInfoDisplays;
+    private BallInfoDisplay ballInfoDisplay;
 
     public static void main(String[] args) {
         launch(args);
@@ -35,9 +38,15 @@ public class BotenAnna extends Application {
         createDefaultBehaviourTreeBuilder(stage);
         startGrpcServerAndInputListener();
 
+        root = new VBox();
+
+        botInfoDisplayRoot = new VBox();
+        root.getChildren().add(botInfoDisplayRoot);
         botInfoDisplays = new HashMap<>();
 
-        root = new VBox();
+        ballInfoDisplay = new BallInfoDisplay();
+        root.getChildren().add(ballInfoDisplay);
+
         Scene scene = new Scene(root, 300, 300);
         stage.setScene(scene);
         stage.setTitle("Boten Anna - Debug");
@@ -60,6 +69,7 @@ public class BotenAnna extends Application {
                     final Bot bot = botUpdateQueue.poll();
                     if (bot != null) {
                         updateBotInfoDisplay(bot);
+                        ballInfoDisplay.update(bot.getLastInputReceived());
                     }
                     lastUpdate.set(now);
                 }
@@ -83,7 +93,7 @@ public class BotenAnna extends Application {
     public void updateBotInfoDisplay(Bot bot) {
         if (!botInfoDisplays.containsKey(bot)) {
             BotInfoDisplay display = new BotInfoDisplay(bot);
-            root.getChildren().add(display);
+            botInfoDisplayRoot.getChildren().add(display);
             botInfoDisplays.put(bot, display);
         }
         botInfoDisplays.get(bot).update(bot);
