@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Optional;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.stream.Stream;
 
 public class GrpcServer {
@@ -17,7 +18,7 @@ public class GrpcServer {
     private final int port;
     private final Server server;
 
-    public GrpcServer() throws IOException {
+    public GrpcServer(ArrayBlockingQueue<Bot> botUpdateQueue) throws IOException {
 
         // Scenario: you finished your bot and submitted it to a tournament. Your opponent hard-coded the same
         // as you, and the match can't start because of the conflict. Because of this line, you can ask the
@@ -25,7 +26,7 @@ public class GrpcServer {
         // This matches code in JavaAgent.py
         port = readPortFromFile().orElse(DEFAULT_PORT);
 
-        server = ServerBuilder.forPort(port).addService(new GrpcService()).build();
+        server = ServerBuilder.forPort(port).addService(new GrpcService(botUpdateQueue)).build();
     }
 
     /** Start serving requests. */

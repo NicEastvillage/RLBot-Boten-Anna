@@ -1,6 +1,7 @@
 package botenanna.overlayWindow;
 
 import botenanna.AgentInput;
+import botenanna.Bot;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
@@ -15,7 +16,11 @@ public class BotInfoDisplay extends VBox {
         getChildren().add(infoLabel);
     }
 
-    public void update(AgentInput input) {
+    public void update(Bot bot) {
+        AgentInput input = bot.getLastInputReceived();
+        if (input == null)
+            return;
+
         infoLabel.setText(String.format(
                 "Pos: %s\n" +
                 "Vel: %s\n" +

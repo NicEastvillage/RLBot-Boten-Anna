@@ -2,13 +2,17 @@ package botenanna;
 
 import botenanna.behaviortree.builder.BehaviourTreeBuilder;
 import botenanna.overlayWindow.BotInfoDisplay;
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.beans.property.LongProperty;
+import javafx.beans.property.SimpleLongProperty;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.scene.layout.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ArrayBlockingQueue;
 
 public class BotenAnna extends Application {
 
@@ -18,7 +22,7 @@ public class BotenAnna extends Application {
 
     private Pane root;
     private GrpcServer grpc;
-    private Map<Bot, BotInfoDisplay> botBotInfoDisplays;
+    private Map<Bot, BotInfoDisplay> botInfoDisplays;
 
     public static void main(String[] args) {
         launch(args);
@@ -29,9 +33,9 @@ public class BotenAnna extends Application {
         instance = this;
 
         createDefaultBehaviourTreeBuilder(stage);
-        startGrpcServer();
+        startGrpcServerAndInputListener();
 
-        botBotInfoDisplays = new HashMap<>();
+        botInfoDisplays = new HashMap<>();
 
         root = new VBox();
         Scene scene = new Scene(root, 300, 300);
@@ -41,10 +45,27 @@ public class BotenAnna extends Application {
         stage.show();
     }
 
-    private void startGrpcServer() throws Exception {
-        grpc = new GrpcServer();
+    private void startGrpcServerAndInputListener() throws Exception {
+        final ArrayBlockingQueue<Bot> botUpdateQueue = new ArrayBlockingQueue<>(3);
+        grpc = new GrpcServer(botUpdateQueue);
         grpc.start();
         System.out.println(String.format("Grpc server started on port %s. Listening for Rocket League data!", grpc.getPort()));
+
+        // Setup listener that calls updateBotInfoDisplay whenever a bot update is placed in botUpdateQueue
+        final LongProperty lastUpdate = new SimpleLongProperty();
+        AnimationTimer timer = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                if (now - lastUpdate.get() > 0) {
+                    final Bot bot = botUpdateQueue.poll();
+                    if (bot != null) {
+                        updateBotInfoDisplay(bot);
+                    }
+                    lastUpdate.set(now);
+                }
+            }
+        };
+        timer.start();
     }
 
     private void createDefaultBehaviourTreeBuilder(Stage stage) {
@@ -59,12 +80,12 @@ public class BotenAnna extends Application {
         }
     }
 
-    public void updateBotInfoDisplay(Bot bot, AgentInput input) {
-        if (!botBotInfoDisplays.containsKey(bot)) {
+    public void updateBotInfoDisplay(Bot bot) {
+        if (!botInfoDisplays.containsKey(bot)) {
             BotInfoDisplay display = new BotInfoDisplay();
             root.getChildren().add(display);
-            botBotInfoDisplays.put(bot, display);
+            botInfoDisplays.put(bot, display);
         }
-        botBotInfoDisplays.get(bot).update(input);
+        botInfoDisplays.get(bot).update(bot);
     }
 }
