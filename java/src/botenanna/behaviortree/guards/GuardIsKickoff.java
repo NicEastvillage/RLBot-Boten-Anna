@@ -24,8 +24,8 @@ public class GuardIsKickoff extends Leaf{
     @Override
     public NodeStatus run(AgentInput input) throws MissingNodeException {
 
-        if(input.ballLocation.x == 0 && input.ballLocation.y == 0){
-            if(input.ballVelocity.x == 0 && input.ballVelocity.y == 0)
+        if(input.ball.getPosition().asVector2().isZero()){
+            if(input.ball.getVelocity().asVector2().isZero())
                 return NodeStatus.DEFAULT_SUCCESS;
         }
 

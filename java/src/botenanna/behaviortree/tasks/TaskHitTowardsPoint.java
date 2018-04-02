@@ -8,10 +8,8 @@ import botenanna.math.RLMath;
 import botenanna.math.Vector2;
 import botenanna.math.Vector3;
 
-import java.util.Vector;
 import java.util.function.Function;
 
-import static java.lang.Math.acos;
 import static java.lang.Math.atan2;
 import static java.lang.Math.cos;
 
@@ -62,10 +60,10 @@ public class TaskHitTowardsPoint extends Leaf{
         target =  target.plus(input.ballLandingPosition);
 
         //Ball
-        Vector2 ballPos = input.ballLandingPosition.plus(input.ballVelocity.scale(input.getCollisionTime())).asVector2();
-        Vector3 ballVelocity = input.ballVelocity;
+        Vector2 ballPos = input.ballLandingPosition.plus(input.ball.getVelocity().scale(input.getCollisionTime())).asVector2();
+        Vector3 ballVelocity = input.ball.getVelocity();
         //Car
-        Vector3 myPos = input.myLocation;
+        Vector3 myPos = input.myCar.position;
         //CirclePoint
         Vector2 point =  findCirclePoint(myPos,ballPos);
 
@@ -76,7 +74,7 @@ public class TaskHitTowardsPoint extends Leaf{
        }
 
         //Same as drive towards point, it will  turn toward the point and drive there.
-        double ang = RLMath.carsAngleToPoint(input.myLocation.asVector2(), input.myRotation.yaw, point);
+        double ang = RLMath.carsAngleToPoint(myPos.asVector2(), input.myCar.rotation.yaw, point);
         double steering = RLMath.steeringSmooth(ang);
         AgentOutput output = new AgentOutput().withAcceleration(1).withSteer(steering);
         //Sharp turning with slide
@@ -84,13 +82,13 @@ public class TaskHitTowardsPoint extends Leaf{
                 output.withSlide();
             }
         //Speed boost towards hit
-        if (input.myVelocity.asVector2().getMagnitude()<carPotentialSpeed
-                && RLMath.carsAngleToPoint(ballPos, input.myRotation.yaw,input.ballLandingPosition.asVector2())>0.2
+        if (input.myCar.velocity.asVector2().getMagnitude()<carPotentialSpeed
+                && RLMath.carsAngleToPoint(ballPos, input.myCar.rotation.yaw,input.ballLandingPosition.asVector2()) > 0.2
                 && withBoost){
             output.withBoost();
         }
 
-            return new NodeStatus(Status.RUNNING, output,  this);
+        return new NodeStatus(Status.RUNNING, output,  this);
     }
 
     /**  Checks if the angle to the ball is within the precision angle range
@@ -100,7 +98,7 @@ public class TaskHitTowardsPoint extends Leaf{
      * @param target is the target for Task to hit towards
      * @return True if the angle between target and appliedForce is less than precision.
      */
-    boolean angleToTarget(Vector2 ballPos, Vector3 ballV, Vector2 ballPoint, Vector2 target) {
+    private boolean angleToTarget(Vector2 ballPos, Vector3 ballV, Vector2 ballPoint, Vector2 target) {
 
         // Direction of the force, vector  from point to ball CoM - Not currently that important but usefull for more dimensions
         Vector2 direction = ballPoint.minus(ballPos).getNormalized();
@@ -115,30 +113,30 @@ public class TaskHitTowardsPoint extends Leaf{
         double ang =  atanTarget - atanForce;
 
         if (ang > Math.PI) ang -= 2 * Math.PI;
-            return ang <= precision;
+
+        return ang <= precision;
     }
 
     /** Searches for vector2 point on the far side of the target and ball velocity vectors
      * @return a vector2 on the far side of the target and velocity scaled based on the distance/velocity to the ball.
      */
-    Vector2 searchAngle(AgentInput input, Vector2 target){
-        //Ball
+    private Vector2 searchAngle(AgentInput input, Vector2 target){
         Vector2 ballPos = input.ballLandingPosition.asVector2();
-        Vector2 ballV = input.ballVelocity.asVector2();
-            return ballPos.plus(ballV.plus(target).getNormalized().scale(-1*((input.myDistanceToBall*400)/(input.ballVelocity.getMagnitude()+1))*input.getGoalDirection(input.myPlayerIndex)));
+        Vector2 ballV = input.ball.getVelocity().asVector2();
+        return ballPos.plus(ballV.plus(target).getNormalized().scale(-1 * ((input.myCar.distanceToBall * 400) / (input.ball.getVelocity().getMagnitude() + 1)) * input.getGoalDirection(input.myPlayerIndex)));
     }
 
     /** Finds a vector2 point on the ball*
-     * @return  a Vector2 point on the ball in the direction of the car.
+     * @return a Vector2 point on the ball in the direction of the car.
      */
-    Vector2 findCirclePoint(Vector3 myPos, Vector2 ballPos){
+    private Vector2 findCirclePoint(Vector3 myPos, Vector2 ballPos){
         // TODO Can be expanded to find specific points and predict the balls movement more closely
         // The size of a circle point
-        double circlePoint = new Vector2(ballPos.x+40*cos(0),ballPos.y+40*cos(0)).getMagnitude();
-        Vector2  carToBall = myPos.asVector2().minus(ballPos).getNormalized();
+        double circlePoint = new Vector2(ballPos.x + 40*cos(0), ballPos.y + 40*cos(0)).getMagnitude(); // TODO NØ: Der bruges altid vinklen 0 og ikke 'direction of the car'
+        Vector2 carToBall = myPos.asVector2().minus(ballPos).getNormalized();
         Vector2 carUnit = carToBall.scale(circlePoint);
 
-            return ballPos.plus(carUnit.scale(-1));
+        return ballPos.plus(carUnit.scale(-1));
     }
 
 }

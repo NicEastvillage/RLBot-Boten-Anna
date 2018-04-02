@@ -104,7 +104,7 @@ public class BehaviourTreeBuilder {
      * if the defaultFile has not been specified.
      * @return a BehaviourTree. */
     public BehaviorTree buildUsingDefault() throws MissingBehaviourTreeException, FileNotFoundException, IOException {
-        if (defaultFile == null) throw new MissingBehaviourTreeException("Default defaultFile not specified.");
+        if (defaultFile == null) throw new MissingBehaviourTreeException("Default file not specified.");
         return build(defaultFile);
     }
 

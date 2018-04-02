@@ -42,9 +42,9 @@ public class BotInfoDisplay extends VBox {
                 "Vel: %s\n" +
                 "Rot: %s\n" +
                 "AngToBall: %f",
-                input.myLocation.toStringFixedSize(),
-                input.myVelocity.toStringFixedSize(),
-                input.myRotation.toStringFixedSize(),
-                input.angleToBall));
+                input.myCar.position.toStringFixedSize(),
+                input.myCar.velocity.toStringFixedSize(),
+                input.myCar.rotation.toStringFixedSize(),
+                input.myCar.angleToBall));
     }
 }

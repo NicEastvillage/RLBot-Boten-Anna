@@ -5,7 +5,6 @@ import botenanna.AgentOutput;
 import botenanna.ArgumentTranslator;
 import botenanna.behaviortree.*;
 import botenanna.math.RLMath;
-import botenanna.math.Vector2;
 import botenanna.math.Vector3;
 
 import java.util.function.Function;
@@ -53,8 +52,8 @@ public class TaskGoTowardsPoint extends Leaf {
     public NodeStatus run(AgentInput input) throws MissingNodeException {
 
         // Get the needed positions and rotations
-        Vector3 myPos = input.myLocation;
-        Vector3 myRotation = input.myRotation;
+        Vector3 myPos = input.myCar.position;
+        Vector3 myRotation = input.myCar.rotation;
         Vector3 point = (Vector3) pointFunc.apply(input);
 
         double ang = RLMath.carsAngleToPoint(myPos.asVector2(), myRotation.yaw, point.asVector2());

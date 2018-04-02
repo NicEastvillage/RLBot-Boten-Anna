@@ -13,7 +13,7 @@ public class Bot {
     private BehaviorTree behaviorTree;
     private AgentInput lastInputReceived;
 
-    /** An Rocket League agent. */
+    /** A Rocket League agent. */
     public Bot(int playerIndex, int teamIndex, BehaviorTree tree) {
         this.playerIndex = playerIndex;
         team = (teamIndex == 0 ? Team.BLUE : Team.ORANGE);
