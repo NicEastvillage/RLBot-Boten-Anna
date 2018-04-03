@@ -69,6 +69,7 @@ public class BotenAnna extends Application {
                     final Bot bot = botUpdateQueue.poll();
                     if (bot != null) {
                         updateBotInfoDisplay(bot);
+                        updateMeasurementDisplay(bot);
                         ballInfoDisplay.update(bot.getLastInputReceived());
                     }
                     lastUpdate.set(now);
@@ -91,6 +92,16 @@ public class BotenAnna extends Application {
     }
 
     public void updateBotInfoDisplay(Bot bot) {
+        // Create new display if it is a new bot
+        if (!botInfoDisplays.containsKey(bot)) {
+            BotInfoDisplay display = new BotInfoDisplay(bot);
+            botInfoDisplayRoot.getChildren().add(display);
+            botInfoDisplays.put(bot, display);
+        }
+        botInfoDisplays.get(bot).update(bot);
+    }
+
+    public void updateMeasurementDisplay(Bot bot) {
         // Create new display if it is a new bot
         if (!botInfoDisplays.containsKey(bot)) {
             BotInfoDisplay display = new BotInfoDisplay(bot);
