@@ -40,7 +40,7 @@ public class MeasurementDisplay extends VBox {
 
         AgentInput.Car car = input.myCar;
         infoLabel.setText(String.format(
-                "Vel: %f\n" +
-                 car.velocity.getMagnitude()));
+                "Vel: %s\n" +
+                 String.valueOf(car.velocity.getMagnitude())));
     }
 }

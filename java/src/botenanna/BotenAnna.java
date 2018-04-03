@@ -45,9 +45,9 @@ public class BotenAnna extends Application {
         root.getChildren().add(botInfoDisplayRoot);
         botInfoDisplays = new HashMap<>();
         ballInfoDisplay = new BallInfoDisplay();
+        root.getChildren().add(ballInfoDisplay);
         carMeasurementDisplay = new MeasurementDisplay();
         root.getChildren().add(carMeasurementDisplay);
-        root.getChildren().add(ballInfoDisplay);
 
         Scene scene = new Scene(root, 440, 340);
         stage.setScene(scene);
