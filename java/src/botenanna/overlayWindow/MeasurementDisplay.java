@@ -13,20 +13,19 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 public class MeasurementDisplay extends VBox {
-    public static final Color BLUE = new Color(.34, .42, 1, 1);
-    public static final Color ORANGE = new Color(1, 0.7, 0.3, 1);
+
+    public static final Color HEADER_COLOR = new Color(0.7, 0.7, 0.7, 1);
 
     private Label infoLabel;
 
-    public MeasurementDisplay(Bot bot) {
+    public MeasurementDisplay() {
         super();
         HBox header = new HBox();
         getChildren().add(header);
         header.setPadding(new Insets(3, 5, 3, 5));
-        Color color = bot.getTeam() == Bot.Team.BLUE ? BLUE : ORANGE;
-        header.setBackground(new Background(new BackgroundFill(color, null, null)));
+        header.setBackground(new Background(new BackgroundFill(HEADER_COLOR, null, null)));
 
-        Label headerLabel = new Label("Velocity - Car #" + bot.getPlayerIndex());
+        Label headerLabel = new Label("Car Velocity");
         header.getChildren().add(headerLabel);
 
         infoLabel = new Label("No data");
@@ -35,13 +34,13 @@ public class MeasurementDisplay extends VBox {
         getChildren().add(infoLabel);
     }
 
-    public void update(Bot bot) {
-        AgentInput input = bot.getLastInputReceived();
+    public void update(AgentInput input) {
         if (input == null)
             return;
 
+        AgentInput.Car car = input.myCar;
         infoLabel.setText(String.format(
-                "Vel: %f\n",
-                input.myCar.velocity.getMagnitude()));
+                "Vel: %f\n" +
+                 car.velocity.getMagnitude()));
     }
 }
