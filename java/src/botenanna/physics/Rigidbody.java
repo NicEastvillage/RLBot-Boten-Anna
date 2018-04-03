@@ -150,6 +150,29 @@ public class Rigidbody implements Cloneable {
         return earliestTimeOfArrival;
     }
 
+    /** @return whether the next wall hit will be a side wall of the arena as opposed to an end wall (those by the goals).
+     * If the Rigidbody never hits a wall, false i returned. */
+    public boolean willHitSideWallNext() {
+        double[] arrivalTimes = {
+                predictArrivalAtWallXPositive(),
+                predictArrivalAtWallXNegative(),
+                predictArrivalAtWallYPositive(),
+                predictArrivalAtWallYNegative()
+        };
+        double wallIndex = -1;
+        double earliestTimeOfArrival = Double.NaN;
+        for (int i = 0; i < arrivalTimes.length; i++) {
+            if (!Double.isNaN(arrivalTimes[i]) && arrivalTimes[i] < earliestTimeOfArrival) {
+                earliestTimeOfArrival = arrivalTimes[i];
+                wallIndex = i;
+            }
+        }
+        if (wallIndex == 0 || wallIndex == 1)
+            return true;
+        else
+            return false;
+    }
+
     /** @return the time until arrival at wall at x positive. */
     public double predictArrivalAtWallXPositive() {
         if (position.x < AgentInput.ARENA_LENGTH / 2) {
