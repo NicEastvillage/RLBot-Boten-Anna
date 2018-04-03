@@ -23,7 +23,7 @@ public class GuardIntercept extends Leaf {
     @Override
     public NodeStatus run(AgentInput input) throws MissingNodeException {
 
-        if (input.ballVelocity.y*input.getGoalDirection(input.myPlayerIndex)>input.getGoalDirection(input.myPlayerIndex)) {
+        if (input.ball.getVelocity().y*input.getGoalDirection(input.myPlayerIndex)>input.getGoalDirection(input.myPlayerIndex)) {
             return NodeStatus.DEFAULT_SUCCESS;
         }
         return NodeStatus.DEFAULT_FAILURE;

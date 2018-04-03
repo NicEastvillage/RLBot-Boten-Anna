@@ -16,6 +16,25 @@ Selector
 			GuardIsMidAir
 		TaskDashForward
 	Sequencer
+		Inverter
+			Sequencer
+				GuardHasGoalOpportunity
+				TaskBallTowardsGoal
+		Inverter
+			Sequencer
+				Inverter
+					GuardHasBoost 40
+				Inverter
+					GuardIsDistanceLessThan my_pos ball_pos 4000
+				Inverter
+					Selector
+						Inverter
+							GuardIsBallOnMyHalf
+						GuardIntercept
+				GuardCloserThan my_pos ball_pos enemy_pos
+				Inverter
+					GuardIsDistanceLessThan enemy_pos ball_pos 700
+				TaskGoTowardsPoint best_boost
 		Selector
 			GuardIsBallOnMyHalf
 			GuardIsDistanceLessThan my_pos ball_pos 1200

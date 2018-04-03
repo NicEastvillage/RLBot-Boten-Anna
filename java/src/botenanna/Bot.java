@@ -11,8 +11,9 @@ public class Bot {
     private final Team team;
     private final int playerIndex;
     private BehaviorTree behaviorTree;
+    private AgentInput lastInputReceived;
 
-    /** An Rocket League agent. */
+    /** A Rocket League agent. */
     public Bot(int playerIndex, int teamIndex, BehaviorTree tree) {
         this.playerIndex = playerIndex;
         team = (teamIndex == 0 ? Team.BLUE : Team.ORANGE);
@@ -27,9 +28,25 @@ public class Bot {
         return behaviorTree.evaluate(packet);
     }
 
+    public int getPlayerIndex() {
+        return playerIndex;
+    }
+
+    public Team getTeam() {
+        return team;
+    }
+
     /** Getter for the behavior tree
      * @return the behaviorTree    */
     public BehaviorTree getBehaviorTree() {
         return behaviorTree;
+    }
+
+    public AgentInput getLastInputReceived() {
+        return lastInputReceived;
+    }
+
+    public void setLastInputReceived(AgentInput lastInputReceived) {
+        this.lastInputReceived = lastInputReceived;
     }
 }

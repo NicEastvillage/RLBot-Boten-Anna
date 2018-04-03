@@ -47,21 +47,23 @@ public class TaskAdjustAirRotation extends Leaf {
     public NodeStatus run(AgentInput input) throws MissingNodeException {
         AgentOutput out = new AgentOutput();
 
-        double smoothPitch = RLMath.steeringSmooth(-input.myRotation.pitch * ROTATION_STRENGTH);
+        Vector3 myRot = input.myCar.rotation;
+
+        double smoothPitch = RLMath.steeringSmooth(-myRot.pitch * ROTATION_STRENGTH);
         out.withPitch(smoothPitch);
 
         // It is not possible to adjust both roll and yaw at the same time
         // If we just want to land on the wheels, we only need to adjust roll
         // We adjust yaw and facing last, because we prioritize landing on the wheels
 
-        if (shouldFace && -ACCEPTABLE_ANGLE < input.myRotation.roll && input.myRotation.roll < ACCEPTABLE_ANGLE) {
+        if (shouldFace && -ACCEPTABLE_ANGLE < myRot.roll && myRot.roll < ACCEPTABLE_ANGLE) {
             Vector2 target = ((Vector3) faceFunc.apply(input)).asVector2();
-            double angleToPoint = RLMath.carsAngleToPoint(input.myLocation.asVector2(), input.myRotation.yaw, target);
+            double angleToPoint = RLMath.carsAngleToPoint(myRot.asVector2(), myRot.yaw, target);
             double smoothYaw = RLMath.steeringSmooth(angleToPoint * ROTATION_STRENGTH);
             // Adjust yaw by steering
             out.withSteer(smoothYaw);
         } else {
-            double smoothRoll = RLMath.steeringSmooth(-input.myRotation.roll * ROTATION_STRENGTH);
+            double smoothRoll = RLMath.steeringSmooth(-myRot.roll * ROTATION_STRENGTH);
             out.withRoll(smoothRoll);
         }
 

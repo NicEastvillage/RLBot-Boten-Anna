@@ -24,6 +24,6 @@ public class GuardIsMidAir extends Leaf {
     @Override
     public NodeStatus run(AgentInput input) throws MissingNodeException {
         // Simply check the isMidAir variable from input
-        return input.myIsMidAir ? NodeStatus.DEFAULT_SUCCESS : NodeStatus.DEFAULT_FAILURE;
+        return input.myCar.isMidAir ? NodeStatus.DEFAULT_SUCCESS : NodeStatus.DEFAULT_FAILURE;
     }
 }

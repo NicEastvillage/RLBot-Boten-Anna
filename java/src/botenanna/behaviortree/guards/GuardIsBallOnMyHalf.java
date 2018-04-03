@@ -25,7 +25,7 @@ public class GuardIsBallOnMyHalf extends Leaf {
     @Override
     public NodeStatus run(AgentInput input) throws MissingNodeException {
 
-        double ballY = input.ballLocation.y;
+        double ballY = input.ball.getPosition().y;
 
         if (ballY * input.getGoalDirection(input.myPlayerIndex) >= 0) {
             return NodeStatus.DEFAULT_SUCCESS;
