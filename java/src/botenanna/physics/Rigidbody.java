@@ -133,13 +133,14 @@ public class Rigidbody implements Cloneable {
         return arrivalTime;
     }
 
-    /** @return the time until arrival at any wall. Can be NaN. */
-    public double predictArrivalAtAnyWall() {
+    /** @param offset the offset from the wall. Relevant for any objects with a radius.
+     * @return the time until arrival at any wall. Can be NaN. */
+    public double predictArrivalAtAnyWall(double offset) {
         double[] arrivalTimes = {
-                predictArrivalAtWallXPositive(),
-                predictArrivalAtWallXNegative(),
-                predictArrivalAtWallYPositive(),
-                predictArrivalAtWallYNegative()
+                predictArrivalAtWallXPositive(offset),
+                predictArrivalAtWallXNegative(offset),
+                predictArrivalAtWallYPositive(offset),
+                predictArrivalAtWallYNegative(offset)
         };
         double earliestTimeOfArrival = Double.NaN;
         for (int i = 0; i < arrivalTimes.length; i++) {
@@ -152,12 +153,12 @@ public class Rigidbody implements Cloneable {
 
     /** @return whether the next wall hit will be a side wall of the arena as opposed to an end wall (those by the goals).
      * If the Rigidbody never hits a wall, false i returned. */
-    public boolean willHitSideWallNext() {
+    public boolean willHitSideWallNext(double offset) {
         double[] arrivalTimes = {
-                predictArrivalAtWallXPositive(),
-                predictArrivalAtWallXNegative(),
-                predictArrivalAtWallYPositive(),
-                predictArrivalAtWallYNegative()
+                predictArrivalAtWallXPositive(offset),
+                predictArrivalAtWallXNegative(offset),
+                predictArrivalAtWallYPositive(offset),
+                predictArrivalAtWallYNegative(offset)
         };
         double wallIndex = -1;
         double earliestTimeOfArrival = Double.NaN;
@@ -173,11 +174,14 @@ public class Rigidbody implements Cloneable {
             return false;
     }
 
-    /** @return the time until arrival at wall at x positive. */
-    public double predictArrivalAtWallXPositive() {
-        if (position.x < AgentInput.ARENA_LENGTH / 2) {
+
+    /** @param offset the offset from the wall. Relevant for any objects with a radius.
+     * @return the time until arrival at wall at x positive. */
+    public double predictArrivalAtWallXPositive(double offset) {
+        double distance = AgentInput.ARENA_LENGTH / 2 - offset;
+        if (position.x < distance) {
             if (velocity.x > 0) {
-                return (AgentInput.ARENA_LENGTH / 2 - position.x) / velocity.x;
+                return (distance - position.x) / velocity.x;
             } else {
                 return Double.NaN;
             }
@@ -186,11 +190,13 @@ public class Rigidbody implements Cloneable {
         return 0;
     }
 
-    /** @return the time until arrival at wall at x negative. */
-    public double predictArrivalAtWallXNegative() {
-        if (position.x > -AgentInput.ARENA_LENGTH / 2) {
+    /** @param offset the offset from the wall. Relevant for any objects with a radius.
+     * @return the time until arrival at wall at x negative. */
+    public double predictArrivalAtWallXNegative(double offset) {
+        double distance = AgentInput.ARENA_LENGTH / 2 - offset;
+        if (position.x > -distance) {
             if (velocity.x < 0) {
-                return (-AgentInput.ARENA_LENGTH / 2 - position.x) / velocity.x;
+                return (-distance - position.x) / velocity.x;
             } else {
                 return Double.NaN;
             }
@@ -199,11 +205,13 @@ public class Rigidbody implements Cloneable {
         return 0;
     }
 
-    /** @return the time until arrival at wall at y positive. */
-    public double predictArrivalAtWallYPositive() {
-        if (position.y < AgentInput.ARENA_WIDTH / 2) {
+    /** @param offset the offset from the wall. Relevant for any objects with a radius.
+     * @return the time until arrival at wall at y positive. */
+    public double predictArrivalAtWallYPositive(double offset) {
+        double distance = AgentInput.ARENA_LENGTH / 2 - offset;
+        if (position.y < distance) {
             if (velocity.y > 0) {
-                return (AgentInput.ARENA_WIDTH / 2 - position.y) / velocity.y;
+                return (distance - position.y) / velocity.y;
             } else {
                 return Double.NaN;
             }
@@ -212,11 +220,13 @@ public class Rigidbody implements Cloneable {
         return 0;
     }
 
-    /** @return the time until arrival at wall at y negative. */
-    public double predictArrivalAtWallYNegative() {
-        if (position.y > -AgentInput.ARENA_WIDTH / 2) {
+    /** @param offset the offset from the wall. Relevant for any objects with a radius.
+     * @return the time until arrival at wall at y negative. */
+    public double predictArrivalAtWallYNegative(double offset) {
+        double distance = AgentInput.ARENA_LENGTH / 2 - offset;
+        if (position.y > -distance) {
             if (velocity.y < 0) {
-                return (-AgentInput.ARENA_WIDTH / 2 - position.y) / velocity.y;
+                return (-distance - position.y) / velocity.y;
             } else {
                 return Double.NaN;
             }

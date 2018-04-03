@@ -43,7 +43,7 @@ public class Ball extends Rigidbody {
 
         do {
             if (checkCollision) {
-                nextWallHit = predictArrivalAtAnyWall();
+                nextWallHit = predictArrivalAtAnyWall(RADIUS);
                 nextGroundHit = predictArrivalAtHeight(RADIUS);
                 checkCollision = false;
             }
@@ -64,7 +64,7 @@ public class Ball extends Rigidbody {
                 extendPathWithNoCollision(path, simulation, timeSpent, nextWallHit, stepsize);
                 timeSpent += nextWallHit;
                 Vector3 vel = simulation.getVelocity();
-                if (willHitSideWallNext()) {
+                if (willHitSideWallNext(RADIUS)) {
                     simulation.setVelocity(new Vector3(vel.x * BALL_WALL_BOUNCINESS, vel.y, vel.z));
                 } else {
                     simulation.setVelocity(new Vector3(vel.x, vel.y * BALL_WALL_BOUNCINESS, vel.z));
