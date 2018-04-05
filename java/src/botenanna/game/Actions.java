@@ -1,4 +1,4 @@
-package botenanna;
+package botenanna.game;
 
 import rlbot.api.GameData;
 
@@ -178,7 +178,7 @@ public class Actions {
     /**
      * @return this Actions as a ControllerState.
      */
-    GameData.ControllerState toControllerState() {
+    public GameData.ControllerState toControllerState() {
         return GameData.ControllerState.newBuilder()
                 .setThrottle((float) (acceleration - deceleration))
                 .setSteer((float) steeringTilt)

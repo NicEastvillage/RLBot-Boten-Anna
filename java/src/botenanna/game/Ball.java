@@ -1,4 +1,4 @@
-package botenanna;
+package botenanna.game;
 
 import botenanna.math.Vector3;
 import botenanna.physics.Rigidbody;

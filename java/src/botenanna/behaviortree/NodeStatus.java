@@ -1,6 +1,6 @@
 package botenanna.behaviortree;
 
-import botenanna.Actions;
+import botenanna.game.Actions;
 
 import java.util.ArrayList;
 

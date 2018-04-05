@@ -1,4 +1,4 @@
-package botenanna.physics;
+package botenanna.game;
 
 import botenanna.math.Vector2;
 import rlbot.api.GameData;

@@ -1,6 +1,8 @@
 package botenanna;
 
 import botenanna.behaviortree.*;
+import botenanna.game.Actions;
+import botenanna.game.Situation;
 
 public class Bot {
 

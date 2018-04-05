@@ -1,7 +1,7 @@
 package botenanna.behaviortree;
 
-import botenanna.Situation;
-import botenanna.Actions;
+import botenanna.game.Situation;
+import botenanna.game.Actions;
 import botenanna.behaviortree.builder.BehaviourTreeBuildingException;
 
 public class BehaviorTree implements Node {

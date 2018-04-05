@@ -1,9 +1,9 @@
-package botenanna.physics;
+package botenanna.game.simulation;
 
-import botenanna.Actions;
-import botenanna.Car;
-import botenanna.Situation;
-import botenanna.Ball;
+import botenanna.game.Actions;
+import botenanna.game.Car;
+import botenanna.game.Situation;
+import botenanna.game.Ball;
 import botenanna.math.RLMath;
 import botenanna.math.Vector3;
 

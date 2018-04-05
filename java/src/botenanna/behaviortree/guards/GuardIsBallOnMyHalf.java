@@ -1,6 +1,6 @@
 package botenanna.behaviortree.guards;
 
-import botenanna.Situation;
+import botenanna.game.Situation;
 import botenanna.behaviortree.*;
 
 public class GuardIsBallOnMyHalf extends Leaf {

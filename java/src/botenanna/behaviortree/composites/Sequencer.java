@@ -1,6 +1,6 @@
 package botenanna.behaviortree.composites;
 
-import botenanna.Situation;
+import botenanna.game.Situation;
 import botenanna.behaviortree.MissingNodeException;
 import botenanna.behaviortree.Node;
 import botenanna.behaviortree.NodeStatus;

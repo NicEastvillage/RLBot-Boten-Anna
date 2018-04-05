@@ -1,6 +1,6 @@
 package botenanna.behaviortree;
 
-import botenanna.Situation;
+import botenanna.game.Situation;
 import botenanna.behaviortree.builder.BehaviourTreeChildException;
 
 public interface Node {
