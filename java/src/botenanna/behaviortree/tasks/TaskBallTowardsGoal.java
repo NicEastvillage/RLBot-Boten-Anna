@@ -145,6 +145,6 @@ public class TaskBallTowardsGoal extends Leaf {
             boost = true;
         }
 
-        return new NodeStatus(Status.RUNNING, new Actions().withAcceleration(1).withSteer(steering).withBoost(boost), this);
+        return new NodeStatus(Status.RUNNING, new Actions().withThrottle(1).withSteer(steering).withBoost(boost), this);
     }
 }

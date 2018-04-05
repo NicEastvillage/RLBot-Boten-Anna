@@ -64,9 +64,9 @@ public class TaskGoTowardsPoint extends Leaf {
         Actions output;
 
         if(useBoost)
-            output = new Actions().withAcceleration(1).withSteer(steering).withBoost();
+            output = new Actions().withThrottle(1).withSteer(steering).withBoost();
         else
-            output = new Actions().withAcceleration(1).withSteer(steering);
+            output = new Actions().withThrottle(1).withSteer(steering);
 
         if (allowSlide) {
             // Do slide for sharp turning

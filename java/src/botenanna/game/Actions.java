@@ -14,9 +14,8 @@ public class Actions {
     private double pitchTilt = 0;
     private double rollTilt = 0;
 
-    // 0 is none, 1 is full
-    private double acceleration = 0;
-    private double deceleration = 0;
+    // 1 is forwards, -1 is backwards
+    private double throttle = 0;
 
     private boolean jumpDepressed = false;
     private boolean boostDepressed = false;
@@ -43,15 +42,9 @@ public class Actions {
         return this;
     }
 
-    /** Set acceleration. 0 is none, 1 is full. Clamped between 0 and 1. Default is 0. */
-    public Actions withAcceleration(double acceleration) {
-        this.acceleration = Math.max(0, Math.min(1, acceleration));
-        return this;
-    }
-
-    /** Set deceleration. 0 is none, 1 is full. Clamped between 0 and 1. Default is 0. */
-    public Actions withDeceleration(double deceleration) {
-        this.deceleration = Math.max(0, Math.min(1, deceleration));
+    /** Set throttle. 0 is none, 1 is forwards, -1 is backwards. Clamped between -1 and 1. Default is 0. */
+    public Actions withThrottle(double throttle) {
+        this.throttle = Math.max(-1, Math.min(1, throttle));
         return this;
     }
 
@@ -107,8 +100,7 @@ public class Actions {
         if (Double.compare(that.steeringTilt, steeringTilt) != 0) return false;
         if (Double.compare(that.pitchTilt, pitchTilt) != 0) return false;
         if (Double.compare(that.rollTilt, rollTilt) != 0) return false;
-        if (Double.compare(that.acceleration, acceleration) != 0) return false;
-        if (Double.compare(that.deceleration, deceleration) != 0) return false;
+        if (Double.compare(that.throttle, throttle) != 0) return false;
         if (jumpDepressed != that.jumpDepressed) return false;
         if (boostDepressed != that.boostDepressed) return false;
         return slideDepressed == that.slideDepressed;
@@ -124,9 +116,7 @@ public class Actions {
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         temp = Double.doubleToLongBits(rollTilt);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(acceleration);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(deceleration);
+        temp = Double.doubleToLongBits(throttle);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         result = 31 * result + (jumpDepressed ? 1 : 0);
         result = 31 * result + (boostDepressed ? 1 : 0);
@@ -155,12 +145,8 @@ public class Actions {
     // TODO REMOVE OR COMMENT TEMP GETTERS
 
 
-    public double getAcceleration() {
-        return acceleration;
-    }
-
-    public double getDeceleration() {
-        return deceleration;
+    public double getThrottle() {
+        return throttle;
     }
 
     public boolean isJumpDepressed() {
@@ -180,7 +166,7 @@ public class Actions {
      */
     public GameData.ControllerState toControllerState() {
         return GameData.ControllerState.newBuilder()
-                .setThrottle((float) (acceleration - deceleration))
+                .setThrottle((float) throttle)
                 .setSteer((float) steeringTilt)
                 .setYaw(slideDepressed ? 0 : (float) steeringTilt)
                 .setRoll(slideDepressed ? (float) steeringTilt : 0)

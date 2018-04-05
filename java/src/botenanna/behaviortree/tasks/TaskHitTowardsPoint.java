@@ -76,7 +76,7 @@ public class TaskHitTowardsPoint extends Leaf{
         //Same as drive towards point, it will  turn toward the point and drive there.
         double ang = RLMath.carsAngleToPoint(myPos.asVector2(), input.myCar.rotation.yaw, point);
         double steering = RLMath.steeringSmooth(ang);
-        Actions output = new Actions().withAcceleration(1).withSteer(steering);
+        Actions output = new Actions().withThrottle(1).withSteer(steering);
         //Sharp turning with slide
         if (ang > SLIDE_ANGLE || ang < -SLIDE_ANGLE) {
                 output.withSlide();

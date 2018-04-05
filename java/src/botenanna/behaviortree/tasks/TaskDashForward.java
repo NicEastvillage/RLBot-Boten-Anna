@@ -35,11 +35,11 @@ public class TaskDashForward extends Leaf {
         timeLine = new TimeLine<>();
 
         //Setting time stamps
-        timeLine.addTimeStamp(0, new NodeStatus(Status.RUNNING, new Actions().withJump().withPitch(-1).withAcceleration(1), this, true));
-        timeLine.addTimeStamp(0.15, new NodeStatus(Status.RUNNING, new Actions().withJump(false).withAcceleration(1), this, true));
-        timeLine.addTimeStamp(0.20, new NodeStatus(Status.RUNNING, new Actions().withJump().withPitch(-1).withAcceleration(1), this, true));
-        timeLine.addTimeStamp(0.30, new NodeStatus(Status.RUNNING, new Actions().withJump(false).withAcceleration(1), this, true));
-        timeLine.addTimeStamp(1, new NodeStatus(Status.RUNNING, new Actions().withJump(false).withAcceleration(1), this, false));
+        timeLine.addTimeStamp(0, new NodeStatus(Status.RUNNING, new Actions().withJump().withPitch(-1).withThrottle(1), this, true));
+        timeLine.addTimeStamp(0.15, new NodeStatus(Status.RUNNING, new Actions().withJump(false).withThrottle(1), this, true));
+        timeLine.addTimeStamp(0.20, new NodeStatus(Status.RUNNING, new Actions().withJump().withPitch(-1).withThrottle(1), this, true));
+        timeLine.addTimeStamp(0.30, new NodeStatus(Status.RUNNING, new Actions().withJump(false).withThrottle(1), this, true));
+        timeLine.addTimeStamp(1, new NodeStatus(Status.RUNNING, new Actions().withJump(false).withThrottle(1), this, false));
         timeLine.addTimeStamp(1.35, null);
     }
 
@@ -55,12 +55,12 @@ public class TaskDashForward extends Leaf {
         if(currentlyActive == false){
             timeLine.reset();
             currentlyActive = true;
-            return new NodeStatus(Status.RUNNING, new Actions().withJump(false).withAcceleration(1), this, true);
+            return new NodeStatus(Status.RUNNING, new Actions().withJump(false).withThrottle(1), this, true);
         }
 
         if (timeLine.evaluate() == null){
             currentlyActive = false;
-            return new NodeStatus(Status.RUNNING, new Actions().withJump(false).withAcceleration(1), this, true);
+            return new NodeStatus(Status.RUNNING, new Actions().withJump(false).withThrottle(1), this, true);
         }
 
         return timeLine.evaluate();

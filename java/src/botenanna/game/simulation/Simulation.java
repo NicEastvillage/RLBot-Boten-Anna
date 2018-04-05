@@ -42,11 +42,13 @@ public class Simulation {
     }
 
     public Car simulateCarWOutput(Situation input, Actions action, Ball ball){
+        // FIXME: Every occurrence of "getThrottle()" used to be "getAcceleration()" and might not be exactly the same
+
         //Turnrate if the slide is on change turnrate
         double turnRate =  action.isSlideDepressed() ?  25 : 50;
         //AccelerationRate: if boost is used change acceleration to boostTier
         double accelerationRate = (action.isBoostDepressed() && input.myCar.getBoost()!=0) ? 2/timesASec : 1/timesASec;
-        double acceleration = action.getAcceleration()/(accelerationRate);
+        double acceleration = action.getThrottle()/(accelerationRate);
         //TODO Placeholder max Velocity
         double maxVelocity = 28.2;
 
@@ -56,7 +58,7 @@ public class Simulation {
         //First simulate the change in the cars rotation 
         //In doing so the simulation of the position can be done with a step in the rigidbody
         // Car steer simulation // TODO Add slide
-        if (action.getSteer()!=0 && (action.getAcceleration()!=0 || action.getDeceleration()!=0 || simulatedCar.velocity.getMagnitude()!=0 || simulatedCar.isMidAir)){
+        if (action.getSteer()!=0 && (action.getThrottle()!=0 || simulatedCar.velocity.getMagnitude()!=0 || simulatedCar.isMidAir)){
             // The simulated cars rotation, rotated in the direction of steer per times per second.//TODO Change direction use to  just use the yaw
             simulatedCar.rotation.angle(direction, action.getSteer()*turnRate/timesASec);
         }
@@ -72,12 +74,13 @@ public class Simulation {
 
         //Then if the car is accelerating, add the acceleration rate to the current velocity
         //Else step the pos one.
-        if (action.getAcceleration()!=0 && simulatedCar.velocity.asVector2().getMagnitude()<maxVelocity){
+        // FIXME: following if-statements are wrong. getThrottle() used to be getAcceleration() and getDeceleration()
+        if (action.getThrottle()!=0 && simulatedCar.velocity.asVector2().getMagnitude()<maxVelocity){
             //The simulated cars velocity plus, acceleration in the direction of the frontvector
             simulatedCar.velocity.plus(direction.getNormalized().scale(acceleration));
         }
         // Car Deceleration //TODO Check break speed/ deceleration speed
-        else if (action.getDeceleration()!=0){
+        else if (action.getThrottle()!=0){
             simulatedCar.velocity.plus(direction.getNormalized().scale(-acceleration));
         }
         if (simulatedCar.velocity.asVector2().getMagnitude()>0){

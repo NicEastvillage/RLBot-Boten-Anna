@@ -25,6 +25,6 @@ public class TaskGoForwards extends Leaf {
 
     @Override
     public NodeStatus run(Situation input) throws MissingNodeException {
-        return new NodeStatus(Status.RUNNING, new Actions().withAcceleration(1), this);
+        return new NodeStatus(Status.RUNNING, new Actions().withThrottle(1), this);
     }
 }
