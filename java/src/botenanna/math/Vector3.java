@@ -111,6 +111,13 @@ public class Vector3 {
         return x == 0 && y == 0 && z == 0;
     }
 
+    /** Linearly interpolate from {@code this} to {@code other} with time {@code t}, such that {@code t = 0} will return
+     * {@code this} and {@code t = 1} will return {@code other}.
+     * @return a Vector3 that is linearly interpolated from {@code this} to {@code other} with time {@code t}.*/
+    public Vector3 lerpTo(Vector3 other, double time) {
+        return lerp(this, other, time);
+    }
+
     /** Compare two vectors.
      * @return whether the vectors are identical. */
     @Override
@@ -148,6 +155,17 @@ public class Vector3 {
     /** Convert from a GameData Rotator */
     public static Vector3 convert(GameData.Rotator rot) {
         return new Vector3(rot.getRoll(), rot.getPitch(), rot.getYaw());
+    }
+
+    /** Linearly interpolate from {@code A} to {@code B} with time {@code t}, such that {@code t = 0} will return
+     * {@code A} and {@code t = 1} will return {@code B}.
+     * @return a Vector3 that is linearly interpolated from {@code A} to {@code B} with time {@code t}.*/
+    public static Vector3 lerp(Vector3 A, Vector3 B, double t) {
+        return new Vector3(
+                RLMath.lerp(A.x, B.x, t),
+                RLMath.lerp(A.y, B.y, t),
+                RLMath.lerp(A.z, B.z, t)
+        );
     }
 }
 
