@@ -1,6 +1,6 @@
 package botenanna.behaviortree;
 
-import botenanna.AgentInput;
+import botenanna.Situation;
 import botenanna.behaviortree.builder.BehaviourTreeChildException;
 
 public interface Node {
@@ -8,6 +8,6 @@ public interface Node {
     void reset();
     /** Run the node and its children.
      * @return a NodeStatus containing the result of the node. */
-    NodeStatus run(AgentInput input) throws MissingNodeException;
+    NodeStatus run(Situation input) throws MissingNodeException;
     void addChild(Node child) throws BehaviourTreeChildException;
 }

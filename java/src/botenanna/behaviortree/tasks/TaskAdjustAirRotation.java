@@ -1,6 +1,6 @@
 package botenanna.behaviortree.tasks;
 
-import botenanna.AgentInput;
+import botenanna.Situation;
 import botenanna.AgentOutput;
 import botenanna.ArgumentTranslator;
 import botenanna.behaviortree.Leaf;
@@ -19,7 +19,7 @@ public class TaskAdjustAirRotation extends Leaf {
     private static final double ACCEPTABLE_ANGLE = 0.3;
 
     private boolean shouldFace = false;
-    private Function<AgentInput, Object> faceFunc;
+    private Function<Situation, Object> faceFunc;
 
     /** <p>The TaskAdjustAirRotation will make the agent rotate so it lands on its wheels. It assumes the car is in the air.
      * The task can optionally be given a point, which it will try to adjust towards so the car lands facing that point.
@@ -44,7 +44,7 @@ public class TaskAdjustAirRotation extends Leaf {
     }
 
     @Override
-    public NodeStatus run(AgentInput input) throws MissingNodeException {
+    public NodeStatus run(Situation input) throws MissingNodeException {
         AgentOutput out = new AgentOutput();
 
         Vector3 myRot = input.myCar.rotation;

@@ -1,6 +1,6 @@
 package botenanna.behaviortree.decorators;
 
-import botenanna.AgentInput;
+import botenanna.Situation;
 import botenanna.behaviortree.MissingNodeException;
 import botenanna.behaviortree.NodeStatus;
 import botenanna.behaviortree.Status;
@@ -16,7 +16,7 @@ public class Inverter extends Decorator {
     }
 
     @Override
-    public NodeStatus run(AgentInput input) throws MissingNodeException {
+    public NodeStatus run(Situation input) throws MissingNodeException {
         if (child == null) throw new MissingNodeException(this);
 
         NodeStatus result = child.run(input);

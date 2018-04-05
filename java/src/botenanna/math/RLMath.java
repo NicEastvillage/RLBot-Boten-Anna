@@ -1,6 +1,6 @@
 package botenanna.math;
 
-import botenanna.AgentInput;
+import botenanna.Situation;
 
 import java.util.Vector;
 

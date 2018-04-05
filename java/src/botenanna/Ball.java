@@ -10,6 +10,13 @@ public class Ball extends Rigidbody {
     public static final double RADIUS = 92.2;
     public static final double DIAMETER = RADIUS * 2;
 
+    public Ball(Vector3 position, Vector3 velocity, Vector3 rotation) {
+        setPosition(position);
+        setVelocity(velocity);
+        setRotation(rotation);
+        setAffectedByGravity(true);
+    }
+
     /** Create a ball from the GameData's BallInfo. This way position, velocity,
      * acceleration, rotation and gravity is set immediately. */
     public Ball(GameData.BallInfo ball) {

@@ -1,6 +1,6 @@
 package botenanna.behaviortree;
 
-import botenanna.AgentInput;
+import botenanna.Situation;
 import botenanna.AgentOutput;
 import botenanna.behaviortree.builder.BehaviourTreeBuildingException;
 
@@ -15,7 +15,7 @@ public class BehaviorTree implements Node {
     }
 
     @Override
-    public NodeStatus run(AgentInput input) throws MissingNodeException {
+    public NodeStatus run(Situation input) throws MissingNodeException {
 
         if (topNode == null) throw new MissingNodeException(this);
 
@@ -49,7 +49,7 @@ public class BehaviorTree implements Node {
 
     /** Evaluate the behaviour tree.
      * @return the AgentOutput. */
-    public AgentOutput evaluate(AgentInput input) {
+    public AgentOutput evaluate(Situation input) {
         NodeStatus nodeStatus = run(input);
         return nodeStatus.output;
     }

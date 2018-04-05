@@ -1,6 +1,6 @@
 package botenanna.behaviortree.tasks;
 
-import botenanna.AgentInput;
+import botenanna.Situation;
 import botenanna.AgentOutput;
 import botenanna.behaviortree.Leaf;
 import botenanna.behaviortree.MissingNodeException;
@@ -24,7 +24,7 @@ public class TaskGoForwards extends Leaf {
     }
 
     @Override
-    public NodeStatus run(AgentInput input) throws MissingNodeException {
+    public NodeStatus run(Situation input) throws MissingNodeException {
         return new NodeStatus(Status.RUNNING, new AgentOutput().withAcceleration(1), this);
     }
 }

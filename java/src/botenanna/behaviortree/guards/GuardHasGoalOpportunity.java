@@ -1,6 +1,6 @@
 package botenanna.behaviortree.guards;
 
-import botenanna.AgentInput;
+import botenanna.Situation;
 import botenanna.behaviortree.Leaf;
 import botenanna.behaviortree.MissingNodeException;
 import botenanna.behaviortree.NodeStatus;
@@ -31,15 +31,15 @@ public class GuardHasGoalOpportunity extends Leaf {
 
     // Calculating goal opportunities whether the agent is Team Orange or Team Blue.
     @Override
-    public NodeStatus run(AgentInput input) throws MissingNodeException {
+    public NodeStatus run(Situation input) throws MissingNodeException {
 
         Vector2 myPosition = input.myCar.position.asVector2();
         Vector3 myRotation = input.myCar.rotation;
         double angToBall = input.myCar.angleToBall;
 
         if(input.myCar.team == 1) {
-            double rightGoalPost = RLMath.carsAngleToPoint(myPosition, myRotation.yaw, AgentInput.BLUE_GOALPOST_RIGHT);
-            double leftGoalPost = RLMath.carsAngleToPoint(myPosition, myRotation.yaw, AgentInput.BLUE_GOALPOST_LEFT);
+            double rightGoalPost = RLMath.carsAngleToPoint(myPosition, myRotation.yaw, Situation.BLUE_GOALPOST_RIGHT);
+            double leftGoalPost = RLMath.carsAngleToPoint(myPosition, myRotation.yaw, Situation.BLUE_GOALPOST_LEFT);
             if (myPosition.x <= 900 && myPosition.x >= -900 && input.ball.getPosition().x <= 900 && input.ball.getPosition().x >= -900 && myPosition.y >= input.ball.getPosition().y)
                 return NodeStatus.DEFAULT_SUCCESS;
             if (angToBall < 0.5 && angToBall > -0.5 && rightGoalPost < 0.5 && leftGoalPost > -0.5)
@@ -47,8 +47,8 @@ public class GuardHasGoalOpportunity extends Leaf {
         }
 
         if(input.myCar.team == 0) {
-            double rightGoalPost = RLMath.carsAngleToPoint(myPosition, myRotation.yaw, AgentInput.RED_GOALPOST_RIGHT);
-            double leftGoalPost = RLMath.carsAngleToPoint(myPosition, myRotation.yaw, AgentInput.RED_GOALPOST_LEFT);
+            double rightGoalPost = RLMath.carsAngleToPoint(myPosition, myRotation.yaw, Situation.RED_GOALPOST_RIGHT);
+            double leftGoalPost = RLMath.carsAngleToPoint(myPosition, myRotation.yaw, Situation.RED_GOALPOST_LEFT);
             if (myPosition.x <= 900 && myPosition.x >= -900 && input.ball.getPosition().x <= 900 && input.ball.getPosition().x >= -900 && myPosition.y <= input.ball.getPosition().y)
                 return NodeStatus.DEFAULT_SUCCESS;
             if (angToBall < 0.5 && angToBall > -0.5 && rightGoalPost < 0.5 && leftGoalPost > -0.5)

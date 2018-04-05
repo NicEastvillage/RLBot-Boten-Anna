@@ -152,6 +152,28 @@ public class AgentOutput {
         return rollTilt;
     }
 
+    // TODO REMOVE OR COMMENT TEMP GETTERS
+
+
+    public double getAcceleration() {
+        return acceleration;
+    }
+
+    public double getDeceleration() {
+        return deceleration;
+    }
+
+    public boolean isJumpDepressed() {
+        return jumpDepressed;
+    }
+
+    public boolean isBoostDepressed() {
+        return boostDepressed;
+    }
+
+    public boolean isSlideDepressed() {
+        return slideDepressed;
+    }
 
     /**
      * @return this AgentOutput as a ControllerState.

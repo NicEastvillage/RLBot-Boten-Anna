@@ -1,6 +1,6 @@
 package botenanna.behaviortree.tasks;
 
-import botenanna.AgentInput;
+import botenanna.Situation;
 import botenanna.AgentOutput;
 import botenanna.ArgumentTranslator;
 import botenanna.behaviortree.Leaf;
@@ -50,7 +50,7 @@ public class TaskDashForward extends Leaf {
     }
 
     @Override
-    public NodeStatus run(AgentInput input) throws MissingNodeException {
+    public NodeStatus run(Situation input) throws MissingNodeException {
 
         if(currentlyActive == false){
             timeLine.reset();

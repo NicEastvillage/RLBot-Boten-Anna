@@ -1,6 +1,6 @@
 package botenanna.behaviortree.guards;
 
-import botenanna.AgentInput;
+import botenanna.Situation;
 import botenanna.ArgumentTranslator;
 import botenanna.behaviortree.Leaf;
 import botenanna.behaviortree.MissingNodeException;
@@ -11,8 +11,8 @@ import java.util.function.Function;
 
 public class GuardIsDistanceLessThan extends Leaf {
 
-    private Function<AgentInput, Object> toFunc;
-    private Function<AgentInput, Object> fromFunc;
+    private Function<Situation, Object> toFunc;
+    private Function<Situation, Object> fromFunc;
     private double distance;
 
     /** The GuardIsDistanceLessThan compares to Vector3 ands returns whether the distance between those are less than
@@ -37,7 +37,7 @@ public class GuardIsDistanceLessThan extends Leaf {
     }
 
     @Override
-    public NodeStatus run(AgentInput input) throws MissingNodeException {
+    public NodeStatus run(Situation input) throws MissingNodeException {
 
         // Get points
         Vector3 from = (Vector3) fromFunc.apply(input);

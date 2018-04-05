@@ -1,6 +1,6 @@
 package botenanna.behaviortree.tasks;
 
-import botenanna.AgentInput;
+import botenanna.Situation;
 import botenanna.AgentOutput;
 import botenanna.ArgumentTranslator;
 import botenanna.behaviortree.*;
@@ -13,7 +13,7 @@ public class TaskGoTowardsPoint extends Leaf {
 
     public static final double SLIDE_ANGLE = 1.7;
 
-    private Function<AgentInput, Object> pointFunc;
+    private Function<Situation, Object> pointFunc;
     private boolean allowSlide = true;
     private boolean useBoost = false;
 
@@ -49,7 +49,7 @@ public class TaskGoTowardsPoint extends Leaf {
     }
 
     @Override
-    public NodeStatus run(AgentInput input) throws MissingNodeException {
+    public NodeStatus run(Situation input) throws MissingNodeException {
 
         // Get the needed positions and rotations
         Vector3 myPos = input.myCar.position;
