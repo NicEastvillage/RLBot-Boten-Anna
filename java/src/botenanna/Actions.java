@@ -5,7 +5,7 @@ import rlbot.api.GameData;
 /**
  * A data class describing the outputs of an agent. This class can be translated into a ControllerState.
  */
-public class AgentOutput {
+public class Actions {
 
     // 0 is straight, -1 is hard left, 1 is hard right.
     private double steeringTilt = 0;
@@ -22,87 +22,87 @@ public class AgentOutput {
     private boolean boostDepressed = false;
     private boolean slideDepressed = false;
 
-    public AgentOutput() {
+    public Actions() {
     }
 
     /** Set steering/turning. 0 is straight, -1 is hard left, 1 is hard right. Clamped between -1 and 1. Default it 0. */
-    public AgentOutput withSteer(double steeringTilt) {
+    public Actions withSteer(double steeringTilt) {
         this.steeringTilt = Math.max(-1, Math.min(1, steeringTilt));
         return this;
     }
 
     /** Set pitch. -1 for front flip, 1 for back flip. Clamped between -1 and 1. Default is 0. */
-    public AgentOutput withPitch(double pitchTilt) {
+    public Actions withPitch(double pitchTilt) {
         this.pitchTilt = Math.max(-1, Math.min(1, pitchTilt));
         return this;
     }
 
     /** Set roll. -1 for left roll, 1 for right roll, Clamped between -1 and 1. Default is 0. */
-    public AgentOutput withRoll(double rollTilt) {
+    public Actions withRoll(double rollTilt) {
         this.rollTilt = Math.max(-1, Math.min(1, rollTilt));
         return this;
     }
 
     /** Set acceleration. 0 is none, 1 is full. Clamped between 0 and 1. Default is 0. */
-    public AgentOutput withAcceleration(double acceleration) {
+    public Actions withAcceleration(double acceleration) {
         this.acceleration = Math.max(0, Math.min(1, acceleration));
         return this;
     }
 
     /** Set deceleration. 0 is none, 1 is full. Clamped between 0 and 1. Default is 0. */
-    public AgentOutput withDeceleration(double deceleration) {
+    public Actions withDeceleration(double deceleration) {
         this.deceleration = Math.max(0, Math.min(1, deceleration));
         return this;
     }
 
     /** Set jump pressed output. Default is false. */
-    public AgentOutput withJump(boolean jumpDepressed) {
+    public Actions withJump(boolean jumpDepressed) {
         this.jumpDepressed = jumpDepressed;
         return this;
     }
 
     /** Set boost pressed output. Default is false. */
-    public AgentOutput withBoost(boolean boostDepressed) {
+    public Actions withBoost(boolean boostDepressed) {
         this.boostDepressed = boostDepressed;
         return this;
     }
 
     /** Set slide pressed output. Default is false. */
-    public AgentOutput withSlide(boolean slideDepressed) {
+    public Actions withSlide(boolean slideDepressed) {
         this.slideDepressed = slideDepressed;
         return this;
     }
 
     /** Set jump pressed output to true. */
-    public AgentOutput withJump() {
+    public Actions withJump() {
         this.jumpDepressed = true;
         return this;
     }
 
     /** Set boost pressed output to true. */
-    public AgentOutput withBoost() {
+    public Actions withBoost() {
         this.boostDepressed = true;
         return this;
     }
 
     /** Set slide pressed output to true. */
-    public AgentOutput withSlide() {
+    public Actions withSlide() {
         this.slideDepressed = true;
         return this;
     }
 
 
     /**
-     * Compare two AgentOutputs.
-     * @param o the other AgentOutput.
-     * @return whether the AgentOutputs are identical.
+     * Compare two Actionss.
+     * @param o the other Actions.
+     * @return whether the Actionss are identical.
      */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        AgentOutput that = (AgentOutput) o;
+        Actions that = (Actions) o;
 
         if (Double.compare(that.steeringTilt, steeringTilt) != 0) return false;
         if (Double.compare(that.pitchTilt, pitchTilt) != 0) return false;
@@ -176,7 +176,7 @@ public class AgentOutput {
     }
 
     /**
-     * @return this AgentOutput as a ControllerState.
+     * @return this Actions as a ControllerState.
      */
     GameData.ControllerState toControllerState() {
         return GameData.ControllerState.newBuilder()

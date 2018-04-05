@@ -22,9 +22,9 @@ public class Bot {
 
     /** Let the bot process the information from the input packet
      * @param packet the game tick packet from the game
-     * @return an AgentOutput of what the agent want to do
+     * @return an Actions of what the agent want to do
      */
-    public AgentOutput process(Situation packet) {
+    public Actions process(Situation packet) {
         return behaviorTree.evaluate(packet);
     }
 

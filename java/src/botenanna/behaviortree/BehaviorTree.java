@@ -1,7 +1,7 @@
 package botenanna.behaviortree;
 
 import botenanna.Situation;
-import botenanna.AgentOutput;
+import botenanna.Actions;
 import botenanna.behaviortree.builder.BehaviourTreeBuildingException;
 
 public class BehaviorTree implements Node {
@@ -39,7 +39,7 @@ public class BehaviorTree implements Node {
         // Set lastNodeStatus to newNodeStatus
         if (newNodeStatus == null) {
             // If newNodeStatus is null, something went wrong, so we just create one now.
-            lastNodeStatus = new NodeStatus(Status.RUNNING, new AgentOutput(), this);
+            lastNodeStatus = new NodeStatus(Status.RUNNING, new Actions(), this);
         } else {
             lastNodeStatus = newNodeStatus;
         }
@@ -48,8 +48,8 @@ public class BehaviorTree implements Node {
     }
 
     /** Evaluate the behaviour tree.
-     * @return the AgentOutput. */
-    public AgentOutput evaluate(Situation input) {
+     * @return the Actions. */
+    public Actions evaluate(Situation input) {
         NodeStatus nodeStatus = run(input);
         return nodeStatus.output;
     }

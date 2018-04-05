@@ -1,7 +1,7 @@
 package botenanna.behaviortree.tasks;
 
 import botenanna.Situation;
-import botenanna.AgentOutput;
+import botenanna.Actions;
 import botenanna.ArgumentTranslator;
 import botenanna.behaviortree.Leaf;
 import botenanna.behaviortree.MissingNodeException;
@@ -45,7 +45,7 @@ public class TaskAdjustAirRotation extends Leaf {
 
     @Override
     public NodeStatus run(Situation input) throws MissingNodeException {
-        AgentOutput out = new AgentOutput();
+        Actions out = new Actions();
 
         Vector3 myRot = input.myCar.rotation;
 

@@ -43,7 +43,7 @@ public class GrpcService extends BotGrpc.BotImplBase {
             // If the index of this player is greater than the playerCount,
             // then we don't know anything about this car
             if (request.getPlayersCount() <= playerIndex) {
-                return new AgentOutput().toControllerState();
+                return new Actions().toControllerState();
             }
 
             request.getGameInfo().getGameTimeRemaining();
@@ -73,7 +73,7 @@ public class GrpcService extends BotGrpc.BotImplBase {
         } catch (Exception e) {
             e.printStackTrace();
             // Return default ControllerState on errors
-            return new AgentOutput().toControllerState();
+            return new Actions().toControllerState();
         }
     }
 }

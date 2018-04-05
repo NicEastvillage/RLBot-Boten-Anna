@@ -1,7 +1,7 @@
 package botenanna.behaviortree.tasks;
 
 import botenanna.Situation;
-import botenanna.AgentOutput;
+import botenanna.Actions;
 import botenanna.ArgumentTranslator;
 import botenanna.behaviortree.*;
 import botenanna.math.RLMath;
@@ -61,12 +61,12 @@ public class TaskGoTowardsPoint extends Leaf {
         // Smooth the angle to a steering amount - this avoids wobbling
         double steering = RLMath.steeringSmooth(ang);
 
-        AgentOutput output;
+        Actions output;
 
         if(useBoost)
-            output = new AgentOutput().withAcceleration(1).withSteer(steering).withBoost();
+            output = new Actions().withAcceleration(1).withSteer(steering).withBoost();
         else
-            output = new AgentOutput().withAcceleration(1).withSteer(steering);
+            output = new Actions().withAcceleration(1).withSteer(steering);
 
         if (allowSlide) {
             // Do slide for sharp turning

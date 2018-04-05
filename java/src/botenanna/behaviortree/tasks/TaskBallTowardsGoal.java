@@ -1,7 +1,7 @@
 package botenanna.behaviortree.tasks;
 
 import botenanna.Situation;
-import botenanna.AgentOutput;
+import botenanna.Actions;
 import botenanna.behaviortree.*;
 import botenanna.math.RLMath;
 import botenanna.math.Vector2;
@@ -145,6 +145,6 @@ public class TaskBallTowardsGoal extends Leaf {
             boost = true;
         }
 
-        return new NodeStatus(Status.RUNNING, new AgentOutput().withAcceleration(1).withSteer(steering).withBoost(boost), this);
+        return new NodeStatus(Status.RUNNING, new Actions().withAcceleration(1).withSteer(steering).withBoost(boost), this);
     }
 }
