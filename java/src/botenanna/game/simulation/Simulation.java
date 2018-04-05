@@ -1,6 +1,6 @@
 package botenanna.game.simulation;
 
-import botenanna.game.Actions;
+import botenanna.game.ActionSet;
 import botenanna.game.Car;
 import botenanna.game.Situation;
 import botenanna.game.Ball;
@@ -15,7 +15,7 @@ public class Simulation {
     private final int timesASec = 100;
 
 
-    public final Situation Simulate(Situation Situation, int step, Actions action){
+    public final Situation Simulate(Situation Situation, int step, ActionSet action){
 
 
 
@@ -41,7 +41,7 @@ public class Simulation {
      return car;
     }
 
-    public Car simulateCarWOutput(Situation input, Actions action, Ball ball){
+    public Car simulateCarWOutput(Situation input, ActionSet action, Ball ball){
         // FIXME: Every occurrence of "getThrottle()" used to be "getAcceleration()" and might not be exactly the same
 
         //Turnrate if the slide is on change turnrate

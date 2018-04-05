@@ -5,7 +5,7 @@ import rlbot.api.GameData;
 /**
  * A data class describing the outputs of an agent. This class can be translated into a ControllerState.
  */
-public class Actions {
+public class ActionSet {
 
     // 0 is straight, -1 is hard left, 1 is hard right.
     private double steeringTilt = 0;
@@ -21,65 +21,65 @@ public class Actions {
     private boolean boostDepressed = false;
     private boolean slideDepressed = false;
 
-    public Actions() {
+    public ActionSet() {
     }
 
     /** Set steering/turning. 0 is straight, -1 is hard left, 1 is hard right. Clamped between -1 and 1. Default it 0. */
-    public Actions withSteer(double steeringTilt) {
+    public ActionSet withSteer(double steeringTilt) {
         this.steeringTilt = Math.max(-1, Math.min(1, steeringTilt));
         return this;
     }
 
     /** Set pitch. -1 for front flip, 1 for back flip. Clamped between -1 and 1. Default is 0. */
-    public Actions withPitch(double pitchTilt) {
+    public ActionSet withPitch(double pitchTilt) {
         this.pitchTilt = Math.max(-1, Math.min(1, pitchTilt));
         return this;
     }
 
     /** Set roll. -1 for left roll, 1 for right roll, Clamped between -1 and 1. Default is 0. */
-    public Actions withRoll(double rollTilt) {
+    public ActionSet withRoll(double rollTilt) {
         this.rollTilt = Math.max(-1, Math.min(1, rollTilt));
         return this;
     }
 
     /** Set throttle. 0 is none, 1 is forwards, -1 is backwards. Clamped between -1 and 1. Default is 0. */
-    public Actions withThrottle(double throttle) {
+    public ActionSet withThrottle(double throttle) {
         this.throttle = Math.max(-1, Math.min(1, throttle));
         return this;
     }
 
     /** Set jump pressed output. Default is false. */
-    public Actions withJump(boolean jumpDepressed) {
+    public ActionSet withJump(boolean jumpDepressed) {
         this.jumpDepressed = jumpDepressed;
         return this;
     }
 
     /** Set boost pressed output. Default is false. */
-    public Actions withBoost(boolean boostDepressed) {
+    public ActionSet withBoost(boolean boostDepressed) {
         this.boostDepressed = boostDepressed;
         return this;
     }
 
     /** Set slide pressed output. Default is false. */
-    public Actions withSlide(boolean slideDepressed) {
+    public ActionSet withSlide(boolean slideDepressed) {
         this.slideDepressed = slideDepressed;
         return this;
     }
 
     /** Set jump pressed output to true. */
-    public Actions withJump() {
+    public ActionSet withJump() {
         this.jumpDepressed = true;
         return this;
     }
 
     /** Set boost pressed output to true. */
-    public Actions withBoost() {
+    public ActionSet withBoost() {
         this.boostDepressed = true;
         return this;
     }
 
     /** Set slide pressed output to true. */
-    public Actions withSlide() {
+    public ActionSet withSlide() {
         this.slideDepressed = true;
         return this;
     }
@@ -87,7 +87,7 @@ public class Actions {
 
     /**
      * Compare two Actionss.
-     * @param o the other Actions.
+     * @param o the other ActionSet.
      * @return whether the Actionss are identical.
      */
     @Override
@@ -95,7 +95,7 @@ public class Actions {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Actions that = (Actions) o;
+        ActionSet that = (ActionSet) o;
 
         if (Double.compare(that.steeringTilt, steeringTilt) != 0) return false;
         if (Double.compare(that.pitchTilt, pitchTilt) != 0) return false;
@@ -162,7 +162,7 @@ public class Actions {
     }
 
     /**
-     * @return this Actions as a ControllerState.
+     * @return this ActionSet as a ControllerState.
      */
     public GameData.ControllerState toControllerState() {
         return GameData.ControllerState.newBuilder()

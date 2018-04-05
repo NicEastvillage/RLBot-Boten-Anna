@@ -1,7 +1,7 @@
 package botenanna;
 
 import botenanna.behaviortree.BehaviorTree;
-import botenanna.game.Actions;
+import botenanna.game.ActionSet;
 import botenanna.game.Situation;
 import botenanna.physics.TimeTracker;
 import io.grpc.stub.StreamObserver;
@@ -45,7 +45,7 @@ public class GrpcService extends BotGrpc.BotImplBase {
             // If the index of this player is greater than the playerCount,
             // then we don't know anything about this car
             if (request.getPlayersCount() <= playerIndex) {
-                return new Actions().toControllerState();
+                return new ActionSet().toControllerState();
             }
 
             request.getGameInfo().getGameTimeRemaining();
@@ -75,7 +75,7 @@ public class GrpcService extends BotGrpc.BotImplBase {
         } catch (Exception e) {
             e.printStackTrace();
             // Return default ControllerState on errors
-            return new Actions().toControllerState();
+            return new ActionSet().toControllerState();
         }
     }
 }

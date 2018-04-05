@@ -1,7 +1,7 @@
 package botenanna.behaviortree.tasks;
 
+import botenanna.game.ActionSet;
 import botenanna.game.Situation;
-import botenanna.game.Actions;
 import botenanna.behaviortree.Leaf;
 import botenanna.behaviortree.MissingNodeException;
 import botenanna.behaviortree.NodeStatus;
@@ -25,6 +25,6 @@ public class TaskGoForwards extends Leaf {
 
     @Override
     public NodeStatus run(Situation input) throws MissingNodeException {
-        return new NodeStatus(Status.RUNNING, new Actions().withThrottle(1), this);
+        return new NodeStatus(Status.RUNNING, new ActionSet().withThrottle(1), this);
     }
 }
