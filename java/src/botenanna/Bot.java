@@ -1,7 +1,7 @@
 package botenanna;
 
 import botenanna.behaviortree.*;
-import botenanna.game.Actions;
+import botenanna.game.ActionSet;
 import botenanna.game.Situation;
 
 public class Bot {
@@ -24,9 +24,9 @@ public class Bot {
 
     /** Let the bot process the information from the input packet
      * @param packet the game tick packet from the game
-     * @return an Actions of what the agent want to do
+     * @return an ActionSet of what the agent want to do
      */
-    public Actions process(Situation packet) {
+    public ActionSet process(Situation packet) {
         return behaviorTree.evaluate(packet);
     }
 

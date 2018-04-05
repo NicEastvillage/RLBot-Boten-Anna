@@ -1,6 +1,6 @@
 package botenanna.behaviortree;
 
-import botenanna.game.Actions;
+import botenanna.game.ActionSet;
 
 import java.util.ArrayList;
 
@@ -13,8 +13,8 @@ public class NodeStatus {
 
     /** The return status of the node. If this is RUNNING, then {@code output} and {@code creator} is defined too.*/
     public final Status status;
-    /** The Actions produced by a Leaf. Will be null when {@code status} is not RUNNING.*/
-    public final Actions output;
+    /** The ActionSet produced by a Leaf. Will be null when {@code status} is not RUNNING.*/
+    public final ActionSet output;
     /** The creator of this NodeStatus. Can be null when {@code status} is not RUNNING.*/
     public final Node creator;
     /** If a NodeStatus is RUNNING and is of high priority, the behaviour will skip directly to the creator node until
@@ -31,10 +31,10 @@ public class NodeStatus {
      * @param status the Status of the node. If this is RUNNING, {@code output} and {@code creator} must be defined, since the
      *               NodeStatus will then be return all the way to the behaviour tree's top.
      *               Otherwise they can be null.
-     * @param output the resulting Actions. @{@code status} must be RUNNING, if this is not null.
+     * @param output the resulting ActionSet. @{@code status} must be RUNNING, if this is not null.
      * @param creator the node, that created this NodeStatus. The creator and all dependencies will be reset, if the NodeStatus created somewhere
      *                else in a subsequent tick.*/
-    public NodeStatus(Status status, Actions output, Node creator) {
+    public NodeStatus(Status status, ActionSet output, Node creator) {
         this(status, output, creator, false);
     }
 
@@ -46,12 +46,12 @@ public class NodeStatus {
      * @param status the Status of the node. If this is RUNNING, {@code output} and {@code creator} must be defined, since the
      *               NodeStatus will then be return all the way to the behaviour tree's top.
      *               Otherwise they can be null.
-     * @param output the resulting Actions. @{@code status} must be RUNNING, if this is not null.
+     * @param output the resulting ActionSet. @{@code status} must be RUNNING, if this is not null.
      * @param creator the node, that created this NodeStatus. The creator and all dependencies will be reset, if the NodeStatus created somewhere
      *                else in a subsequent tick.
      * @param isHighPriority whether this RUNNING status is of high priority. When a NodeStatus is of high priority, the behaviour tree
      *                       will skip directly to the creator node until the creator a non-highPriority status.*/
-    public NodeStatus(Status status, Actions output, Node creator, boolean isHighPriority) {
+    public NodeStatus(Status status, ActionSet output, Node creator, boolean isHighPriority) {
         this.status = status;
         this.output = output;
         this.creator = creator;
