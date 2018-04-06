@@ -27,7 +27,7 @@ public class Simulation {
 
     /** Simulates the car, ball, enemyCar and boostpads forward a step
      * @return A new simulated situation     */
-    public Situation simulate(Situation situation, double step, ActionSet action){
+    public static Situation  simulate(Situation situation, double step, ActionSet action){
         return new Situation(carWithActions(situation, action,  simulateBall(situation, step), step),steppedCar(situation.enemyCar,  step),simulateBall(situation, step), simulateBoost(situation, steppedCar(situation.enemyCar,  step), carWithActions(situation, action,  simulateBall(situation, step), step), step) );
     }
 
@@ -52,15 +52,12 @@ public class Simulation {
      * @param situation the situation the bal  is from
      * @return a new ball who has been stepped forward its path
      */
-    private Ball simulateBall(Situation situation, double step)    {
+    private static Ball simulateBall(Situation situation, double step)    {
 
     // TODO FIND PATH?
 
 
         return new Ball(situation.ball.getPosition(),situation.ball.getVelocity(),situation.ball.getRotation());
-
-
-
     }
 
     /** Steppes the cars rigidbody forward 1 step
