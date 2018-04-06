@@ -95,8 +95,9 @@ public class Vector3 {
 
     /** @return a new vector turned an angle,     */
     //TODO ADD ANGLE MATHEMATICS
-    public Vector3 angle(Vector3  B, double Theta){
+    public Vector3 turn(Vector3  Q, double Theta){
         Vector3 A = this;
+        Vector3 B = this.minus(this);
         Vector3 C = A.cross(B);
         Vector3 F = C.cross(A);
         return A.scale(cos(Theta)).plus(F.scale(sin(Theta)));

@@ -4,8 +4,10 @@ import botenanna.math.RLMath;
 import botenanna.math.Vector2;
 import botenanna.math.Vector3;
 import botenanna.physics.TimeTracker;
+import javafx.util.Pair;
 import rlbot.api.GameData;
 
+import java.util.ArrayList;
 import java.util.List;
 
 //TODO: add isUpsideDown, myGoal (2dVEC), myGoalLine (2dVEC)
@@ -23,6 +25,10 @@ public class Situation {
     public static final Vector2 RED_GOALPOST_LEFT = new Vector2(-720, 5200);
     public static final Vector2 RED_GOALPOST_RIGHT = new Vector2(720, 5200);
     public static final Vector3[] BIG_BOOST_PADS = {new Vector3(-3070, 4100), new Vector3(3070,-4100), new Vector3(-3070,-4100),new Vector3(-3580,0), new Vector3(3580,0), new Vector3(3070, 4100)};
+    private double UPPERLEFT_CORNER_X1 = 10280/2-Ball.RADIUS*3, UPPERRIGHT_CORNER_y1=8240/2-Ball.RADIUS*3;   // lower left
+    private double LOWERLEFT_CORNER_X2 = -10280/2+Ball.RADIUS*3, LOWERRIGHT_CORNER_y2=-8240/2+Ball.RADIUS*3;   // upper right
+    private double q1 = 10280/2-30, w1=8240/2-30;   // lower left
+    private double q2 = -10280/2+30, w2=-8240/2+30;   // upper right
 
     private GameData.GameTickPacket packet;
     private TimeTracker timeTracker;
@@ -44,6 +50,7 @@ public class Situation {
     public final boolean gameIsOvertime;
     public final boolean gameIsRoundActive;
     public final int gamePlayerCount;
+    public Boostpads gameBoostPads;
 
     /** The constructor.
      * @param packet the GameTickPacket.
@@ -51,6 +58,10 @@ public class Situation {
     public Situation(GameData.GameTickPacket packet, TimeTracker timeTracker){
         this.packet = packet;
         this.timeTracker = timeTracker;
+        gameBoostPads = new Boostpads(packet);
+
+
+
 
         /* CARS */
         myPlayerIndex = packet.getPlayerIndex();
@@ -78,12 +89,15 @@ public class Situation {
         this.gamePlayerCount = packet.getPlayersCount();
     }
     // Constructor  for simulation
-    public Situation(Car car, Car enemyCar, Ball ball) {
+    public Situation(Car car, Car enemyCar, Ball ball, Boostpads pads) {
         this.myPlayerIndex = car.playerIndex;
         this.enemyPlayerIndex = enemyCar.playerIndex;
         this.myCar = car;
         this.enemyCar = enemyCar;
         this.ball = ball;
+        this.gameBoostPads = pads;
+
+
         // Udregn
         double landingTime = ball.predictArrivalAtHeight(Ball.RADIUS);
         if (Double.isNaN(landingTime)) {
@@ -205,5 +219,17 @@ public class Situation {
         }
         return predictSeconds;
     }
+    public boolean BallIsWithinField(Vector2 point) {
+        return (point.x >= UPPERLEFT_CORNER_X1 && point.x <= LOWERLEFT_CORNER_X2 && point.y >= UPPERRIGHT_CORNER_y1 && point.y <= LOWERRIGHT_CORNER_y2);
+    }
+    public boolean AgentIsWithinField(Vector2 point) {
+        return (point.x >= q1 && point.x <= q2 && point.y >= w1 && point.y <= w2);
+    }
+
+
+
+
+
+
 
 }
