@@ -1,11 +1,14 @@
 package botenanna.game;
 
+import botenanna.game.simulation.Simulation;
 import botenanna.math.RLMath;
 import botenanna.math.Vector2;
 import botenanna.math.Vector3;
 import botenanna.physics.TimeTracker;
+import javafx.util.Pair;
 import rlbot.api.GameData;
 
+import java.util.ArrayList;
 import java.util.List;
 
 //TODO: add isUpsideDown, myGoal (2dVEC), myGoalLine (2dVEC)
@@ -29,9 +32,6 @@ public class Situation {
     private double q2 = -10280/2+30, w2=-8240/2+30;   // upper right
 
 
-
-
-
     private GameData.GameTickPacket packet;
     private TimeTracker timeTracker;
 
@@ -52,6 +52,7 @@ public class Situation {
     public final boolean gameIsOvertime;
     public final boolean gameIsRoundActive;
     public final int gamePlayerCount;
+    public Boostpads gameBoostPads;
 
     /** The constructor.
      * @param packet the GameTickPacket.
@@ -59,6 +60,7 @@ public class Situation {
     public Situation(GameData.GameTickPacket packet, TimeTracker timeTracker){
         this.packet = packet;
         this.timeTracker = timeTracker;
+        gameBoostPads = new Boostpads(packet);
 
         /* CARS */
         myPlayerIndex = packet.getPlayerIndex();
@@ -86,12 +88,15 @@ public class Situation {
         this.gamePlayerCount = packet.getPlayersCount();
     }
     // Constructor  for simulation
-    public Situation(Car car, Car enemyCar, Ball ball) {
+    public Situation(Car car, Car enemyCar, Ball ball, Boostpads pads) {
         this.myPlayerIndex = car.playerIndex;
         this.enemyPlayerIndex = enemyCar.playerIndex;
         this.myCar = car;
         this.enemyCar = enemyCar;
         this.ball = ball;
+        this.gameBoostPads = pads;
+
+
         // Udregn
         double landingTime = ball.predictArrivalAtHeight(Ball.RADIUS);
         if (Double.isNaN(landingTime)) {
@@ -214,62 +219,11 @@ public class Situation {
         return predictSeconds;
     }
 
-    //checks if the ball is within the field
-
     public boolean BallIsWithinField(Vector2 point) {
-
         return (point.x >= UPPERLEFT_CORNER_X1 && point.x <= LOWERLEFT_CORNER_X2 && point.y >= UPPERRIGHT_CORNER_y1 && point.y <= LOWERRIGHT_CORNER_y2);
-
     }
-
-    //
 
     public boolean AgentIsWithinField(Vector2 point) {
         return (point.x >= q1 && point.x <= q2 && point.y >= w1 && point.y <= w2);
-    }
-
-    public class Car {
-        public final int playerIndex;
-        public final int team;
-        public final Vector3 position;
-        public final Vector3 velocity;
-        public final Vector3 rotation;
-        public final Vector3 angularVelocity;
-        public final Vector3 upVector;
-        public final Vector3 frontVector;
-        public final Vector3 sideVector;
-        public final int boost;
-        public final boolean hasJumped;
-        public final boolean hasDoubleJumped;
-        public final boolean isDemolished;
-        public final boolean isSupersonic;
-        public final boolean isCarOnGround;
-        public final boolean isMidAir;
-        public final boolean isCarUpsideDown;
-        public final double distanceToBall;
-        public final double angleToBall;
-
-        public Car(int index, GameData.GameTickPacket packet) {
-            playerIndex = index;
-            GameData.PlayerInfo info = packet.getPlayers(index);
-            team = info.getTeam();
-            position = Vector3.convert(packet.getPlayers(myPlayerIndex).getLocation());
-            velocity = Vector3.convert(packet.getPlayers(myPlayerIndex).getVelocity());
-            rotation = Vector3.convert(packet.getPlayers(myPlayerIndex).getRotation());
-            angularVelocity = Vector3.convert(packet.getPlayers(myPlayerIndex).getAngularVelocity());
-            upVector = RLMath.carUpVector(Vector3.convert(packet.getPlayers(myPlayerIndex).getRotation()));
-            frontVector = RLMath.carFrontVector(Vector3.convert(packet.getPlayers(myPlayerIndex).getRotation()));
-            sideVector = RLMath.carSideVector(Vector3.convert(packet.getPlayers(myPlayerIndex).getRotation()));
-            boost = packet.getPlayers(myPlayerIndex).getBoost();
-            hasJumped = packet.getPlayers(myPlayerIndex).getJumped();
-            hasDoubleJumped = packet.getPlayers(myPlayerIndex).getDoubleJumped();
-            isDemolished = packet.getPlayers(myPlayerIndex).getIsDemolished();
-            isSupersonic = packet.getPlayers(myPlayerIndex).getIsSupersonic();
-            isCarOnGround = packet.getPlayers(myPlayerIndex).getLocation().getZ() < 20;
-            isMidAir = packet.getPlayers(myPlayerIndex).getIsMidair();
-            isCarUpsideDown = RLMath.carUpVector(Vector3.convert(packet.getPlayers(myPlayerIndex).getRotation())).z < 0;
-            distanceToBall = Vector3.convert(packet.getPlayers(myPlayerIndex).getLocation()).getDistanceTo(Vector3.convert(packet.getBall().getLocation()));
-            angleToBall = RLMath.carsAngleToPoint(position.asVector2(), rotation.yaw, Vector3.convert(packet.getBall().getLocation()).asVector2());
-        }
     }
 }

@@ -27,7 +27,7 @@ public class Vector3 {
     /** Angle of counterclockwise rotation around the y-axis */
     public final double roll;
     /** Angle of counterclockwise rotation around the z-axis */
-    public final double yaw;
+    public double yaw;
 
 
     public Vector3() {
@@ -91,15 +91,6 @@ public class Vector3 {
     /** @return the magnitude (length) of this vector. */
     public double getMagnitude() {
         return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2) + Math.pow(this.z, 2));
-    }
-
-    /** @return a new vector turned an angle,     */
-    //TODO ADD ANGLE MATHEMATICS
-    public Vector3 angle(Vector3  B, double Theta){
-        Vector3 A = this;
-        Vector3 C = A.cross(B);
-        Vector3 F = C.cross(A);
-        return A.scale(cos(Theta)).plus(F.scale(sin(Theta)));
     }
 
     /** @return the distance to another vector squared. Sometimes you don't have to find the square root, then this is faster. */

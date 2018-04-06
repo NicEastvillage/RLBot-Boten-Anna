@@ -6,27 +6,37 @@ import botenanna.physics.Rigidbody;
 import rlbot.api.GameData;
 
 public class Car extends Rigidbody {
+    //GLobal Variables
+    public final static double ACCELERATION = 20;
+    public final static double ACCELERATION_BOOST = 50;
+    //TURNRATE IS A FUNCTION OF THE CURRENT SPEED
+    public final static double TURN_RATE = 50;
+    public final static double MAX_VELOCITY = 28.2;
+    public final static double MAX_VELOCITY_BOOST = 35;
 
-        public final int playerIndex;
-        public final int team;
-        public Vector3 position;
-        public  Vector3 velocity;
-        public  Vector3 rotation;
-        public final Vector3 angularVelocity;
-        public final Vector3 upVector;
-        public final Vector3 frontVector;
-        public final Vector3 sideVector;
-        public final int boost;
-        public final boolean hasJumped;
-        public final boolean hasDoubleJumped;
-        public final boolean isDemolished;
-        public final boolean isSupersonic;
-        public final boolean isCarOnGround;
-        public final boolean isMidAir;
-        public final boolean isCarUpsideDown;
-        public final boolean isOnWall;
-        public final double distanceToBall;
-        public final double angleToBall;
+
+    public final int playerIndex;
+    public final int team;
+    public Vector3 position;
+    public  Vector3 velocity;
+    public  Vector3 rotation;
+    public final Vector3 angularVelocity;
+    public final Vector3 upVector;
+    public final Vector3 frontVector;
+    public final Vector3 sideVector;
+    public int boost;
+    public final boolean hasJumped;
+    public final boolean hasDoubleJumped;
+    public final boolean isDemolished;
+    public final boolean isSupersonic;
+    public final boolean isCarOnGround;
+    public final boolean isMidAir;
+    public final boolean isCarUpsideDown;
+    public final boolean isOnWall;
+    public final double distanceToBall;
+    public final double angleToBall;
+
+
 
         public Car(int index, GameData.GameTickPacket packet) {
 
@@ -58,7 +68,8 @@ public class Car extends Rigidbody {
             isOnWall = position.y==Situation.ARENA_LENGTH || position.x == Situation.ARENA_WIDTH || position.x == -Situation.ARENA_WIDTH || position.y == -Situation.ARENA_LENGTH;
 
         }
-        // Constructor for simulation
+
+    // Constructor for simulation
         public Car(Car car, Vector3 position, Vector3 velocity, Vector3 angleVel, Vector3 rotation, Ball ball) {
         //Team Indicators
             team = car.team;
@@ -91,29 +102,10 @@ public class Car extends Rigidbody {
             isOnWall = position.y==Situation.ARENA_LENGTH || position.x == Situation.ARENA_WIDTH || position.x == -Situation.ARENA_WIDTH || position.y == -Situation.ARENA_LENGTH;
 
         }
-        //Getter
 
-    public int getPlayerIndex() {
-        return playerIndex;
-    }
-
-    public int getTeam() {
-        return team;
-    }
-
-    @Override
-    public Vector3 getPosition() {
-        return position;
-    }
-
-    @Override
-    public Vector3 getVelocity() {
-        return velocity;
-    }
-
-    @Override
-    public Vector3 getRotation() {
-        return rotation;
+    // GENERATED GETTERS
+    public boolean isHasJumped() {
+        return hasJumped;
     }
 
     public Vector3 getAngularVelocity() {
@@ -135,9 +127,8 @@ public class Car extends Rigidbody {
     public int getBoost() {
         return boost;
     }
-
-    public boolean isHasJumped() {
-        return hasJumped;
+    public void setBoost(int i){
+       this.boost =  i;
     }
 
     public boolean isHasDoubleJumped() {
@@ -175,4 +166,5 @@ public class Car extends Rigidbody {
     public double getAngleToBall() {
         return angleToBall;
     }
+
 }

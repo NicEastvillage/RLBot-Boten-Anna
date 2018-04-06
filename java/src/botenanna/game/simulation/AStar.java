@@ -53,7 +53,7 @@ public class AStar {
             // Try all sensible actions and simulate what situations they create
             List<ActionSet> followingActions = getFollowingActionSets(current.situation, current.actionTaken);
             for (ActionSet action : followingActions) {
-                Situation newSituation = null; // FIXME Replace with Simulation.simulate()
+                Situation newSituation = Simulation.simulate(current.situation, stepsize, action);
                 TimeNode node = new TimeNode(newSituation, action, current, current.timeSpent + stepsize);
                 openSet.add(node);
             }

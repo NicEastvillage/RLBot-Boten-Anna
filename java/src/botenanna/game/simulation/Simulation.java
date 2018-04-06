@@ -1,96 +1,142 @@
 package botenanna.game.simulation;
 
-import botenanna.game.ActionSet;
-import botenanna.game.Car;
-import botenanna.game.Situation;
-import botenanna.game.Ball;
+import botenanna.game.*;
 import botenanna.math.RLMath;
 import botenanna.math.Vector3;
+import botenanna.physics.Rigidbody;
+import javafx.util.Pair;
+import java.util.ArrayList;
+import static botenanna.game.Boostpads.*;
+import static botenanna.game.Car.*;
+
 
 public class Simulation {
-    //TODO Liste
-    //Noget med en path ved simulering
-    //Noget med simulering af bil som function
-    //Noget med simulering af boldt som function
-    private final int timesASec = 100;
+    public Situation simulatedSituation;
+    public Car simulatedMyCar;
+    public Car simulatedEnemyCar;
+    public Ball simulatedBall;
+    public Boostpads simulatedBoostpadsList;
 
-
-    public final Situation Simulate(Situation Situation, int step, ActionSet action){
-
-
-
-    // Simulate the ball forward first
-        Ball ball = simulateBall(Situation);
-    // Simulate the car forward
-        Car myCar = simulateCarWOutput(Situation, action,  ball);
-        Car enemyCar = simulateCarNoOutput(Situation.enemyCar);
-        //List<Vector2> boost = simulateBoost(Situation);
-        return new Situation(myCar, enemyCar,ball);
+    public Simulation(Situation situation, double step, ActionSet action){
+        Ball simulatedBall = simulateBall(situation, step);
+        Car simulatedMyCar = carWithActions(situation, action,  simulatedBall, step);
+        Car simulatedEnemyCar = steppedCar(situation.enemyCar,  step);
+        Boostpads simulatedBoostpadsList = simulateBoost(situation, simulatedEnemyCar, simulatedMyCar, step);
+        Situation simulatedSituation = new Situation(simulatedMyCar, simulatedEnemyCar, simulatedBall , simulatedBoostpadsList);
     }
 
-    private Ball simulateBall(Situation input)    {
-        return new Ball(input.ball.getPosition(),input.ball.getVelocity(),input.ball.getRotation());
+    /** Simulates the car, ball, enemyCar and boostpads forward a step
+     * @return A new simulated situation     */
+    public static Situation  simulate(Situation situation, double step, ActionSet action){
+        return new Situation(carWithActions(situation, action,  simulateBall(situation, step), step),steppedCar(situation.enemyCar,  step),simulateBall(situation, step), simulateBoost(situation, steppedCar(situation.enemyCar,  step), carWithActions(situation, action,  simulateBall(situation, step), step), step) );
     }
-    
-    private void simulateBoost(Situation input) {
-        return;
+
+    /** Simulates  the boostpads, if any of the cars can pick up boost and they are stepped close to a pad deactivate them
+     * @return an array of boostpads after simulation
+     */
+    private static Boostpads simulateBoost(Situation situation, Car enemy, Car myCar, double step) {
+       Boostpads currentGamePads = situation.gameBoostPads;
+       ArrayList<Pair<Vector3, Boolean>> simulatedArray = new ArrayList<>(NUM_PADS);
+       boolean active;
+        for (int i = 0; i> NUM_PADS; i++){
+            active = true;
+            if (currentGamePads.get(i).getKey().getDistanceTo(myCar.position)<20 && myCar.getBoost()<100 || currentGamePads.get(i).getKey().getDistanceTo(enemy.position)<20 && myCar.getBoost()<100 ){
+                active = false;
+            }
+            simulatedArray.add(Boostpads.BoostPadPairing(currentGamePads.get(i).getKey(),active));
+        }
+        return new Boostpads(simulatedArray);
     }
-    
-    private Car simulateCarNoOutput(Car car) {
-        car.setPosition(car.position.plus(new Vector3(0,0,1)));
+
+    /**
+     * @param situation the situation the bal  is from
+     * @return a new ball who has been stepped forward its path
+     */
+    private static Ball simulateBall(Situation situation, double step)    {
+
+    // TODO FIND PATH?
+
+
+        return new Ball(situation.ball.getPosition(),situation.ball.getVelocity(),situation.ball.getRotation());
+    }
+
+    /** Steppes the cars rigidbody forward 1 step
+     * @param car is the car with no output
+     * @return a simulated car                                    */
+    private static Car steppedCar(Car car, double step) {
+        Rigidbody copy = car.stepped(1*step);
+        car.setPosition(copy.getPosition());
+        car.setRotation(copy.getRotation());
+        car.setVelocity(copy.getVelocity());
+        car.setAcceleration(copy.getAcceleration());
      return car;
     }
 
-    public Car simulateCarWOutput(Situation input, ActionSet action, Ball ball){
-        // FIXME: Every occurrence of "getThrottle()" used to be "getAcceleration()" and might not be exactly the same
+    /** Simulates a car with actions **
+     * @param situation The current situation in game
+     * @param action the current actions from the Agent
+     * @return a Car simulated forward in  the new situation     */
+    public static Car carWithActions(Situation situation, ActionSet action, Ball ball, double step){
 
-        //Turnrate if the slide is on change turnrate
-        double turnRate =  action.isSlideDepressed() ?  25 : 50;
         //AccelerationRate: if boost is used change acceleration to boostTier
-        double accelerationRate = (action.isBoostDepressed() && input.myCar.getBoost()!=0) ? 2/timesASec : 1/timesASec;
-        double acceleration = action.getThrottle()/(accelerationRate);
-        //TODO Placeholder max Velocity
-        double maxVelocity = 28.2;
+        double accelerationRate = (action.isBoostDepressed() && situation.myCar.getBoost()!=0) ? ACCELERATION_BOOST/step : ACCELERATION/step;
+        double acceleration = action.getThrottle()*(accelerationRate);
+        Car startingCar = situation.myCar;
+        Car simulatedCar = situation.myCar;
+        Vector3 direction = RLMath.carFrontVector(startingCar.rotation);
 
-        Car simulatedCar = input.myCar;
-        Vector3 direction = RLMath.carFrontVector(simulatedCar.rotation);
-
-        //First simulate the change in the cars rotation 
-        //In doing so the simulation of the position can be done with a step in the rigidbody
-        // Car steer simulation // TODO Add slide
-        if (action.getSteer()!=0 && (action.getThrottle()!=0 || simulatedCar.velocity.getMagnitude()!=0 || simulatedCar.isMidAir)){
-            // The simulated cars rotation, rotated in the direction of steer per times per second.//TODO Change direction use to  just use the yaw
-            simulatedCar.rotation.angle(direction, action.getSteer()*turnRate/timesASec);
+        if (!situation.AgentIsWithinField(startingCar.getPosition().asVector2())){
+            //TODO WALLRIDER!
+        }
+        // Car steer simulation
+        if (action.getSteer()!=0 && (action.getThrottle()!=0 || startingCar.velocity.getMagnitude()!=0 || startingCar.isMidAir)){
+            direction.asVector2().turn(simulatedCar.position, (action.getSteer()*TURN_RATE)*step).asVector3();
+            simulatedCar.rotation.yaw += action.getSteer()*TURN_RATE*step;
         }
 
         // Car Roll simulation SIMPLE VERSION
-        if (simulatedCar.isMidAir  && action.getRoll()!=0){
-            simulatedCar.setRotation(new Vector3(simulatedCar.getRotation().pitch,simulatedCar.getRotation().yaw,simulatedCar.rotation.roll+action.getRoll()));
+        if (startingCar.isMidAir  && action.getRoll()!=0){
+            simulatedCar.setRotation(new Vector3(startingCar.getRotation().pitch,startingCar.getRotation().yaw,startingCar.rotation.roll+action.getRoll()));
         }
         // Car pitch simulation SIMPLE VERSION
-        if (simulatedCar.isMidAir  && action.getPitch()!=0){
-            simulatedCar.setRotation(new Vector3(simulatedCar.getRotation().pitch + action.getPitch(),simulatedCar.getRotation().yaw,simulatedCar.rotation.roll));
+        if (startingCar.isMidAir  && action.getPitch()!=0){
+            simulatedCar.setRotation(new Vector3(startingCar.getRotation().pitch + action.getPitch(),startingCar.getRotation().yaw,startingCar.rotation.roll));
         }
-
-        //Then if the car is accelerating, add the acceleration rate to the current velocity
-        //Else step the pos one.
-        // FIXME: following if-statements are wrong. getThrottle() used to be getAcceleration() and getDeceleration()
-        if (action.getThrottle()!=0 && simulatedCar.velocity.asVector2().getMagnitude()<maxVelocity){
+        //Add acceleration to the current velocity
+        if (action.getThrottle()!=0 && startingCar.velocity.asVector2().getMagnitude()<MAX_VELOCITY){
             //The simulated cars velocity plus, acceleration in the direction of the frontvector
-            simulatedCar.velocity.plus(direction.getNormalized().scale(acceleration));
+            // If the car is sliding the car will keep moving in the direction of its original front vector
+            if (action.isSlideDepressed()){
+                simulatedCar.velocity.plus(situation.myCar.frontVector.getNormalized().scale(acceleration));
+            }
+            else simulatedCar.velocity.plus(direction.getNormalized().scale(acceleration));
         }
-        // Car Deceleration //TODO Check break speed/ deceleration speed
         else if (action.getThrottle()!=0){
-            simulatedCar.velocity.plus(direction.getNormalized().scale(-acceleration));
+            startingCar.velocity.plus(direction.getNormalized().scale(-acceleration));
         }
-        if (simulatedCar.velocity.asVector2().getMagnitude()>0){
+        if (startingCar.velocity.asVector2().getMagnitude()>0){
             //If the car is moving step it forward
-            simulatedCar.stepped(timesASec);
+            simulatedCar = steppedCar(startingCar, step);
         }
 
+        //Check for boost  and adds 12 to boost if it is on a boost pad
+        Boolean bigBoost = false;
+        Boostpads boost = simulateBoost(situation, situation.enemyCar ,situation.myCar, step);
 
-    return simulatedCar;
-
+        for (int i = 0; i>NUM_PADS ;i++){
+            for (int j = 0; j>NUM_BIGBOOST; j++){//Checks if the boost is big
+                if (boost.get(i).getKey().asVector2().equals(Boostpads.bigBoostPad[j])){
+                    bigBoost = true;
+                    break;
+                }else bigBoost = false;
+            }
+            if (boost.get(i).getKey().getDistanceTo(simulatedCar.position)<20 && startingCar.getBoost()<100 && boost.get(i).getValue()){
+                if (bigBoost){
+                    simulatedCar.setBoost(100);
+                }
+                simulatedCar.setBoost(startingCar.getBoost()+12);
+            }
+        }
+        return new Car(startingCar,simulatedCar.position,simulatedCar.velocity,simulatedCar.angularVelocity,simulatedCar.rotation,ball);
     }
-
 }
