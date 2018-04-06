@@ -1,6 +1,6 @@
 package botenanna.fitness;
 
-import botenanna.AgentInput;
+import botenanna.game.Situation;
 import botenanna.math.Vector3;
 
 /** This class is used when you want a fitness value for "Arrive at a point with a specific angle. */
@@ -27,7 +27,7 @@ public class fitnessDriveOverPointWithAngle implements fitnessInterface {
      *  @param timeSpent the seconds used since origin of situation.
      *  @return a fitness value for the given situation. */
     @Override
-    public double calculateFitness(AgentInput situation, double timeSpent){
+    public double calculateFitness(Situation situation, double timeSpent){
 
         //Calculate function variables
         double angToPoint = situation.myCar.position.getAngleTo(point); // Angle
@@ -42,7 +42,7 @@ public class fitnessDriveOverPointWithAngle implements fitnessInterface {
      *  @param timeSpent the time spend since origin.
      *  @return true if the variables are less or equal to the deviation. */
     @Override
-    public boolean isDeviationFulfilled(AgentInput situation, double timeSpent) {
+    public boolean isDeviationFulfilled(Situation situation, double timeSpent) {
 
         //Calculate function variables
         double distToPoint = situation.myCar.position.getDistanceTo(point); // Distance

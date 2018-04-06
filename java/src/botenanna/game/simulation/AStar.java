@@ -1,12 +1,69 @@
 package botenanna.game.simulation;
 
+import botenanna.fitness.fitnessInterface;
 import botenanna.game.ActionSet;
 import botenanna.game.Situation;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.TreeSet;
 
 public class AStar {
+
+    private class TimeNode {
+        public final Situation situation;
+        public final ActionSet actionTaken;
+        public final TimeNode cameFrom;
+        public final double timeSpent;
+
+        public TimeNode(Situation situation, ActionSet actionTaken, TimeNode cameFrom, double timeSpent) {
+            this.cameFrom = cameFrom;
+            this.situation = situation;
+            this.actionTaken = actionTaken;
+            this.timeSpent = timeSpent;
+        }
+    }
+
+    /** Find a sequence of actions that steers the agent towards a desired intention defined by a fitness function.
+     * The method uses a modified version of A*. */
+    public List<ActionSet> findSequence(Situation startSituation, fitnessInterface fitness, double stepsize) {
+
+        TimeNode startNode = new TimeNode(startSituation, null, null, 0);
+
+        TreeSet<TimeNode> openSet = new TreeSet<>((n1, n2) -> {
+            double fit = fitness.calculateFitness(n1.situation, n1.timeSpent) - fitness.calculateFitness(n2.situation, n2.timeSpent);
+            // Even if the situations have the same fitness, they are not the same
+            if (fit < 0) return -1;
+            else return 1;
+        });
+
+        openSet.add(startNode);
+
+        while (!openSet.isEmpty()) {
+            TimeNode current = openSet.last();
+
+            // Is this situation a fulfilling destination?
+            if (fitness.isDeviationFulfilled(current.situation, current.timeSpent)) {
+                return reconstructSequence();
+            }
+
+            openSet.remove(current);
+
+            // Try all sensible actions and simulate what situations they create
+            List<ActionSet> followingActions = getFollowingActionSets(current.situation, current.actionTaken);
+            for (ActionSet action : followingActions) {
+                Situation newSituation = null; // FIXME Replace with Simulation.simulate()
+                TimeNode node = new TimeNode(newSituation, action, current, current.timeSpent + stepsize);
+                openSet.add(node);
+            }
+        }
+
+        return null;
+    }
+
+    private List<ActionSet> reconstructSequence() {
+        return null; // TODO
+    }
 
     /** This method will generate all valid ActionSet that sensibly follow a given ActionSet in a Situation.
      * @param situation the Situation.

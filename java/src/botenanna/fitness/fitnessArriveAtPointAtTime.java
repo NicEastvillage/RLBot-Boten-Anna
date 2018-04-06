@@ -1,6 +1,6 @@
 package botenanna.fitness;
 
-import botenanna.AgentInput;
+import botenanna.game.Situation;
 import botenanna.math.Vector3;
 
 public class fitnessArriveAtPointAtTime implements fitnessInterface {
@@ -21,7 +21,7 @@ public class fitnessArriveAtPointAtTime implements fitnessInterface {
     }
 
     @Override
-    public double calculateFitness(AgentInput situation, double timeSpent) {
+    public double calculateFitness(Situation situation, double timeSpent) {
 
         //Calculate function variables
         double distToPoint = situation.myCar.position.getDistanceTo(point); // Distance
@@ -33,7 +33,7 @@ public class fitnessArriveAtPointAtTime implements fitnessInterface {
     }
 
     @Override
-    public boolean isDeviationFulfilled(AgentInput situation, double timeSpent) {
+    public boolean isDeviationFulfilled(Situation situation, double timeSpent) {
 
         //Calculate function variables
         double distToPoint = situation.myCar.position.getDistanceTo(point); // Distance
