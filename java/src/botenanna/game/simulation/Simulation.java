@@ -11,24 +11,15 @@ import static botenanna.game.Car.*;
 
 
 public class Simulation {
-    public Situation simulatedSituation;
-    public Car simulatedMyCar;
-    public Car simulatedEnemyCar;
-    public Ball simulatedBall;
-    public Boostpads simulatedBoostpadsList;
-
-    public Simulation(Situation situation, double step, ActionSet action){
-        Ball simulatedBall = simulateBall(situation, step);
-        Car simulatedMyCar = carWithActions(situation, action,  simulatedBall, step);
-        Car simulatedEnemyCar = steppedCar(situation.enemyCar,  step);
-        Boostpads simulatedBoostpadsList = simulateBoost(situation, simulatedEnemyCar, simulatedMyCar, step);
-        Situation simulatedSituation = new Situation(simulatedMyCar, simulatedEnemyCar, simulatedBall , simulatedBoostpadsList);
-    }
 
     /** Simulates the car, ball, enemyCar and boostpads forward a step
      * @return A new simulated situation     */
     public static Situation  simulate(Situation situation, double step, ActionSet action){
-        return new Situation(carWithActions(situation, action,  simulateBall(situation, step), step),steppedCar(situation.enemyCar,  step),simulateBall(situation, step), simulateBoost(situation, steppedCar(situation.enemyCar,  step), carWithActions(situation, action,  simulateBall(situation, step), step), step) );
+        Ball simulatedBall = simulateBall(situation, step);
+        Car simulatedMyCar = carWithActions(situation, action,  simulatedBall, step);
+        Car simulatedEnemyCar = steppedCar(situation.enemyCar,  step);
+        Boostpads simulatedBoostpadsList = simulateBoost(situation, simulatedEnemyCar, simulatedMyCar, step);
+        return new Situation(simulatedMyCar, simulatedEnemyCar, simulatedBall , simulatedBoostpadsList);
     }
 
     /** Simulates  the boostpads, if any of the cars can pick up boost and they are stepped close to a pad deactivate them
