@@ -68,7 +68,8 @@ public class Car extends Rigidbody {
             isOnWall = position.y==Situation.ARENA_LENGTH || position.x == Situation.ARENA_WIDTH || position.x == -Situation.ARENA_WIDTH || position.y == -Situation.ARENA_LENGTH;
 
         }
-        // Constructor for simulation
+
+    // Constructor for simulation
         public Car(Car car, Vector3 position, Vector3 velocity, Vector3 angleVel, Vector3 rotation, Ball ball) {
         //Team Indicators
             team = car.team;
@@ -102,6 +103,11 @@ public class Car extends Rigidbody {
 
         }
 
+    // GENERATED GETTERS
+    public boolean isHasJumped() {
+        return hasJumped;
+    }
+
     public Vector3 getAngularVelocity() {
         return angularVelocity;
     }
@@ -121,13 +127,8 @@ public class Car extends Rigidbody {
     public int getBoost() {
         return boost;
     }
-
     public void setBoost(int i){
        this.boost =  i;
-    }
-
-    public boolean isHasJumped() {
-        return hasJumped;
     }
 
     public boolean isHasDoubleJumped() {
@@ -165,6 +166,5 @@ public class Car extends Rigidbody {
     public double getAngleToBall() {
         return angleToBall;
     }
-
 
 }

@@ -223,11 +223,4 @@ public class Situation {
     public boolean AgentIsWithinField(Vector2 point) {
         return (point.x >= q1 && point.x <= q2 && point.y >= w1 && point.y <= w2);
     }
-
-
-
-
-
-
-
 }
