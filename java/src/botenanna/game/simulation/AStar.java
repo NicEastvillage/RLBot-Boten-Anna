@@ -4,6 +4,7 @@ import botenanna.fitness.fitnessInterface;
 import botenanna.game.ActionSet;
 import botenanna.game.Situation;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeSet;
@@ -44,7 +45,7 @@ public class AStar {
 
             // Is this situation a fulfilling destination?
             if (fitness.isDeviationFulfilled(current.situation, current.timeSpent)) {
-                return reconstructSequence();
+                return reconstructSequence(current);
             }
 
             openSet.remove(current);
@@ -61,8 +62,16 @@ public class AStar {
         return null;
     }
 
-    private List<ActionSet> reconstructSequence() {
-        return null; // TODO
+    /** Helper method for the {@link #findSequence(Situation, fitnessInterface, double)} to backtrack the actions taken
+     * and create the sequence. */
+    private List<ActionSet> reconstructSequence(TimeNode destination) {
+        TimeNode current = destination;
+        List<ActionSet> sequence = new ArrayList<>();
+        while (current.cameFrom != null) {
+            sequence.add(current.actionTaken);
+            current = current.cameFrom;
+        }
+        return sequence;
     }
 
     /** This method will generate all valid ActionSet that sensibly follow a given ActionSet in a Situation.
