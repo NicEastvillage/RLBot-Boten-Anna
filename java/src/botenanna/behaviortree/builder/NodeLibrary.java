@@ -30,6 +30,7 @@ public class NodeLibrary {
                 case "GuardIntercept": return new GuardIntercept(arguments);
                 case "GuardCloserThan": return  new GuardCloserThan(arguments);
                 case "GuardHasGoalOpportunity": return new GuardHasGoalOpportunity(arguments);
+                case "GuardIsPointBehind": return new GuardIsPointBehind(arguments);
             }
         } else {
             // Other nodes

@@ -50,6 +50,7 @@ public class AgentInput {
         this.packet = packet;
         this.timeTracker = timeTracker;
 
+
         /* CARS */
         myPlayerIndex = packet.getPlayerIndex();
         myCar = new Car(myPlayerIndex, packet);
@@ -100,6 +101,28 @@ public class AgentInput {
         }
 
         return bestBoostPad; // Return the boostPad with highest utility
+    }
+
+    public boolean whichSideOfPlane(Vector3 point){
+        double dFormula = (-myCar.frontVector.x * myCar.position.x - myCar.frontVector.y * myCar.position.y - myCar.frontVector.z * myCar.position.z);
+        double forumlarrsss = (myCar.frontVector.x*(point.x- myCar.position.x)+myCar.frontVector.y*(point.y- myCar.position.y)+myCar.frontVector.z*(point.z- myCar.position.z)+dFormula);
+
+        // Returns true if the point is in front of the car.
+        if (forumlarrsss > 0){
+            System.out.println("TRUE - " + "Formular: " + forumlarrsss);
+            System.out.println("Car position: " + myCar.position.x + " , " + myCar.position.y + " , " + myCar.position.z);
+            System.out.println("Ball position: " + point.x + " , " + point.y + " , " + point.z);
+            System.out.println("Front position: " + myCar.frontVector.x + " , " + myCar.frontVector.y + " , " + myCar.frontVector.z);
+            System.out.println("");
+            return true;
+        } else {
+            System.out.println("FALSE - " + "Formular result: " + forumlarrsss);
+            System.out.println("Car position: " + myCar.position.x + " , " + myCar.position.y + " , " + myCar.position.z);
+            System.out.println("Ball position: " + point.x + " , " + point.y + " , " + point.z);
+            System.out.println("Front position: " + myCar.frontVector.x + " , " + myCar.frontVector.y + " , " + myCar.frontVector.z);
+            System.out.println("");
+            return false;
+        }
     }
 
     /** Used to access GameTickPacket */

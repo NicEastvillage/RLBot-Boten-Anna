@@ -1,5 +1,7 @@
 package botenanna;
 
+import botenanna.math.Vector3;
+
 import java.util.function.Function;
 
 /** The ArgumentTranslators purpose is to translate the node arguments into Function objects, that allow quick
