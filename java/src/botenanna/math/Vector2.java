@@ -99,17 +99,10 @@ public class Vector2 {
         return this.minus(that).isZero();
     }
 
-    /** @return a new vector turned an angle,     */
-    //TODO ADD ANGLE MATHEMATICS
-
-    /** Turns a vector radians after having set it at origo with the start vector
+    /** Turns a vector radians
      * @return a turned vector2 */
-    public Vector2 turn(Vector3 start, double inputRadians){
-        return new Vector2(
-                ((start.x+this.x)-start.x)*cos(inputRadians) -
-                        ((start.y+this.y)-start.y) * sin(inputRadians),
-                ((start.x+this.x)-start.x)*sin(inputRadians) +
-                        ((start.y+this.y)-start.y) * cos(inputRadians));
+    public Vector2 turn(double inputRadians){
+        return  new Vector2(x*cos(inputRadians)-y*sin(inputRadians),x*sin(inputRadians)+y*cos(inputRadians));
     }
 
     /** Generate a hash for this vector. */

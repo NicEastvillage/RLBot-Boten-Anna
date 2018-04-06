@@ -81,7 +81,7 @@ public class Simulation {
         }
         // Car steer simulation
         if (action.getSteer()!=0 && (action.getThrottle()!=0 || startingCar.velocity.getMagnitude()!=0 || startingCar.isMidAir)){
-            direction.asVector2().turn(simulatedCar.position, (action.getSteer()*TURN_RATE)*step).asVector3();
+            direction.asVector2().turn((action.getSteer()*TURN_RATE)*step);
             simulatedCar.rotation.yaw += action.getSteer()*TURN_RATE*step;
         }
 

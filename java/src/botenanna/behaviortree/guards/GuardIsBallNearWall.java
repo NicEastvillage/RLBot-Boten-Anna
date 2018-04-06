@@ -2,7 +2,7 @@ package botenanna.behaviortree.guards;
 
 
 import java.awt.*;
-import botenanna.AgentInput;
+import botenanna.game.Situation;
 import botenanna.behaviortree.Leaf;
 import botenanna.behaviortree.MissingNodeException;
 import botenanna.behaviortree.NodeStatus;
@@ -24,7 +24,7 @@ public class GuardIsBallNearWall extends Leaf {
     }
 
     @Override
-    public NodeStatus run(AgentInput input) throws MissingNodeException {
+    public NodeStatus run(Situation input) throws MissingNodeException {
 
 
         if(input.BallIsWithinField(input.ball.getPosition().asVector2())){
