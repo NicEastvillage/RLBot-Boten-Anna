@@ -49,6 +49,12 @@ public class Vector3Test {
     }
 
     @Test
+    public void getAngleTo01(){
+        double angle = new Vector3(0,0,1).getAngleTo(new Vector3(1,0,0));
+        assertEquals(angle, Math.PI/2, 1E-100);
+    }
+
+    @Test
     public void getNormalized01() {
         Vector3 normal = new Vector3(100, 0, 0).getNormalized();
         assertTrue(normal.equals(new Vector3(1, 0, 0)));

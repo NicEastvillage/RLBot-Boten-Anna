@@ -112,6 +112,11 @@ public class Vector3 {
         return this.minus(vector).getMagnitude();
     }
 
+    /** @return the angle to another vector */
+    public double getAngleTo(Vector3 other){
+        return Math.acos((this.dot(other)) / (this.getMagnitude() * other.getMagnitude()));
+    }
+
     /** @return a vector with the same direction, but a length of one. If this is a zero vector, this returns a new zero vector. */
     public Vector3 getNormalized() {
         if (isZero()) return new Vector3();
