@@ -1,5 +1,6 @@
 package botenanna.game;
 
+import botenanna.game.simulation.Simulation;
 import botenanna.math.RLMath;
 import botenanna.math.Vector2;
 import botenanna.math.Vector3;
@@ -59,9 +60,6 @@ public class Situation {
         this.packet = packet;
         this.timeTracker = timeTracker;
         gameBoostPads = new Boostpads(packet);
-
-
-
 
         /* CARS */
         myPlayerIndex = packet.getPlayerIndex();
