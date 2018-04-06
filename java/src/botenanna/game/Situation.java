@@ -31,6 +31,7 @@ public class Situation {
     private double q1 = 10280/2-30, w1=8240/2-30;   // lower left
     private double q2 = -10280/2+30, w2=-8240/2+30;   // upper right
 
+
     private GameData.GameTickPacket packet;
     private TimeTracker timeTracker;
 
@@ -217,9 +218,11 @@ public class Situation {
         }
         return predictSeconds;
     }
+
     public boolean BallIsWithinField(Vector2 point) {
         return (point.x >= UPPERLEFT_CORNER_X1 && point.x <= LOWERLEFT_CORNER_X2 && point.y >= UPPERRIGHT_CORNER_y1 && point.y <= LOWERRIGHT_CORNER_y2);
     }
+
     public boolean AgentIsWithinField(Vector2 point) {
         return (point.x >= q1 && point.x <= q2 && point.y >= w1 && point.y <= w2);
     }
