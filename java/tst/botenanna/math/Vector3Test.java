@@ -88,4 +88,22 @@ public class Vector3Test {
     public void equals03() {
         assertTrue(new Vector3(6, 0, 1).equals(new Vector3(6, 0, 1)));
     }
+
+    @Test
+    public void lerp01() {
+        Vector3 res = Vector3.lerp(new Vector3(0, 0, 0), new Vector3(1, 2, 3), 1);
+        assertEquals(new Vector3(1, 2, 3), res);
+    }
+
+    @Test
+    public void lerp02() {
+        Vector3 res = Vector3.lerp(new Vector3(0, 1, 2), new Vector3(10, 10, 10), 0);
+        assertEquals(new Vector3(0, 1, 2), res);
+    }
+
+    @Test
+    public void lerp03() {
+        Vector3 res = Vector3.lerp(new Vector3(2, 0, -2), new Vector3(4, 4, 4), 0.5);
+        assertEquals(new Vector3(3, 2, 1), res);
+    }
 }
