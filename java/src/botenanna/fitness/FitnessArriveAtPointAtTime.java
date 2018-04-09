@@ -4,7 +4,7 @@ import botenanna.AgentInput;
 import botenanna.math.Vector3;
 
 /** This class is used when you want a fitness value for "Arrive at a point at a specific time. */
-public class FitnessArriveAtPointAtTimeTEMPTEMP implements FitnessInterfaceTEMP {
+public class FitnessArriveAtPointAtTime implements FitnessInterface {
 
     private final int DIST_SCALE = 450;
     private final int VEL_SCALE = 200;
@@ -18,7 +18,7 @@ public class FitnessArriveAtPointAtTimeTEMPTEMP implements FitnessInterfaceTEMP 
      *  @param velDeviation the deviation in velocity.
      *  @param point the destination point.
      *  @param arrivalTime the desired time of arrival. */
-    public FitnessArriveAtPointAtTimeTEMPTEMP(double distDeviation, double velDeviation, Vector3 point, int arrivalTime) {
+    public FitnessArriveAtPointAtTime(double distDeviation, double velDeviation, Vector3 point, int arrivalTime) {
         this.distDeviation = distDeviation;
         this.velDeviation = velDeviation;
         this.point = point;
