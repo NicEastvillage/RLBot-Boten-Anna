@@ -42,14 +42,16 @@ public class Simulation {
 
     /**
      * @param situation the situation the bal  is from
-     * @return a new ball who has been stepped forward its path
+     * @return a new ball who has been stepped forward its path, if the ball is in the air the velocity will slow.
+     * //TODO Add velocity loss on the ground and rotation
      */
     private static Ball simulateBall(Situation situation, double step)    {
+       Vector3 pathPosition = situation.ball.getPath(step,100).getLastItem();
 
-    // TODO FIND PATH?
-
-
-        return new Ball(situation.ball.getPosition(),situation.ball.getVelocity(),situation.ball.getRotation());
+       if (situation.ball.getPosition().z>0 && pathPosition.z>0){
+           return new Ball(pathPosition, situation.ball.getVelocity().scale(0.97*step), situation.ball.getRotation());
+       }
+        return new Ball(pathPosition,situation.ball.getVelocity(),situation.ball.getRotation());
     }
 
     /** Steppes the cars rigidbody forward 1 step
