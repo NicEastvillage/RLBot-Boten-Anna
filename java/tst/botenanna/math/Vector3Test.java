@@ -49,9 +49,27 @@ public class Vector3Test {
     }
 
     @Test
-    public void getAngleTo01(){
+    public void getAngleTo01(){ //90 grader following axis
         double angle = new Vector3(0,0,1).getAngleTo(new Vector3(1,0,0));
-        assertEquals(angle, Math.PI/2, 1E-100);
+        assertEquals(Math.PI/2, angle, 1E-100);
+    }
+
+    @Test
+    public void getAngleTo02(){//90 grader not follow axis
+        double angle = new Vector3(1,1,0).getAngleTo(new Vector3(1,-1,0));
+        assertEquals(Math.PI/2, angle, 1E-100);
+    }
+
+    @Test
+    public void getAngleTo03(){//0 degree angle
+        double angle = new Vector3(1,1,0).getAngleTo(new Vector3(2,2,0));
+        assertEquals(0, angle, 1E-5);
+    }
+
+    @Test
+    public void getAngleTo04(){ //Small angle, not following axis
+        double angle = new Vector3(5,1,0).getAngleTo(new Vector3(5,2,0));
+        assertEquals(0.18311081726248412793, angle, 1E-15);
     }
 
     @Test

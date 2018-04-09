@@ -47,7 +47,7 @@ public class RLMath {
      *  @param carRotation the rotation vector for the car.
      *  @return a vector pointing forward relative to the car. */
     public static Vector3 carFrontVector(Vector3 carRotation){
-        double noseX = -1 * Math.cos(carRotation.pitch) * Math.cos(carRotation.yaw);
+        double noseX = Math.cos(carRotation.pitch) * Math.cos(carRotation.yaw);
         double noseY = Math.cos(carRotation.pitch) * Math.sin(carRotation.yaw);
         double noseZ = Math.sin(carRotation.pitch);
 
