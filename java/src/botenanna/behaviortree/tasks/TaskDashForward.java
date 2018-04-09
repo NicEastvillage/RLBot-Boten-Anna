@@ -6,12 +6,12 @@ import botenanna.behaviortree.Leaf;
 import botenanna.behaviortree.MissingNodeException;
 import botenanna.behaviortree.NodeStatus;
 import botenanna.behaviortree.Status;
-import botenanna.physics.TimeLine;
+import botenanna.physics.SteppedTimeLine;
 
 
 public class TaskDashForward extends Leaf {
 
-    private TimeLine<NodeStatus> timeLine;
+    private SteppedTimeLine<NodeStatus> timeLine;
     private boolean currentlyActive;
 
     /** <p>The TaskDashForward makes the car dash forward.</p>
@@ -27,15 +27,15 @@ public class TaskDashForward extends Leaf {
         currentlyActive = false;
 
         //Creating timeline object
-        timeLine = new TimeLine<>();
+        timeLine = new SteppedTimeLine<>();
 
         //Setting time stamps
-        timeLine.addTimeStamp(0, new NodeStatus(Status.RUNNING, new ActionSet().withJump().withPitch(-1).withThrottle(1), this, true));
-        timeLine.addTimeStamp(0.15, new NodeStatus(Status.RUNNING, new ActionSet().withJump(false).withThrottle(1), this, true));
-        timeLine.addTimeStamp(0.20, new NodeStatus(Status.RUNNING, new ActionSet().withJump().withPitch(-1).withThrottle(1), this, true));
-        timeLine.addTimeStamp(0.30, new NodeStatus(Status.RUNNING, new ActionSet().withJump(false).withThrottle(1), this, true));
-        timeLine.addTimeStamp(1, new NodeStatus(Status.RUNNING, new ActionSet().withJump(false).withThrottle(1), this, false));
-        timeLine.addTimeStamp(1.35, null);
+        timeLine.addTimeStep(0, new NodeStatus(Status.RUNNING, new ActionSet().withJump().withPitch(-1).withThrottle(1), this, true));
+        timeLine.addTimeStep(0.15, new NodeStatus(Status.RUNNING, new ActionSet().withJump(false).withThrottle(1), this, true));
+        timeLine.addTimeStep(0.20, new NodeStatus(Status.RUNNING, new ActionSet().withJump().withPitch(-1).withThrottle(1), this, true));
+        timeLine.addTimeStep(0.30, new NodeStatus(Status.RUNNING, new ActionSet().withJump(false).withThrottle(1), this, true));
+        timeLine.addTimeStep(1, new NodeStatus(Status.RUNNING, new ActionSet().withJump(false).withThrottle(1), this, false));
+        timeLine.addTimeStep(1.35, null);
     }
 
     @Override

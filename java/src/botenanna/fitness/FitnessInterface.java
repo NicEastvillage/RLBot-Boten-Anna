@@ -2,7 +2,7 @@ package botenanna.fitness;
 
 import botenanna.game.Situation;
 
-public interface fitnessInterface {
+public interface FitnessInterface {
 
     /** Used to calculate the fitness value. */
     double calculateFitness(Situation situation, double timeSpent);

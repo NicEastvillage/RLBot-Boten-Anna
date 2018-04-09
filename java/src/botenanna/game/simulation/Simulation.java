@@ -1,5 +1,6 @@
 package botenanna.game.simulation;
 
+import botenanna.Ball;
 import botenanna.game.*;
 import botenanna.math.RLMath;
 import botenanna.math.Vector3;

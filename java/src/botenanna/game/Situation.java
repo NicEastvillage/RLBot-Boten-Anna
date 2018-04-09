@@ -1,15 +1,11 @@
 package botenanna.game;
 
-import botenanna.game.simulation.Simulation;
+import botenanna.Ball;
 import botenanna.math.RLMath;
 import botenanna.math.Vector2;
 import botenanna.math.Vector3;
 import botenanna.physics.TimeTracker;
-import javafx.util.Pair;
 import rlbot.api.GameData;
-
-import java.util.ArrayList;
-import java.util.List;
 
 //TODO: add isUpsideDown, myGoal (2dVEC), myGoalLine (2dVEC)
 
@@ -26,7 +22,7 @@ public class Situation {
     public static final Vector2 RED_GOALPOST_LEFT = new Vector2(-720, 5200);
     public static final Vector2 RED_GOALPOST_RIGHT = new Vector2(720, 5200);
     public static final Vector3[] BIG_BOOST_PADS = {new Vector3(-3070, 4100), new Vector3(3070,-4100), new Vector3(-3070,-4100),new Vector3(-3580,0), new Vector3(3580,0), new Vector3(3070, 4100)};
-    private double UPPERLEFT_CORNER_X1 = 10280/2-Ball.RADIUS*3, UPPERRIGHT_CORNER_y1=8240/2-Ball.RADIUS*3;   // lower left
+    private double UPPERLEFT_CORNER_X1 = 10280/2- Ball.RADIUS*3, UPPERRIGHT_CORNER_y1=8240/2-Ball.RADIUS*3;   // lower left
     private double LOWERLEFT_CORNER_X2 = -10280/2+Ball.RADIUS*3, LOWERRIGHT_CORNER_y2=-8240/2+Ball.RADIUS*3;   // upper right
     private double q1 = 10280/2-30, w1=8240/2-30;   // lower left
     private double q2 = -10280/2+30, w2=-8240/2+30;   // upper right
