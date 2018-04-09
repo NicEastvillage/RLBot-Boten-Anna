@@ -5,7 +5,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class FitnessArriveAtPointAtTimeTest {
+public class FitnessArriveAtPointAtTimeTEMPTest {
 
     @Test
     public void calculateFitnessValue01(){
@@ -13,7 +13,7 @@ public class FitnessArriveAtPointAtTimeTest {
         Vector3 point = new Vector3(1000,1000,0);
         int arrivalTime = 10;
 
-        FitnessArriveAtPointAtTime fitness = new FitnessArriveAtPointAtTime(0.2,0.2, point, arrivalTime);
+        FitnessArriveAtPointAtTimeTEMPTEMP fitness = new FitnessArriveAtPointAtTimeTEMPTEMP(0.2,0.2, point, arrivalTime);
 
         Vector3 myVelocity = new Vector3(10,0,0);
         Vector3 myPosition = new Vector3(0,0,0);

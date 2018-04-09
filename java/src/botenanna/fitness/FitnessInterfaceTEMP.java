@@ -2,7 +2,7 @@ package botenanna.fitness;
 
 import botenanna.AgentInput;
 
-public interface FitnessInterface {
+public interface FitnessInterfaceTEMP {
 
     /** Used to calculate the fitness value. */
     double calculateFitness(AgentInput situation, double timeSpent);

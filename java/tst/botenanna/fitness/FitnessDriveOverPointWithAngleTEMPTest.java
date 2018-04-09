@@ -6,7 +6,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class FitnessDriveOverPointWithAngleTest {
+public class FitnessDriveOverPointWithAngleTEMPTest {
 
     @Test
     public void calculateFitnessValue01(){
@@ -14,7 +14,7 @@ public class FitnessDriveOverPointWithAngleTest {
         Vector3 destinationPoint = new Vector3(1000,1000,0);
         Vector3 nextPoint = new Vector3(750,1250,0);
 
-        FitnessDriveOverPointWithAngle fitness = new FitnessDriveOverPointWithAngle(destinationPoint, nextPoint, 0.2,0.2);
+        FitnessDriveOverPointWithAngleTEMPTEMP fitness = new FitnessDriveOverPointWithAngleTEMPTEMP(destinationPoint, nextPoint, 0.2,0.2);
 
         Vector3 myDirection = new Vector3(10,0,0);
         Vector3 myPos = new Vector3(0,0,0);
@@ -33,7 +33,7 @@ public class FitnessDriveOverPointWithAngleTest {
         Vector3 destinationPoint = new Vector3(-100,-100,0);
         Vector3 nextPoint = new Vector3(750,1250,0);
 
-        FitnessDriveOverPointWithAngle fitness = new FitnessDriveOverPointWithAngle(destinationPoint, nextPoint, 0.2,0.2);
+        FitnessDriveOverPointWithAngleTEMPTEMP fitness = new FitnessDriveOverPointWithAngleTEMPTEMP(destinationPoint, nextPoint, 0.2,0.2);
 
         Vector3 myDirection = new Vector3(10,0,0);
         Vector3 myPos = new Vector3(20,20,0);
@@ -51,7 +51,7 @@ public class FitnessDriveOverPointWithAngleTest {
         Vector3 destinationPoint1 = new Vector3(-100,-100,0);
         Vector3 nextPoint1 = new Vector3(750,1250,0);
 
-        FitnessDriveOverPointWithAngle fitness1 = new FitnessDriveOverPointWithAngle(destinationPoint1, nextPoint1, 0.2,0.2);
+        FitnessDriveOverPointWithAngleTEMPTEMP fitness1 = new FitnessDriveOverPointWithAngleTEMPTEMP(destinationPoint1, nextPoint1, 0.2,0.2);
 
         Vector3 myDirection1 = new Vector3(10,0,0);
         Vector3 myPos1 = new Vector3(20,20,0);
@@ -61,7 +61,7 @@ public class FitnessDriveOverPointWithAngleTest {
         Vector3 destinationPoint2 = new Vector3(-100,-100,0);
         Vector3 nextPoint2 = new Vector3(750,1250,0);
 
-        FitnessDriveOverPointWithAngle fitness2 = new FitnessDriveOverPointWithAngle(destinationPoint2, nextPoint2, 0.2,0.2);
+        FitnessDriveOverPointWithAngleTEMPTEMP fitness2 = new FitnessDriveOverPointWithAngleTEMPTEMP(destinationPoint2, nextPoint2, 0.2,0.2);
 
         Vector3 myDirection2 = new Vector3(10,0,0);
         Vector3 myPos2 = new Vector3(0,0,0);

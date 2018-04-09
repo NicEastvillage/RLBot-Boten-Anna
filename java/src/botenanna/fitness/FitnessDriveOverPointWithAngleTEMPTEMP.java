@@ -4,7 +4,7 @@ import botenanna.AgentInput;
 import botenanna.math.Vector3;
 
 /** This class is used when you want a fitness value for "Drive over a point with a specific angle. */
-public class FitnessDriveOverPointWithAngle implements FitnessInterface {
+public class FitnessDriveOverPointWithAngleTEMPTEMP implements FitnessInterfaceTEMP {
 
     private final int DIST_SCALE = 450;
     private final double ANGLE_SCALE = 5.09299;
@@ -18,7 +18,7 @@ public class FitnessDriveOverPointWithAngle implements FitnessInterface {
      *  @param nextPoint the direction to drive in when destination point is reached.
      *  @param angleDeviation an value that the angle is allowed to deviate.
      *  @param distDeviation an value that the distance is allowed to deviate. */
-    public FitnessDriveOverPointWithAngle(Vector3 destinationPoint, Vector3 nextPoint, double angleDeviation, double distDeviation) {
+    public FitnessDriveOverPointWithAngleTEMPTEMP(Vector3 destinationPoint, Vector3 nextPoint, double angleDeviation, double distDeviation) {
         this.destinationPoint = destinationPoint;
         this.nextPoint = nextPoint;
         this.angleDeviation = angleDeviation;
