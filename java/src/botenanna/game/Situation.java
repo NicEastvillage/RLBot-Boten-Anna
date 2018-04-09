@@ -156,7 +156,7 @@ public class Situation {
         return playerIndex == 0 ? -1 : 1;
     }
 
-    public Vector3 getGoalBox(int playerIndex) {
+    public static Vector3 getGoalBox(int playerIndex) {
         return playerIndex == 0 ? BLUE_GOAL_BOX : ORANGE_GOAL_BOX;
     }
 
