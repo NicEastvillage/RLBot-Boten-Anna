@@ -53,9 +53,11 @@ public class FitnessDriveOverPointWithAngle implements FitnessInterface {
         double velocity = carVelocity.getMagnitude();
 
         if(stopOnPoint){
-            return (Math.pow(Math.E, -(timeSpent + Math.abs(angleDifference * ANGLE_SCALE) + (distanceToPoint / DIST_SCALE)))) * - (2300/ Math.abs(velocity));
+            return (Math.pow(Math.E, -(timeSpent + Math.abs(angleDifference * ANGLE_SCALE) + (distanceToPoint / DIST_SCALE))))
+                    * -(2300/ (Math.abs((velocity == 0) ? 1 : velocity)));
         }else{
-            return (Math.pow(Math.E, -(timeSpent + Math.abs(angleDifference * ANGLE_SCALE) + (distanceToPoint / DIST_SCALE)))) * 2300/ Math.abs(velocity);
+            return (Math.pow(Math.E, -(timeSpent + Math.abs(angleDifference * ANGLE_SCALE) + (distanceToPoint / DIST_SCALE))))
+                    * 2300/ (Math.abs((velocity == 0) ? 1 : velocity));
         }
 
 

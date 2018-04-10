@@ -24,8 +24,6 @@ public class FitnessDriveOverPointWithAngleTest {
 
         double fitnessValue = fitness.calculateFitnessValue(myPos, myDirection,10, velocity);
 
-        System.out.println(fitnessValue);
-
         assertEquals(-5.2985724020139235189E-8, fitnessValue,1E-20);
 
     }
@@ -43,8 +41,6 @@ public class FitnessDriveOverPointWithAngleTest {
         Vector3 myPos = new Vector3(20,20,0);
 
         double fitnessValue = fitness.calculateFitnessValue(myPos, myDirection,4, velocity);
-
-        System.out.println(fitnessValue);
 
         assertEquals(-0.00012110219072383959279, fitnessValue,1E-18);
     }
@@ -64,8 +60,6 @@ public class FitnessDriveOverPointWithAngleTest {
 
         double fitnessValue = fitness.calculateFitnessValue(myPos, myDirection,10, velocity);
 
-        System.out.println(fitnessValue);
-
         assertEquals(5.2985724020139235189E-8, fitnessValue,1E-20);
 
     }
@@ -83,9 +77,7 @@ public class FitnessDriveOverPointWithAngleTest {
         Vector3 myPos = new Vector3(20,20,0);
 
         double fitnessValue = fitness.calculateFitnessValue(myPos, myDirection,4, velocity);
-
-        System.out.println(fitnessValue);
-
+        
         assertEquals(0.00012110219072383959279, fitnessValue,1E-18);
     }
 
