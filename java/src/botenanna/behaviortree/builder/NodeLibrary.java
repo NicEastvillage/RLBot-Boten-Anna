@@ -32,6 +32,7 @@ public class NodeLibrary {
                 case "GuardHasGoalOpportunity": return new GuardHasGoalOpportunity(arguments);
                 case "GuardIsPointBehind": return new GuardIsPointBehind(arguments);
                 case "GuardHasBallPossession": return new GuardHasBallPossession(arguments);
+                case "GuardIsDistanceLessThanDistance": return new GuardIsDistanceLessThanDistance(arguments);
             }
         } else {
             // Other nodes
