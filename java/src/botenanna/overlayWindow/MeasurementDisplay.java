@@ -44,7 +44,7 @@ public class MeasurementDisplay extends VBox {
         Label headerLabel;
 
         timer = new ScheduledThreadPoolExecutor(1);
-        NumberFormat nf = new DecimalFormat("##.#");
+        NumberFormat nf = new DecimalFormat("##.#####");
 
         button.setOnMouseClicked(event -> {
             startMeasurement(button, timer, nf);
@@ -71,29 +71,28 @@ public class MeasurementDisplay extends VBox {
     private void startMeasurement(Button button, ScheduledExecutorService timer, NumberFormat nf) {
         time.startTimer();
         button.setText("Reset Timer");
-        File file = new File(System.getProperty("user.home"), "/Desktop/velocity.txt");
+        File file = new File(System.getProperty("user.home"), "/Desktop/velocity.csv");
+
+        final double[] lastVelocity = {0};
 
         final ScheduledFuture<?> timerHandle = timer.scheduleAtFixedRate(() -> {
             System.out.println(time.getElapsedSecondsTimer());
-            try (PrintWriter out = new PrintWriter(new FileWriter(file,true))) {
-                out.println("Time: \t" + nf.format(time.getElapsedSecondsTimer()) + "\t\tVelocity: \t " + nf.format(car.velocity.getMagnitude()));
-            }
-            catch (IOException e) {
-                e.printStackTrace();
+            double newVelocity = car.velocity.getMagnitude();
+            if (newVelocity != lastVelocity[0]) {
+                try (PrintWriter out = new PrintWriter(new FileWriter(file, true))) {
+                    out.println(nf.format(time.getElapsedSecondsTimer()) + ";"
+                            + nf.format(lastVelocity[0]) + ";"
+                            + nf.format(newVelocity - lastVelocity[0]) + ";");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                lastVelocity[0] = newVelocity;
             }
         }, 0, 17, TimeUnit.MILLISECONDS);
 
         timer.schedule(() -> {
             timerHandle.cancel(true);
         }, 4, TimeUnit.SECONDS);
-
-        try (PrintWriter out = new PrintWriter(new FileWriter(file,true))) {
-            out.println("");
-            out.println("Instance");
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public void update(AgentInput input) {
