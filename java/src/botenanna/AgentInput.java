@@ -13,6 +13,7 @@ import rlbot.api.GameData;
 public class AgentInput {
 
     public static final double ARENA_LENGTH = 10280;
+    public static final double MAX_VELOCITY_NO_BOOST = 1410.1;
     public static final double ARENA_WIDTH = 8240;
     public static final Vector3 BLUE_GOAL_BOX = Vector3.BACKWARDS.scale(5000);
     public static final Vector3 ORANGE_GOAL_BOX = Vector3.FORWARD.scale(5000);
@@ -62,7 +63,7 @@ public class AgentInput {
         /* CARS */
         myPlayerIndex = packet.getPlayerIndex();
         myCar = new Car(myPlayerIndex, packet);
-        enemyPlayerIndex = this.myPlayerIndex == 1 ? 0 :  1;
+        enemyPlayerIndex = this.myPlayerIndex == 1 ? 0 : 1;
         enemyCar = new Car(enemyPlayerIndex, packet);
 
         /* BALL */
@@ -111,26 +112,32 @@ public class AgentInput {
         return bestBoostPad; // Return the boostPad with highest utility
     }
 
-    public boolean whichSideOfPlane(Vector3 point){
-        double dFormula = (-myCar.frontVector.x * myCar.position.x - myCar.frontVector.y * myCar.position.y - myCar.frontVector.z * myCar.position.z);
-        double forumlarrsss = (myCar.frontVector.x*(point.x- myCar.position.x)+myCar.frontVector.y*(point.y- myCar.position.y)+myCar.frontVector.z*(point.z- myCar.position.z)+dFormula);
+    /* Method that returns true if myCar has ball possession by comparing using utility
+    * The car with the highest utility is the car with possession. */
+    public boolean whoHasPossession(){
+        double myUtility = possessionUtility(myCar);
+        double enemyUtility = possessionUtility(enemyCar);
 
-        // Returns true if the point is in front of the car.
-        if (forumlarrsss > 0){
-            System.out.println("TRUE - " + "Formular: " + forumlarrsss);
-            System.out.println("Car position: " + myCar.position.x + " , " + myCar.position.y + " , " + myCar.position.z);
-            System.out.println("Ball position: " + point.x + " , " + point.y + " , " + point.z);
-            System.out.println("Front position: " + myCar.frontVector.x + " , " + myCar.frontVector.y + " , " + myCar.frontVector.z);
-            System.out.println("");
-            return true;
-        } else {
-            System.out.println("FALSE - " + "Formular result: " + forumlarrsss);
-            System.out.println("Car position: " + myCar.position.x + " , " + myCar.position.y + " , " + myCar.position.z);
-            System.out.println("Ball position: " + point.x + " , " + point.y + " , " + point.z);
-            System.out.println("Front position: " + myCar.frontVector.x + " , " + myCar.frontVector.y + " , " + myCar.frontVector.z);
-            System.out.println("");
-            return false;
-        }
+        return (myUtility >= enemyUtility);
+    }
+
+    /* Help function to calculate and return the possession utility of a given car
+    * Currently weighed equally and therefore can be considered inaccurate. Requires more testing. */
+    private double possessionUtility (Car car){
+        double distanceUtility = 1-car.position.getDistanceTo(ball.getPosition())/ARENA_LENGTH;
+        double angleUtility = Math.cos(car.angleToBall);
+        double velocityUtility = car.velocity.getMagnitude()/MAX_VELOCITY_NO_BOOST;
+
+        // Returns the total utility points.
+        return distanceUtility + angleUtility + velocityUtility;
+    }
+
+    public double whichSideOfPlane(Vector3 pointVector){
+        // Determine vector to the given point from front vector
+        Vector3 vectorToPoint = pointVector.minus(myCar.position);
+
+        // Find angle to the given point
+        return myCar.frontVector.getAngleTo(vectorToPoint);
     }
 
     /** Used to access GameTickPacket */
@@ -254,22 +261,22 @@ public class AgentInput {
             playerIndex = index;
             GameData.PlayerInfo info = packet.getPlayers(index);
             team = info.getTeam();
-            position = Vector3.convert(packet.getPlayers(myPlayerIndex).getLocation());
-            velocity = Vector3.convert(packet.getPlayers(myPlayerIndex).getVelocity());
-            rotation = Vector3.convert(packet.getPlayers(myPlayerIndex).getRotation());
-            angularVelocity = Vector3.convert(packet.getPlayers(myPlayerIndex).getAngularVelocity());
-            upVector = RLMath.carUpVector(Vector3.convert(packet.getPlayers(myPlayerIndex).getRotation()));
-            frontVector = RLMath.carFrontVector(Vector3.convert(packet.getPlayers(myPlayerIndex).getRotation()));
-            sideVector = RLMath.carSideVector(Vector3.convert(packet.getPlayers(myPlayerIndex).getRotation()));
-            boost = packet.getPlayers(myPlayerIndex).getBoost();
-            hasJumped = packet.getPlayers(myPlayerIndex).getJumped();
-            hasDoubleJumped = packet.getPlayers(myPlayerIndex).getDoubleJumped();
-            isDemolished = packet.getPlayers(myPlayerIndex).getIsDemolished();
-            isSupersonic = packet.getPlayers(myPlayerIndex).getIsSupersonic();
-            isCarOnGround = packet.getPlayers(myPlayerIndex).getLocation().getZ() < 20;
-            isMidAir = packet.getPlayers(myPlayerIndex).getIsMidair();
-            isCarUpsideDown = RLMath.carUpVector(Vector3.convert(packet.getPlayers(myPlayerIndex).getRotation())).z < 0;
-            distanceToBall = Vector3.convert(packet.getPlayers(myPlayerIndex).getLocation()).getDistanceTo(Vector3.convert(packet.getBall().getLocation()));
+            position = Vector3.convert(info.getLocation());
+            velocity = Vector3.convert(info.getVelocity());
+            rotation = Vector3.convert(info.getRotation());
+            angularVelocity = Vector3.convert(info.getAngularVelocity());
+            upVector = RLMath.carUpVector(Vector3.convert(info.getRotation()));
+            frontVector = RLMath.carFrontVector(Vector3.convert(info.getRotation()));
+            sideVector = RLMath.carSideVector(Vector3.convert(info.getRotation()));
+            boost = info.getBoost();
+            hasJumped = info.getJumped();
+            hasDoubleJumped = info.getDoubleJumped();
+            isDemolished = info.getIsDemolished();
+            isSupersonic = info.getIsSupersonic();
+            isCarOnGround = info.getLocation().getZ() < 20;
+            isMidAir = info.getIsMidair();
+            isCarUpsideDown = RLMath.carUpVector(Vector3.convert(info.getRotation())).z < 0;
+            distanceToBall = Vector3.convert(info.getLocation()).getDistanceTo(Vector3.convert(packet.getBall().getLocation()));
             angleToBall = RLMath.carsAngleToPoint(position.asVector2(), rotation.yaw, Vector3.convert(packet.getBall().getLocation()).asVector2());
         }
     }

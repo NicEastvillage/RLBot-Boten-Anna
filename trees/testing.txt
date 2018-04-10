@@ -1,0 +1,14 @@
+Selector
+	Sequencer
+		GuardIsKickoff
+		Inverter
+			Sequencer
+				GuardIsDistanceLessThan my_pos ball_pos 380
+				TaskDashForward
+		TaskGoTowardsPoint ball_land_pos false true
+	Sequencer
+		GuardIsMidAir
+		GuardHasBallPossession
+		TaskAdjustAirRotation ball_land_pos
+	Sequencer
+	    TaskAdjustAirRotation ball_land_pos
