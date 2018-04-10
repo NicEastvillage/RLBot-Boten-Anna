@@ -7,7 +7,7 @@ import botenanna.behaviortree.Leaf;
 import botenanna.behaviortree.MissingNodeException;
 import botenanna.behaviortree.NodeStatus;
 
-//checks if the ball is close to a wall
+/** checks if the ball is close to a wall by taking the x and y value and comparing it to the coordinates of the ball and returns true if the ball is within it field*/
 
 public class GuardIsBallNearWall extends Leaf {
 
