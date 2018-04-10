@@ -71,11 +71,12 @@ public class MeasurementDisplay extends VBox {
     private void startMeasurement(Button button, ScheduledExecutorService timer, NumberFormat nf) {
         time.startTimer();
         button.setText("Reset Timer");
+        File file = new File(System.getProperty("user.home"), "/Desktop/velocity.txt");
 
         final ScheduledFuture<?> timerHandle = timer.scheduleAtFixedRate(() -> {
             System.out.println(time.getElapsedSecondsTimer());
-            try (PrintWriter out = new PrintWriter(new FileWriter("/Users/mathiashindsgaul/Desktop/velocity.txt",true))) {
-                out.println("Time: \t" + nf.format(time.getElapsedSecondsTimer()) + "\t\tVelocity: \t "); //+ nf.format(car.velocity.getMagnitude()));
+            try (PrintWriter out = new PrintWriter(new FileWriter(file,true))) {
+                out.println("Time: \t" + nf.format(time.getElapsedSecondsTimer()) + "\t\tVelocity: \t " + nf.format(car.velocity.getMagnitude()));
             }
             catch (IOException e) {
                 e.printStackTrace();
@@ -86,7 +87,7 @@ public class MeasurementDisplay extends VBox {
             timerHandle.cancel(true);
         }, 4, TimeUnit.SECONDS);
 
-        try (PrintWriter out = new PrintWriter(new FileWriter("/Users/mathiashindsgaul/Desktop/velocity.txt",true))) {
+        try (PrintWriter out = new PrintWriter(new FileWriter(file,true))) {
             out.println("");
             out.println("Instance");
         }
