@@ -1,5 +1,6 @@
 package botenanna.physics;
 
+import botenanna.AgentInput;
 import botenanna.math.Vector2;
 import botenanna.math.Vector3;
 import rlbot.api.GameData;
@@ -131,7 +132,129 @@ public class Rigidbody implements Cloneable {
 
         return arrivalTime;
     }
+
+    /** @param offset the offset from the wall. Relevant for any objects with a radius.
+     * @return the time until arrival at any wall. Can be NaN. */
+    public double predictArrivalAtAnyWall(double offset) {
+        double[] arrivalTimes = {
+                predictArrivalAtWallXPositive(offset),
+                predictArrivalAtWallXNegative(offset),
+                predictArrivalAtWallYPositive(offset),
+                predictArrivalAtWallYNegative(offset)
+        };
+        double earliestTimeOfArrival = Double.NaN;
+        for (int i = 0; i < arrivalTimes.length; i++) {
+            if (!Double.isNaN(arrivalTimes[i]) && arrivalTimes[i] < earliestTimeOfArrival) {
+                earliestTimeOfArrival = arrivalTimes[i];
+            }
+        }
+        return earliestTimeOfArrival;
+    }
+
+    /** @return whether the next wall hit will be a side wall of the arena as opposed to an end wall (those by the goals).
+     * If the Rigidbody never hits a wall, false i returned. */
+    public boolean willHitSideWallNext(double offset) {
+        double[] arrivalTimes = {
+                predictArrivalAtWallXPositive(offset),
+                predictArrivalAtWallXNegative(offset),
+                predictArrivalAtWallYPositive(offset),
+                predictArrivalAtWallYNegative(offset)
+        };
+        double wallIndex = -1;
+        double earliestTimeOfArrival = Double.NaN;
+        for (int i = 0; i < arrivalTimes.length; i++) {
+            if (!Double.isNaN(arrivalTimes[i]) && arrivalTimes[i] < earliestTimeOfArrival) {
+                earliestTimeOfArrival = arrivalTimes[i];
+                wallIndex = i;
+            }
+        }
+        if (wallIndex == 0 || wallIndex == 1)
+            return true;
+        else
+            return false;
+    }
+
+
+    /** @param offset the offset from the wall. Relevant for any objects with a radius.
+     * @return the time until arrival at wall at x positive. */
+    public double predictArrivalAtWallXPositive(double offset) {
+        double distance = AgentInput.ARENA_LENGTH / 2 - offset;
+        if (position.x < distance) {
+            if (velocity.x > 0) {
+                return (distance - position.x) / velocity.x;
+            } else {
+                return Double.NaN;
+            }
+        }
+        // We assume that if the RigidBody is outside of the field, it will be pushed in immediately
+        return 0;
+    }
+
+    /** @param offset the offset from the wall. Relevant for any objects with a radius.
+     * @return the time until arrival at wall at x negative. */
+    public double predictArrivalAtWallXNegative(double offset) {
+        double distance = AgentInput.ARENA_LENGTH / 2 - offset;
+        if (position.x > -distance) {
+            if (velocity.x < 0) {
+                return (-distance - position.x) / velocity.x;
+            } else {
+                return Double.NaN;
+            }
+        }
+        // We assume that if the RigidBody is outside of the field, it will be pushed in immediately
+        return 0;
+    }
+
+    /** @param offset the offset from the wall. Relevant for any objects with a radius.
+     * @return the time until arrival at wall at y positive. */
+    public double predictArrivalAtWallYPositive(double offset) {
+        double distance = AgentInput.ARENA_LENGTH / 2 - offset;
+        if (position.y < distance) {
+            if (velocity.y > 0) {
+                return (distance - position.y) / velocity.y;
+            } else {
+                return Double.NaN;
+            }
+        }
+        // We assume that if the RigidBody is outside of the field, it will be pushed in immediately
+        return 0;
+    }
+
+    /** @param offset the offset from the wall. Relevant for any objects with a radius.
+     * @return the time until arrival at wall at y negative. */
+    public double predictArrivalAtWallYNegative(double offset) {
+        double distance = AgentInput.ARENA_LENGTH / 2 - offset;
+        if (position.y > -distance) {
+            if (velocity.y < 0) {
+                return (-distance - position.y) / velocity.y;
+            } else {
+                return Double.NaN;
+            }
+        }
+        // We assume that if the RigidBody is outside of the field, it will be pushed in immediately
+        return 0;
+    }
     //endregion
+
+    /** Get the path which this RigidBody will travel.
+     * @param duration must be zero or positive.
+     * @param stepsize must be positive. A smaller step size will increase the accuracy of the Path. */
+    public Path getPath(double duration, double stepsize) {
+        if (duration < 0) throw new IllegalArgumentException("Duration must be zero or positive.");
+        if (stepsize <= 0) throw new IllegalArgumentException("Step size must be positive.");
+
+        Rigidbody simulation = this.clone();
+
+        Path path = new Path();
+
+        for (double time = 0; time <= duration; time += stepsize) {
+            simulation.step(stepsize);
+            Vector3 pos = simulation.getPosition();
+            path.addTimeStep(time, pos);
+        }
+
+        return path;
+    }
 
     /** Clone this Rigidbody.
      * @return a Rigidbody with the same position, velocity, acceleration and gravity */

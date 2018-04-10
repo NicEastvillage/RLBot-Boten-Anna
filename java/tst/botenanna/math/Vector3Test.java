@@ -49,9 +49,27 @@ public class Vector3Test {
     }
 
     @Test
-    public void getAngleTo01(){
+    public void getAngleTo01(){ //90 grader following axis
         double angle = new Vector3(0,0,1).getAngleTo(new Vector3(1,0,0));
-        assertEquals(angle, Math.PI/2, 1E-100);
+        assertEquals(Math.PI/2, angle, 1E-100);
+    }
+
+    @Test
+    public void getAngleTo02(){//90 grader not follow axis
+        double angle = new Vector3(1,1,0).getAngleTo(new Vector3(1,-1,0));
+        assertEquals(Math.PI/2, angle, 1E-100);
+    }
+
+    @Test
+    public void getAngleTo03(){//0 degree angle
+        double angle = new Vector3(1,1,0).getAngleTo(new Vector3(2,2,0));
+        assertEquals(0, angle, 1E-5);
+    }
+
+    @Test
+    public void getAngleTo04(){ //Small angle, not following axis
+        double angle = new Vector3(5,1,0).getAngleTo(new Vector3(5,2,0));
+        assertEquals(0.18311081726248412793, angle, 1E-15);
     }
 
     @Test
@@ -87,5 +105,23 @@ public class Vector3Test {
     @Test
     public void equals03() {
         assertTrue(new Vector3(6, 0, 1).equals(new Vector3(6, 0, 1)));
+    }
+
+    @Test
+    public void lerp01() {
+        Vector3 res = Vector3.lerp(new Vector3(0, 0, 0), new Vector3(1, 2, 3), 1);
+        assertEquals(new Vector3(1, 2, 3), res);
+    }
+
+    @Test
+    public void lerp02() {
+        Vector3 res = Vector3.lerp(new Vector3(0, 1, 2), new Vector3(10, 10, 10), 0);
+        assertEquals(new Vector3(0, 1, 2), res);
+    }
+
+    @Test
+    public void lerp03() {
+        Vector3 res = Vector3.lerp(new Vector3(2, 0, -2), new Vector3(4, 4, 4), 0.5);
+        assertEquals(new Vector3(3, 2, 1), res);
     }
 }
