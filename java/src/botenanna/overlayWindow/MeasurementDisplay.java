@@ -41,54 +41,18 @@ public class MeasurementDisplay extends VBox {
         button.setText("Start Timer");
 
         ScheduledExecutorService timer;
-        Runnable timerRunnable;
         Label headerLabel;
 
         timer = new ScheduledThreadPoolExecutor(1);
         NumberFormat nf = new DecimalFormat("##.#");
-        timerRunnable = () -> {
-            System.out.println(time.getElapsedSecondsTimer());
-            try (PrintWriter out = new PrintWriter(new FileWriter("/Users/mathiashindsgaul/Desktop/velocity.txt",true))) {
-                out.println("Time: \t" + nf.format(time.getElapsedSecondsTimer()) + "\t\tVelocity: \t "); //+ nf.format(car.velocity.getMagnitude()));
-            }
-            catch (IOException e) {
-                e.printStackTrace();
-            }
-        };
 
         button.setOnMouseClicked(event -> {
-            time.startTimer();
-            button.setText("Reset Timer");
-            final ScheduledFuture<?> timerHandle = timer.scheduleAtFixedRate(
-                    timerRunnable, 0, 1, TimeUnit.SECONDS);
-            timer.schedule(() -> {
-                timerHandle.cancel(true);
-            }, 5, TimeUnit.SECONDS);
-            try (PrintWriter out = new PrintWriter(new FileWriter("/Users/mathiashindsgaul/Desktop/velocity.txt",true))) {
-                out.println("");
-                out.println("Instance");
-            }
-            catch (IOException e) {
-                e.printStackTrace();
-            }
+            startMeasurement(button, timer, nf);
         });
 
         addEventFilter(KeyEvent.KEY_PRESSED,event -> {
             if(event.getCode() == KeyCode.L) {
-                time.startTimer();
-                button.setText("Reset Timer");
-                final ScheduledFuture<?> timerHandle = timer.scheduleAtFixedRate(
-                        timerRunnable, 0, 1, TimeUnit.SECONDS);
-                        timer.schedule(() -> {
-                            timerHandle.cancel(true);
-                            }, 5, TimeUnit.SECONDS);
-                try (PrintWriter out = new PrintWriter(new FileWriter("/Users/mathiashindsgaul/Desktop/velocity.txt",true))) {
-                    out.println("");
-                    out.println("Instance");
-                }
-                catch (IOException e) {
-                    e.printStackTrace();
-                }
+                startMeasurement(button, timer, nf);
             }
         });
 
@@ -102,6 +66,33 @@ public class MeasurementDisplay extends VBox {
         getChildren().add(infoLabel);
         getChildren().add(button);
 
+    }
+
+    private void startMeasurement(Button button, ScheduledExecutorService timer, NumberFormat nf) {
+        time.startTimer();
+        button.setText("Reset Timer");
+
+        final ScheduledFuture<?> timerHandle = timer.scheduleAtFixedRate(() -> {
+            System.out.println(time.getElapsedSecondsTimer());
+            try (PrintWriter out = new PrintWriter(new FileWriter("/Users/mathiashindsgaul/Desktop/velocity.txt",true))) {
+                out.println("Time: \t" + nf.format(time.getElapsedSecondsTimer()) + "\t\tVelocity: \t "); //+ nf.format(car.velocity.getMagnitude()));
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+        }, 0, 17, TimeUnit.MILLISECONDS);
+
+        timer.schedule(() -> {
+            timerHandle.cancel(true);
+        }, 4, TimeUnit.SECONDS);
+
+        try (PrintWriter out = new PrintWriter(new FileWriter("/Users/mathiashindsgaul/Desktop/velocity.txt",true))) {
+            out.println("");
+            out.println("Instance");
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void update(AgentInput input) {
