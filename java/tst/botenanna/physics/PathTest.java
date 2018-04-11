@@ -18,4 +18,15 @@ public class PathTest {
         assertEquals(0, path.evaluate(0.5).getDistanceTo(new Vector3(5, 10, 15)), 1E-10);
         assertEquals(0, path.evaluate(1.5).getDistanceTo(new Vector3(15, 20, 15)), 1E-10);
     }
+
+    /*@Test
+    public void path02() {
+        Ball ball = new Ball();
+        ball.setPosition(new Vector3(0, 0, 500));
+        ball.setVelocity(new Vector3(100, 0, 1000));
+
+        Path path = ball.getPath(10, 1);
+
+        path.analyze();
+    }*/
 }
