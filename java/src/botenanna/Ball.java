@@ -14,6 +14,10 @@ public class Ball extends Rigidbody {
     public static final double BALL_GROUND_BOUNCINESS = -1;
     public static final double BALL_WALL_BOUNCINESS = -0.6;
 
+    public Ball() {
+        setAffectedByGravity(true);
+    }
+
     /** Create a ball from the GameData's BallInfo. This way position, velocity,
      * acceleration, rotation and gravity is set immediately. */
     public Ball(GameData.BallInfo ball) {
@@ -37,29 +41,30 @@ public class Ball extends Rigidbody {
         Path path = new Path();
         double timeSpent = 0;
         double timeLeft = duration;
-        boolean checkCollision = true;
-        double nextWallHit = 999999;
-        double nextGroundHit = 999999;
+        double nextWallHit;
+        double nextGroundHit;
 
         do {
-            if (checkCollision) {
-                nextWallHit = predictArrivalAtAnyWall(RADIUS);
-                nextGroundHit = predictArrivalAtHeight(RADIUS);
-                checkCollision = false;
-            }
+
+            nextWallHit = predictArrivalAtAnyWall(RADIUS);
+            nextGroundHit = predictArrivalAtHeight(RADIUS);
+
+            System.out.println(String.format("left: %s\nground: %s\nwall: %s\n", timeLeft, nextGroundHit, nextWallHit));
 
             // Check if ball doesn't hits anything
             if (timeLeft < nextGroundHit && timeLeft < nextWallHit) {
-                extendPathWithNoCollision(path, simulation, timeSpent, duration - timeSpent, stepsize);
+                System.out.println("Wh@t");
+                extendPathWithNoCollision(path, simulation, timeSpent, timeLeft, stepsize);
                 return path;
             } else if (nextGroundHit < nextWallHit) {
+                System.out.println("Wh0t");
                 // Simulate until ball it hits ground
                 extendPathWithNoCollision(path, simulation, timeSpent, nextGroundHit, stepsize);
                 timeSpent += nextGroundHit;
                 Vector3 vel = simulation.getVelocity();
                 simulation.setVelocity(new Vector3(vel.x, vel.y, vel.z * BALL_GROUND_BOUNCINESS));
-                checkCollision = true;
             } else {
+                System.out.println("Whut");
                 // Simulate until ball it hits wall
                 extendPathWithNoCollision(path, simulation, timeSpent, nextWallHit, stepsize);
                 timeSpent += nextWallHit;
@@ -69,8 +74,6 @@ public class Ball extends Rigidbody {
                 } else {
                     simulation.setVelocity(new Vector3(vel.x, vel.y * BALL_WALL_BOUNCINESS, vel.z));
                 }
-
-                checkCollision = true;
             }
 
             timeLeft = duration - timeSpent;
@@ -82,6 +85,7 @@ public class Ball extends Rigidbody {
     /** Simulate and extend already existing path. Helper function to {@link #getPath(double, double)}. */
     private void extendPathWithNoCollision(Path path, Rigidbody ballCopy, double timeSpent, double timeLeft, double stepsize) {
         while (timeLeft > 0) {
+            System.out.println("What");
             timeSpent += stepsize;
             timeLeft -= stepsize;
 
