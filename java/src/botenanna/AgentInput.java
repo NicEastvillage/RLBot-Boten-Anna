@@ -89,10 +89,10 @@ public class AgentInput {
     public Vector3 getBestBoostPad(){
         double bestBoostUtility = 0;
         Vector3 bestBoostPad = null;
-        int allBoostPads = packet.getBoostPadsCount();
+        int totalBoostPads = packet.getBoostPadsCount();
         /*int[] bigBoostIndex = {7,8,9,10,11,12}; // Index of big boosts*/
 
-        for (int i = 0; i < allBoostPads; i++) {
+        for (int i = 0; i < totalBoostPads; i++) {
             GameData.BoostInfo boost = packet.getBoostPads(i);
             Vector3 boostLocation = Vector3.convert(boost.getLocation());
 
