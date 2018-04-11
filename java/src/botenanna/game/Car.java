@@ -8,13 +8,14 @@ import rlbot.api.GameData;
 
 public class Car extends Rigidbody {
     //GLobal Variables
-    public final static double ACCELERATION = 20;
-    public final static double ACCELERATION_BOOST = 50;
+    public final static double ACCELERATION_BOOST = 650;
     //TURNRATE IS A FUNCTION OF THE CURRENT SPEED
-    public final static double TURN_RATE = 50;
-    public final static double MAX_VELOCITY = 28.2;
-    public final static double MAX_VELOCITY_BOOST = 35;
+    public final static double TURN_RATE = Math.toRadians(5);
+    public final static double MAX_VELOCITY = 1410;
+    public final static double MAX_VELOCITY_BOOST = 2300;
+    public final static double DECELERATION = 18;
 
+    public double acceleration;
     public final int playerIndex;
     public final int team;
     public Vector3 position;
@@ -66,7 +67,7 @@ public class Car extends Rigidbody {
         distanceToBall = Vector3.convert(packet.getPlayers(index).getLocation()).getDistanceTo(Vector3.convert(packet.getBall().getLocation()));
         angleToBall = RLMath.carsAngleToPoint(position.asVector2(), rotation.yaw, Vector3.convert(packet.getBall().getLocation()).asVector2());
         isOnWall = position.y==Situation.ARENA_LENGTH || position.x == Situation.ARENA_WIDTH || position.x == -Situation.ARENA_WIDTH || position.y == -Situation.ARENA_LENGTH;
-
+        acceleration = 0.0388*getVelocity().asVector2().getMagnitude()+57.791;
     }
 
     // Constructor for simulation
@@ -82,7 +83,7 @@ public class Car extends Rigidbody {
 
         //Is calculated as change in angle over time, set as default, but can be calculated as angle change after simulation
         angularVelocity = angleVel;
-
+        acceleration = 0.0388*getVelocity().asVector2().getMagnitude()+57.791;
         upVector = RLMath.carUpVector(rotation);
         frontVector = RLMath.carFrontVector(rotation);
         sideVector = RLMath.carSideVector(rotation);
@@ -99,6 +100,7 @@ public class Car extends Rigidbody {
         angleToBall = RLMath.carsAngleToPoint(position.asVector2(), rotation.yaw, ball.getPosition().asVector2());
         //TODO NEEDS TWEAKING
         isOnWall = position.y==Situation.ARENA_LENGTH || position.x == Situation.ARENA_WIDTH || position.x == -Situation.ARENA_WIDTH || position.y == -Situation.ARENA_LENGTH;
+        acceleration = 0.0388*getVelocity().asVector2().getMagnitude()+57.791;
     }
 
     // GENERATED GETTERS
@@ -125,8 +127,9 @@ public class Car extends Rigidbody {
     public int getBoost() {
         return boost;
     }
+    //Sets the boost but it cannot be higher than 100
     public void setBoost(int i){
-        if (i>100){
+        if (boost+i>100){
             i=100;
         }
        this.boost =  i;
