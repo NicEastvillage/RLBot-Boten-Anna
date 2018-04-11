@@ -65,8 +65,8 @@ public class Car extends Rigidbody {
         isMidAir = packet.getPlayers(index).getIsMidair();
         isCarUpsideDown = RLMath.carUpVector(Vector3.convert(packet.getPlayers(index).getRotation())).z < 0;
         distanceToBall = Vector3.convert(packet.getPlayers(index).getLocation()).getDistanceTo(Vector3.convert(packet.getBall().getLocation()));
-        angleToBall = RLMath.carsAngleToPoint(position.asVector2(), rotation.yaw, Vector3.convert(packet.getBall().getLocation()).asVector2());
-        isOnWall = position.y==Situation.ARENA_LENGTH || position.x == Situation.ARENA_WIDTH || position.x == -Situation.ARENA_WIDTH || position.y == -Situation.ARENA_LENGTH;
+        angleToBall = RLMath.carsAngleToPoint(getPosition().asVector2(), getRotation().yaw, Vector3.convert(packet.getBall().getLocation()).asVector2());
+        isOnWall = getPosition().y==Situation.ARENA_LENGTH || getPosition().x == Situation.ARENA_WIDTH || getPosition().x == -Situation.ARENA_WIDTH || getPosition().y == -Situation.ARENA_LENGTH;
         acceleration = 0.0388*getVelocity().asVector2().getMagnitude()+57.791;
     }
 
@@ -93,15 +93,18 @@ public class Car extends Rigidbody {
         hasDoubleJumped = car.hasDoubleJumped;
         isDemolished = car.isDemolished;
         isSupersonic = car.isSupersonic;
-        isCarOnGround = position.z < 20;
+        isCarOnGround = getPosition().z < 20;
         isMidAir = car.isMidAir;
         isCarUpsideDown = rotation.z < 0;
         distanceToBall = position.getDistanceTo(ball.getPosition());
         angleToBall = RLMath.carsAngleToPoint(position.asVector2(), rotation.yaw, ball.getPosition().asVector2());
         //TODO NEEDS TWEAKING
-        isOnWall = position.y==Situation.ARENA_LENGTH || position.x == Situation.ARENA_WIDTH || position.x == -Situation.ARENA_WIDTH || position.y == -Situation.ARENA_LENGTH;
+        isOnWall = getPosition().y==Situation.ARENA_LENGTH || getPosition().x == Situation.ARENA_WIDTH || getPosition().x == -Situation.ARENA_WIDTH || getPosition().y == -Situation.ARENA_LENGTH;
         acceleration = 0.0388*getVelocity().asVector2().getMagnitude()+57.791;
     }
+
+
+
 
     // GENERATED GETTERS
     public boolean isHasJumped() {

@@ -21,7 +21,7 @@ public class Simulation {
         if (step>0){
             throw new IllegalArgumentException("Step size must be more than zero. Current Step size is: "+step);
         }
-        Ball simulatedBall = simulateBall(situation, step);
+        Ball simulatedBall = simulateBall(situation.ball, step);
         Car simulatedMyCar = simulateCarActions(situation, action,  simulatedBall, step);
         Car simulatedEnemyCar = steppedCar(situation.enemyCar,  step);
         Boostpads simulatedBoostpads = simulateBoostpads(situation, simulatedEnemyCar, simulatedMyCar, step);
@@ -47,22 +47,21 @@ public class Simulation {
     }
 
     /**
-     * @param situation the situation the bal  is from
      * @return a new ball who has been stepped forward its path, if the ball is in the air the velocity will slow.
      * //TODO Add velocity loss on the ground
      */
-    private static Ball simulateBall(Situation situation, double step)    {
-       Vector3 pathPosition = situation.ball.getPath(step,100).getLastItem();
-       if (situation.ball.getPosition().z>0 && pathPosition.z>0){
-           return new Ball(pathPosition, situation.ball.getVelocity().scale(0.97*step), situation.ball.getRotation());
+    public static Ball simulateBall(Ball ball, double step)    {
+       Vector3 pathPosition = ball.getPath(step,100).getLastItem();
+       if (ball.getPosition().z>0 && pathPosition.z>0){
+           return new Ball(pathPosition, ball.getVelocity().scale(0.97*step), ball.getRotation());
        }
-        return new Ball(pathPosition,situation.ball.getVelocity(),situation.ball.getRotation());
+        return new Ball(pathPosition,ball.getVelocity(),ball.getRotation());
     }
 
     /** Steppes the cars rigidbody forward 1 step
      * @param car is the car with no output
      * @return a simulated car                                    */
-    private static Car steppedCar(Car car, double step) {
+    public static Car steppedCar(Car car, double step) {
         Rigidbody placeholder = car.stepped(1*step);
         car.setPosition(placeholder.getPosition());
         car.setRotation(placeholder.getRotation());
@@ -88,14 +87,14 @@ public class Simulation {
         double accelerationRate = (action.isBoostDepressed() && situation.myCar.getBoost()!=0) ? ACCELERATION_BOOST*step : inputCar.acceleration*step;
         double acceleration = accelerationRate*action.getThrottle();
 
-        // Car steer simulation also set car yaw //  TODO add steer speed as function of the velocity
+        // Car steer simulation also set car yaw //  TODO add steer speed as function of the velocity - As in how many degress the car turns per second given a certain speed
         if (action.getSteer()!=0 && (action.getThrottle()!=0 || simulatedCar.velocity.getMagnitude()!=0 || inputCar.isMidAir)){
             //If the car can and is turning, change the direction of the car and the simulated cars rotation
             direction.asVector2().turn((action.getSteer()*TURN_RATE)*step);
             simulatedCar.rotation.yaw += action.getSteer()*TURN_RATE*step;
         }
 
-        // Car Pitch & Roll simulation SIMPLE VERSION  //TODO add roll and pitch speed/acceleration
+        // Car Pitch & Roll simulation SIMPLE VERSION  //TODO add roll and pitch speeds, roll acceleration? Better not worry as the car can correct itself
         if (simulatedCar.isMidAir) {
             double roll = inputCar.getRotation().roll;
             double pitch = inputCar.getRotation().pitch;
@@ -149,4 +148,6 @@ public class Simulation {
         }
         return new Car(inputCar,simulatedCar.position,simulatedCar.velocity,simulatedCar.angularVelocity,simulatedCar.rotation,ball);
     }
+
+
 }
