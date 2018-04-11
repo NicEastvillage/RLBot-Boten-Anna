@@ -29,6 +29,9 @@ public class MeasurementDisplay extends VBox {
     private Label infoLabel;
     private TimeTracker time = new TimeTracker();
     private AgentInput.Car car;
+    private boolean timerIsRunning;
+    private double newVelocity;
+    private final double[] lastVelocity = {0};
 
     public MeasurementDisplay() throws FileNotFoundException {
         super();
@@ -47,12 +50,12 @@ public class MeasurementDisplay extends VBox {
         NumberFormat nf = new DecimalFormat("##.#####");
 
         button.setOnMouseClicked(event -> {
-            startMeasurement(button, timer, nf);
+            startMeasurement(button, timer);
         });
 
         addEventFilter(KeyEvent.KEY_PRESSED,event -> {
             if(event.getCode() == KeyCode.L) {
-                startMeasurement(button, timer, nf);
+                startMeasurement(button, timer);
             }
         });
 
@@ -68,30 +71,19 @@ public class MeasurementDisplay extends VBox {
 
     }
 
-    private void startMeasurement(Button button, ScheduledExecutorService timer, NumberFormat nf) {
+    private void startMeasurement(Button button, ScheduledExecutorService timer) {
         time.startTimer();
         button.setText("Reset Timer");
-        File file = new File(System.getProperty("user.home"), "/Desktop/velocity.csv");
-
-        final double[] lastVelocity = {0};
+        timerIsRunning = true;
 
         final ScheduledFuture<?> timerHandle = timer.scheduleAtFixedRate(() -> {
-            System.out.println(time.getElapsedSecondsTimer());
-            double newVelocity = car.velocity.getMagnitude();
-            if (newVelocity != lastVelocity[0]) {
-                try (PrintWriter out = new PrintWriter(new FileWriter(file, true))) {
-                    out.println(nf.format(time.getElapsedSecondsTimer()) + ";"
-                            + nf.format(lastVelocity[0]) + ";"
-                            + nf.format(newVelocity - lastVelocity[0]) + ";");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                lastVelocity[0] = newVelocity;
-            }
+            //System.out.println(time.getElapsedSecondsTimer());
+            //new Velocity
         }, 0, 17, TimeUnit.MILLISECONDS);
 
         timer.schedule(() -> {
             timerHandle.cancel(true);
+            timerIsRunning = false;
         }, 4, TimeUnit.SECONDS);
     }
 
@@ -104,5 +96,22 @@ public class MeasurementDisplay extends VBox {
                     "Vel: %f\n" +
                             car.velocity.getMagnitude());
         }
+        if(timerIsRunning) {
+            File file = new File(System.getProperty("user.home"), "/Desktop/velocity.csv");
+            NumberFormat nf = new DecimalFormat("##.#####");
+            newVelocity = car.velocity.getMagnitude();
+            if (newVelocity != lastVelocity[0]) {
+                System.out.println(time.getElapsedSecondsTimer());
+                try (PrintWriter out = new PrintWriter(new FileWriter(file, true))) {
+                    out.println(nf.format(time.getElapsedSecondsTimer()) + ";"
+                            + nf.format(lastVelocity[0]) + ";"
+                            + nf.format(newVelocity - lastVelocity[0]) + ";");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                lastVelocity[0] = newVelocity;
+            }
+        }
+
     }
 }
