@@ -1,6 +1,6 @@
 package botenanna.fitness;
 
-import botenanna.AgentInput;
+import botenanna.game.Situation;
 import botenanna.math.Vector3;
 import botenanna.physics.Path;
 
@@ -30,7 +30,7 @@ public class FitnessShootInDirection implements FitnessInterface {
      *  @param timeSpent the seconds used since origin of situation.
      *  @return a fitness value for the given situation. */
     @Override
-    public double calculateFitness(AgentInput situation, double timeSpent) {
+    public double calculateFitness(Situation situation, double timeSpent) {
         return calculateFitnessValue(situation.ball.getPosition(), situation.ball.getVelocity(), situation.myCar.position, situation.myCar.velocity, timeSpent);
     }
 
@@ -63,7 +63,7 @@ public class FitnessShootInDirection implements FitnessInterface {
      *  @param timeSpent the time spend since origin.
      *  @return true if the variables are less or equal to the deviation. */
     @Override
-    public boolean isDeviationFulfilled(AgentInput situation, double timeSpent) {
+    public boolean isDeviationFulfilled(Situation situation, double timeSpent) {
 
         //Calculate function variables
         double distToBall = situation.myCar.position.getDistanceTo(shootTowardsPoint.evaluate(timeSpent)); // Distance
