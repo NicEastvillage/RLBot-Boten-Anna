@@ -2,6 +2,7 @@ package botenanna.fitness;
 
 import botenanna.game.Situation;
 import botenanna.math.Vector3;
+import botenanna.physics.Path;
 
 /** This class is used when you want a fitness value for "Drive over a point with a specific angle. */
 public class FitnessDriveOverPointWithAngle implements FitnessInterface {
@@ -11,18 +12,21 @@ public class FitnessDriveOverPointWithAngle implements FitnessInterface {
 
     private double angleDeviation;
     private double distDeviation;
-    private Vector3 destinationPoint;
-    private Vector3 nextPoint;
+    private Path destinationPoint;
+    private Path nextPoint;
+    private boolean stopOnPoint;
 
     /** @param destinationPoint the destination point.
      *  @param nextPoint the direction to drive in when destination point is reached.
      *  @param angleDeviation an value that the angle is allowed to deviate.
-     *  @param distDeviation an value that the distance is allowed to deviate. */
-    public FitnessDriveOverPointWithAngle(Vector3 destinationPoint, Vector3 nextPoint, double angleDeviation, double distDeviation) {
+     *  @param distDeviation an value that the distance is allowed to deviate.
+     *  @param stopOnPoint should the car stop on the point or drive over. */
+    public FitnessDriveOverPointWithAngle(Path destinationPoint, Path nextPoint, double angleDeviation, double distDeviation, boolean stopOnPoint) {
         this.destinationPoint = destinationPoint;
         this.nextPoint = nextPoint;
         this.angleDeviation = angleDeviation;
         this.distDeviation = distDeviation;
+        this.stopOnPoint = stopOnPoint;
     }
 
     /**	Takes a situation and time spent and returns a fitness value of that situation.
@@ -34,7 +38,7 @@ public class FitnessDriveOverPointWithAngle implements FitnessInterface {
     @Override
     public double calculateFitness(Situation situation, double timeSpent){
 
-        return calculateFitnessValue(situation.myCar.position, situation.myCar.frontVector, timeSpent);
+        return calculateFitnessValue(situation.myCar.position, situation.myCar.frontVector, timeSpent, situation.myCar.velocity);
     }
 
     /**	Takes the needed information and calculates the fitness value.
@@ -42,13 +46,25 @@ public class FitnessDriveOverPointWithAngle implements FitnessInterface {
      *  @param myDirection my cars direction.
      *  @param timeSpent the seconds used since origin of the situation.
      *  @return a fitness value for the given situation. */
-    double calculateFitnessValue(Vector3 myPosition, Vector3 myDirection, double timeSpent){
+    double calculateFitnessValue(Vector3 myPosition, Vector3 myDirection, double timeSpent, Vector3 carVelocity){
 
-        double distanceToPoint = myPosition.getDistanceTo(destinationPoint);
-        Vector3 desiredDirectionVector = nextPoint.minus(destinationPoint);
+        Vector3 currentDestPoint = destinationPoint.evaluate(timeSpent);
+        Vector3 currentNextPoint = nextPoint.evaluate(timeSpent);
+
+        double distanceToPoint = myPosition.getDistanceTo(currentDestPoint);
+        Vector3 desiredDirectionVector = currentNextPoint.minus(currentDestPoint);
         double angleDifference = myDirection.getAngleTo(desiredDirectionVector);
+        double velocity = carVelocity.getMagnitude();
 
-        return Math.pow(Math.E, -(timeSpent + Math.abs(angleDifference * ANGLE_SCALE) + (distanceToPoint / DIST_SCALE)));
+        if(stopOnPoint){
+            return (Math.pow(Math.E, -(timeSpent + Math.abs(angleDifference * ANGLE_SCALE) + (distanceToPoint / DIST_SCALE))))
+                    * -(2300/ (Math.abs((velocity == 0) ? 1 : velocity)));
+        }else{
+            return (Math.pow(Math.E, -(timeSpent + Math.abs(angleDifference * ANGLE_SCALE) + (distanceToPoint / DIST_SCALE))))
+                    * 2300/ (Math.abs((velocity == 0) ? 1 : velocity));
+        }
+
+
     }
 
     /** Checks if the deviations are fulfilled.
@@ -59,8 +75,8 @@ public class FitnessDriveOverPointWithAngle implements FitnessInterface {
     public boolean isDeviationFulfilled(Situation situation, double timeSpent) {
 
         //Calculate function variables
-        double distToPoint = situation.myCar.position.getDistanceTo(destinationPoint); // Distance
-        double angToPoint = situation.myCar.position.getAngleTo(destinationPoint); // Angle
+        double distToPoint = situation.myCar.position.getDistanceTo(destinationPoint.evaluate(timeSpent)); // Distance
+        double angToPoint = situation.myCar.position.getAngleTo(destinationPoint.evaluate(timeSpent)); // Angle
 
         if(distToPoint <= distDeviation){
             if(angToPoint <= angleDeviation)

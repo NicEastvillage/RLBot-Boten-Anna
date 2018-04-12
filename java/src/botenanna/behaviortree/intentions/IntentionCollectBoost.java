@@ -4,6 +4,7 @@ import botenanna.fitness.FitnessDriveOverPointWithAngle;
 import botenanna.fitness.FitnessInterface;
 import botenanna.game.Boostpads;
 import botenanna.game.Situation;
+import botenanna.physics.Path;
 
 /** The IntentionCollectBoost will collect the best boost pad and continue towards the balls position.
  * Its signature is {@code "IntentionCollectBoost"}*/
@@ -17,7 +18,7 @@ public class IntentionCollectBoost extends Intention {
 
     @Override
     protected FitnessInterface getFitnessFunction(Situation input) {
-        return new FitnessDriveOverPointWithAngle(input.getBestBoostPad(), input.ball.getPosition(), 0.45, Boostpads.RADIUS);
+        return new FitnessDriveOverPointWithAngle(new Path(input.getBestBoostPad()), input.ball.getPath(50, STEPSIZE), 0.45, Boostpads.RADIUS, false);
     }
 
     @Override

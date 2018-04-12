@@ -77,7 +77,7 @@ public class Simulation {
         Car simulatedCar = situation.myCar;
         Vector3 direction = RLMath.carFrontVector(startingCar.rotation);
 
-        if (!situation.AgentIsWithinField(startingCar.getPosition().asVector2())){
+        if (!situation.IsAgentWithinField(startingCar.getPosition().asVector2())){
             //TODO WALLRIDER!
         }
         // Car steer simulation

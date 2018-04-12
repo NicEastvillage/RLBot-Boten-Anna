@@ -26,7 +26,7 @@ public class Situation {
     private double LOWERLEFT_CORNER_X2 = -10280/2+Ball.RADIUS*3, LOWERRIGHT_CORNER_y2=-8240/2+Ball.RADIUS*3;   // upper right
     private double q1 = 10280/2-30, w1=8240/2-30;   // lower left
     private double q2 = -10280/2+30, w2=-8240/2+30;   // upper right
-
+    private double WALL_X = 10280/2, WALL_Y=8240/2;
 
     private GameData.GameTickPacket packet;
     private TimeTracker timeTracker;
@@ -215,11 +215,13 @@ public class Situation {
         return predictSeconds;
     }
 
-    public boolean BallIsWithinField(Vector2 point) {
-        return (point.x >= UPPERLEFT_CORNER_X1 && point.x <= LOWERLEFT_CORNER_X2 && point.y >= UPPERRIGHT_CORNER_y1 && point.y <= LOWERRIGHT_CORNER_y2);
+    /**checks if the ball is within the field*/
+    public boolean IsBallWithinField(Vector2 point) {
+        return (point.x >= WALL_X-Ball.RADIUS*3 && point.x <= -WALL_X+Ball.RADIUS*3 && point.y >= WALL_Y-Ball.RADIUS*3 && point.y <= -WALL_Y+Ball.RADIUS*3);
     }
 
-    public boolean AgentIsWithinField(Vector2 point) {
-        return (point.x >= q1 && point.x <= q2 && point.y >= w1 && point.y <= w2);
+    /**Checks if the agent is on the wall*/
+    public boolean IsAgentWithinField(Vector2 point) {
+        return (point.x >= WALL_X-30&& point.x <= -WALL_X+30 && point.y >= WALL_Y-30 && point.y <= -WALL_Y+30);
     }
 }
