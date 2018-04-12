@@ -1,6 +1,7 @@
 package botenanna.fitness;
 
 import botenanna.math.Vector3;
+import botenanna.physics.Path;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -17,7 +18,7 @@ public class FitnessDriveOverPointWithAngleTest {
         Vector3 velocity = new Vector3(500,500,0);
 
 
-        FitnessDriveOverPointWithAngle fitness = new FitnessDriveOverPointWithAngle(destinationPoint, nextPoint, 0.2,0.2, true);
+        FitnessDriveOverPointWithAngle fitness = new FitnessDriveOverPointWithAngle(new Path(destinationPoint), new Path(nextPoint), 0.2,0.2, true);
 
         Vector3 myDirection = new Vector3(10,0,0);
         Vector3 myPos = new Vector3(0,0,0);
@@ -35,7 +36,7 @@ public class FitnessDriveOverPointWithAngleTest {
         Vector3 nextPoint = new Vector3(750,1250,0);
         Vector3 velocity = new Vector3(1400,0,0);
 
-        FitnessDriveOverPointWithAngle fitness = new FitnessDriveOverPointWithAngle(destinationPoint, nextPoint, 0.2,0.2, true);
+        FitnessDriveOverPointWithAngle fitness = new FitnessDriveOverPointWithAngle(new Path(destinationPoint), new Path(nextPoint), 0.2,0.2, true);
 
         Vector3 myDirection = new Vector3(10,0,0);
         Vector3 myPos = new Vector3(20,20,0);
@@ -53,7 +54,7 @@ public class FitnessDriveOverPointWithAngleTest {
         Vector3 velocity = new Vector3(500,500,0);
 
 
-        FitnessDriveOverPointWithAngle fitness = new FitnessDriveOverPointWithAngle(destinationPoint, nextPoint, 0.2,0.2, false);
+        FitnessDriveOverPointWithAngle fitness = new FitnessDriveOverPointWithAngle(new Path(destinationPoint), new Path(nextPoint), 0.2,0.2, false);
 
         Vector3 myDirection = new Vector3(10,0,0);
         Vector3 myPos = new Vector3(0,0,0);
@@ -71,7 +72,7 @@ public class FitnessDriveOverPointWithAngleTest {
         Vector3 nextPoint = new Vector3(750,1250,0);
         Vector3 velocity = new Vector3(1400,0,0);
 
-        FitnessDriveOverPointWithAngle fitness = new FitnessDriveOverPointWithAngle(destinationPoint, nextPoint, 0.2,0.2, false);
+        FitnessDriveOverPointWithAngle fitness = new FitnessDriveOverPointWithAngle(new Path(destinationPoint), new Path(nextPoint), 0.2,0.2, false);
 
         Vector3 myDirection = new Vector3(10,0,0);
         Vector3 myPos = new Vector3(20,20,0);
@@ -88,7 +89,7 @@ public class FitnessDriveOverPointWithAngleTest {
         Vector3 nextPoint1 = new Vector3(750,1250,0);
         Vector3 myCarVelocity1 = new Vector3(1400,0,0);
 
-        FitnessDriveOverPointWithAngle fitness1 = new FitnessDriveOverPointWithAngle(destinationPoint1, nextPoint1, 0.2,0.2, true);
+        FitnessDriveOverPointWithAngle fitness1 = new FitnessDriveOverPointWithAngle(new Path(destinationPoint1), new Path(nextPoint1), 0.2,0.2, true);
 
         Vector3 myDirection1 = new Vector3(10,0,0);
         Vector3 myPos1 = new Vector3(20,20,0);
@@ -98,7 +99,7 @@ public class FitnessDriveOverPointWithAngleTest {
         Vector3 destinationPoint2 = new Vector3(-100,-100,0);
         Vector3 nextPoint2 = new Vector3(750,1250,0);
 
-        FitnessDriveOverPointWithAngle fitness2 = new FitnessDriveOverPointWithAngle(destinationPoint2, nextPoint2, 0.2,0.2, true);
+        FitnessDriveOverPointWithAngle fitness2 = new FitnessDriveOverPointWithAngle(new Path(destinationPoint2), new Path(nextPoint2), 0.2,0.2, true);
 
         Vector3 myDirection2 = new Vector3(10,0,0);
         Vector3 myPos2 = new Vector3(0,0,0);
