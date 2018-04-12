@@ -226,6 +226,9 @@ public class AgentInput {
         public final boolean isCarUpsideDown;
         public final double distanceToBall;
         public final double angleToBall;
+        public final double carLength;
+        public final double carHeight;
+        public final double carWidth;
 
         public Car(int index, GameData.GameTickPacket packet) {
             playerIndex = index;
@@ -248,6 +251,9 @@ public class AgentInput {
             isCarUpsideDown = RLMath.carUpVector(Vector3.convert(packet.getPlayers(myPlayerIndex).getRotation())).z < 0;
             distanceToBall = Vector3.convert(packet.getPlayers(myPlayerIndex).getLocation()).getDistanceTo(Vector3.convert(packet.getBall().getLocation()));
             angleToBall = RLMath.carsAngleToPoint(position.asVector2(), rotation.yaw, Vector3.convert(packet.getBall().getLocation()).asVector2());
+            carLength = 118.01;
+            carHeight = 36.16;
+            carWidth = 84.20;
         }
     }
 }

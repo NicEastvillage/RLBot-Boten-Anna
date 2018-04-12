@@ -77,7 +77,7 @@ public class FitnessDriveOverPointWithAngleTest {
         Vector3 myPos = new Vector3(20,20,0);
 
         double fitnessValue = fitness.calculateFitnessValue(myPos, myDirection,4, velocity);
-        
+
         assertEquals(0.00012110219072383959279, fitnessValue,1E-18);
     }
 
