@@ -2,6 +2,8 @@ package botenanna.math.zone;
 
 import botenanna.math.Vector3;
 
+
+
 public class Box {
     private Vector3 boxCoordinates1;
     private Vector3 boxCoordinates2;
@@ -11,6 +13,9 @@ public class Box {
     private double Maxpoint_x;
     private double Maxpoint_y;
     private double Maxpoint_z;
+
+
+
 
     public Box(Vector3 boxCoordinates1, Vector3 boxCoordinates2) {
         this.boxCoordinates1 = boxCoordinates1;
