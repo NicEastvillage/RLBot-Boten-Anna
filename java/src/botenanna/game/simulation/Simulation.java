@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import static botenanna.game.Boostpads.*;
 import static botenanna.game.Car.*;
 
-
 public class Simulation {
     private static double maxVel;
     private static boolean boosting;
@@ -27,7 +26,7 @@ public class Simulation {
         Ball simulatedBall = simulateBall(situation.ball, step);
         Car simulatedMyCar = simulateCarActions(situation.myCar, action,  simulatedBall, step);
         Car simulatedEnemyCar = steppedCar(situation.enemyCar,  step);
-        Boostpads simulatedBoostpads = simulateBoostpads(situation, simulatedEnemyCar, simulatedMyCar, step);
+        Boostpads simulatedBoostpads = simulateBoostpads(situation.gameBoostPads, simulatedEnemyCar, simulatedMyCar, step);
 
         return new Situation(simulatedMyCar, simulatedEnemyCar, simulatedBall , simulatedBoostpads);
     }
@@ -35,8 +34,7 @@ public class Simulation {
     /** Simulates  the boostpads, if any of the cars can pick up boost and they are stepped close to a pad deactivate them
      * @return an array of boostpads after simulation
      */
-    private static Boostpads simulateBoostpads(Situation situation, Car enemy, Car myCar, double step) {
-       Boostpads currentGamePads = situation.gameBoostPads;
+    private static Boostpads simulateBoostpads(Boostpads currentGamePads, Car enemy, Car myCar, double step) {
        ArrayList<Pair<Vector3, Boolean>> simulatedArray = new ArrayList<>(NUM_PADS);
        boolean active;
        //Checks all the boost pads and if a car who an take boost is at the point it will be deactive;

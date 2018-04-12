@@ -79,7 +79,6 @@ public class Car extends Rigidbody {
         setPosition(position);
         setVelocity(velocity);
         setRotation(rotation);
-        setAffectedByGravity(true);
 
         //Is calculated as change in angle over time, set as default, but can be calculated as angle change after simulation
         angularVelocity = Oldcar.angularVelocity;
@@ -101,6 +100,7 @@ public class Car extends Rigidbody {
         //TODO NEEDS TWEAKING
         isOnWall = getPosition().y==Situation.ARENA_LENGTH || getPosition().x == Situation.ARENA_WIDTH || getPosition().x == -Situation.ARENA_WIDTH || getPosition().y == -Situation.ARENA_LENGTH;
         acceleration = 0.0388*getVelocity().asVector2().getMagnitude()+57.791;
+        setAffectedByGravity(isMidAir());
     }
 
 
