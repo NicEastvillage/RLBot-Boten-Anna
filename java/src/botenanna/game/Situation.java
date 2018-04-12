@@ -22,11 +22,14 @@ public class Situation {
     public static final Vector2 RED_GOALPOST_LEFT = new Vector2(-720, 5200);
     public static final Vector2 RED_GOALPOST_RIGHT = new Vector2(720, 5200);
     public static final Vector3[] BIG_BOOST_PADS = {new Vector3(-3070, 4100), new Vector3(3070,-4100), new Vector3(-3070,-4100),new Vector3(-3580,0), new Vector3(3580,0), new Vector3(3070, 4100)};
+<<<<<<< HEAD
     private double UPPERLEFT_CORNER_X1 = 10280/2- Ball.RADIUS*3, UPPERRIGHT_CORNER_y1=8240/2-Ball.RADIUS*3;   // lower left
     private double LOWERLEFT_CORNER_X2 = -10280/2+Ball.RADIUS*3, LOWERRIGHT_CORNER_y2=-8240/2+Ball.RADIUS*3;   // upper right
     private double q1 = 10280/2-30, w1=8240/2-30;   // lower left
     private double q2 = -10280/2+30, w2=-8240/2+30;   // upper right
     private double WALL_X = 10280/2, WALL_Y=8240/2;
+=======
+>>>>>>> cd05f949c0ab6afd1c0a830225a29ecaa15a39d7
 
     private GameData.GameTickPacket packet;
     private TimeTracker timeTracker;
