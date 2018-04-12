@@ -82,4 +82,8 @@ public class InterpolatedTimeLine<T> implements TimeLine<T> {
     public boolean isEmpty() {
         return steps.isEmpty();
     }
+
+    void analyze() {
+        steps.analyze();
+    }
 }

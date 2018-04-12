@@ -45,7 +45,7 @@ public class SteppedTimeLine<T> implements TimeLine<T> {
 
         // Find position to insert time step.
         // We assume it is placed at the end, because you usually add TimeSteps in order
-        for (int i = timeSteps.size() - 1; i >= 0; i++) {
+        for (int i = timeSteps.size() - 1; i >= 0; i--) {
             TimeStep other = timeSteps.get(i);
             if (other.time < time) {
                 timeSteps.add(i + 1, stamp);
@@ -190,5 +190,11 @@ public class SteppedTimeLine<T> implements TimeLine<T> {
     @Override
     public boolean isEmpty() {
         return timeSteps.isEmpty();
+    }
+
+    void analyze() {
+        for (TimeStep timeStep : timeSteps) {
+            System.out.println("t: " + timeStep.time + ", i: " + timeStep.item);
+        }
     }
 }

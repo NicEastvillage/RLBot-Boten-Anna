@@ -117,3 +117,7 @@ ENV/
 # Gradle
 /.gradle
 local.properties
+
+# RL Bot
+RLBot_Core.dll
+rlbot_injector.exe
