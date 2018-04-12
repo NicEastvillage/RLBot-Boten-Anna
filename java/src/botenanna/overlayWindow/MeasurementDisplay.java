@@ -2,6 +2,7 @@ package botenanna.overlayWindow;
 
 import botenanna.AgentInput;
 import botenanna.physics.TimeTracker;
+import io.netty.util.internal.shaded.org.jctools.queues.MessagePassingQueue;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -58,6 +59,13 @@ public class MeasurementDisplay extends VBox {
                 startMeasurement(button, timer);
             }
         });
+
+        addEventFilter(KeyEvent.KEY_PRESSED,event -> {
+            if(event.getCode() == KeyCode.ESCAPE) {
+                System.exit(0);
+            }
+        });
+
 
         headerLabel = new Label("Car Velocity");
         header.getChildren().add(headerLabel);
