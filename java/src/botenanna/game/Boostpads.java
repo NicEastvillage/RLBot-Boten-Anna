@@ -12,6 +12,8 @@ public class Boostpads {
 
     public static final int NUM_PADS = 34;
     public static final int NUM_BIGBOOST = 6;
+    public static final double RADIUS = 40;
+
     public ArrayList<Pair<Vector3,Boolean>> boostPadList;
 
     public Boostpads(GameData.GameTickPacket packet){
