@@ -3,6 +3,7 @@ package botenanna.game.simulation;
 import botenanna.fitness.FitnessInterface;
 import botenanna.game.ActionSet;
 import botenanna.game.Situation;
+import botenanna.physics.SteppedTimeLine;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -11,7 +12,7 @@ import java.util.TreeSet;
 
 public class AStar {
 
-    private class TimeNode {
+    private static class TimeNode {
         public final Situation situation;
         public final ActionSet actionTaken;
         public final TimeNode cameFrom;
@@ -27,7 +28,7 @@ public class AStar {
 
     /** Find a sequence of actions that steers the agent towards a desired intention defined by a fitness function.
      * The method uses a modified version of A*. */
-    public List<ActionSet> findSequence(Situation startSituation, FitnessInterface fitness, double stepsize) {
+    public static SteppedTimeLine<ActionSet> findSequence(Situation startSituation, FitnessInterface fitness, double stepsize) {
 
         TimeNode startNode = new TimeNode(startSituation, null, null, 0);
 
@@ -45,7 +46,8 @@ public class AStar {
 
             // Is this situation a fulfilling destination?
             if (fitness.isDeviationFulfilled(current.situation, current.timeSpent)) {
-                return reconstructSequence(current);
+                List<ActionSet> sequence = reconstructSequence(current);
+                return toTimeLine(sequence, stepsize);
             }
 
             openSet.remove(current);
@@ -62,9 +64,19 @@ public class AStar {
         return null;
     }
 
+    private static SteppedTimeLine<ActionSet> toTimeLine(List<ActionSet> sequence, double stepsize) {
+        SteppedTimeLine<ActionSet> timeLine = new SteppedTimeLine<>();
+        double time = 0;
+        for (ActionSet action : sequence) {
+            timeLine.addTimeStep(time, action);
+            time += stepsize;
+        }
+        return timeLine;
+    }
+
     /** Helper method for the {@link #findSequence(Situation, FitnessInterface, double)} to backtrack the actions taken
      * and create the sequence. */
-    private List<ActionSet> reconstructSequence(TimeNode destination) {
+    private static List<ActionSet> reconstructSequence(TimeNode destination) {
         TimeNode current = destination;
         List<ActionSet> sequence = new ArrayList<>();
         while (current.cameFrom != null) {
@@ -77,7 +89,7 @@ public class AStar {
     /** This method will generate all valid ActionSet that sensibly follow a given ActionSet in a Situation.
      * @param situation the Situation.
      * @param current the ActionSet prior to the ones generated. */
-    public List<ActionSet> getFollowingActionSets(Situation situation, ActionSet current) {
+    public static List<ActionSet> getFollowingActionSets(Situation situation, ActionSet current) {
         /* Variabler:
         ///////// Optimizations taken
         [-1, 1] variabler behøver ikke reale tal
@@ -137,7 +149,7 @@ public class AStar {
     }
 
     /** A helper method that returns an array of directions that are close to a given direction. */
-    private double[] getFollowingDirections(double value) {
+    private static double[] getFollowingDirections(double value) {
         if (value == 1) return new double[]{1, 0};
         if (value == -1) return new double[]{0, -1};
         if (value == 0) return new double[]{1, 0, -1};

@@ -2,6 +2,7 @@ package botenanna.fitness;
 
 import botenanna.game.Situation;
 import botenanna.math.Vector3;
+import botenanna.physics.Path;
 
 /** This class is used when you want a fitness value for "Arrive at a point at a specific time. */
 public class FitnessArriveAtPointAtTime implements FitnessInterface {
@@ -11,14 +12,14 @@ public class FitnessArriveAtPointAtTime implements FitnessInterface {
 
     private double distDeviation;
     private double velDeviation;
-    private Vector3 point;
+    private Path point;
     private int arrivalTime;
 
-    /** @param distDeviation the deviation in distance to desired point.
-     *  @param velDeviation the deviation in velocity.
-     *  @param point the destination point.
-     *  @param arrivalTime the desired time of arrival. */
-    public FitnessArriveAtPointAtTime(double distDeviation, double velDeviation, Vector3 point, int arrivalTime) {
+    /** @param point the destination point.
+     *  @param arrivalTime the desired time of arrival. //TODO: Mikkel... might have to be reworked :)
+     *  @param distDeviation the deviation in distance to desired point.
+     *  @param velDeviation the deviation in velocity. */
+    public FitnessArriveAtPointAtTime(Path point, int arrivalTime, double distDeviation, double velDeviation) {
         this.distDeviation = distDeviation;
         this.velDeviation = velDeviation;
         this.point = point;
@@ -45,7 +46,7 @@ public class FitnessArriveAtPointAtTime implements FitnessInterface {
     double calculateFitnessValue(Vector3 myPosition, Vector3 myVelocity, double timeSpent){
 
         //Calculate function variables
-        double distToPoint = myPosition.getDistanceTo(point); // Distance
+        double distToPoint = myPosition.getDistanceTo(point.evaluate(timeSpent)); // Distance
         double velocity = myVelocity.getMagnitude(); // Velocity
         double timeValue = (timeSpent < arrivalTime) ? timeSpent / arrivalTime : -(timeSpent/arrivalTime) + 2;
 
@@ -60,7 +61,7 @@ public class FitnessArriveAtPointAtTime implements FitnessInterface {
     public boolean isDeviationFulfilled(Situation situation, double timeSpent) {
 
         //Calculate function variables
-        double distToPoint = situation.myCar.position.getDistanceTo(point); // Distance
+        double distToPoint = situation.myCar.position.getDistanceTo(point.evaluate(timeSpent)); // Distance
         double velocity = situation.myCar.velocity.getMagnitude(); // Velocity
 
         if(distToPoint <= distDeviation){
