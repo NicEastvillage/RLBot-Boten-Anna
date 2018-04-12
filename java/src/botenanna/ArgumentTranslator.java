@@ -1,7 +1,5 @@
 package botenanna;
 
-import botenanna.math.Vector3;
-
 import java.util.function.Function;
 
 /** The ArgumentTranslators purpose is to translate the node arguments into Function objects, that allow quick
@@ -26,6 +24,8 @@ public class ArgumentTranslator {
             case "enemy_goal_box": return (AgentInput a) -> a.getGoalBox(a.enemyPlayerIndex); // Vector3
             case "my_corner_plus": return (AgentInput a) ->  a.getMyCorner(1);       // Vector3
             case "my_corner_minus": return (AgentInput a) ->  a.getMyCorner(-1);     // Vector3
+
+            case "enemy_goal": return (AgentInput a) -> a.getEnemyBoxArea(a.myPlayerIndex);     // Box
 
             case "ball_land_time": return (AgentInput a) -> a.ballLandingTime;       // time (double)
             case "ball_land_pos": return (AgentInput a) -> a.ballLandingPosition;    // Vector3

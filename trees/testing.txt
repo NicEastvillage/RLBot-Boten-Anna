@@ -3,8 +3,7 @@ Selector
 		GuardIsKickoff
 		TaskAdjustAirRotation ball_land_pos
 	Sequencer
-		GuardIsMidAir
-		GuardWillBallHitGoal
-		TaskAdjustAirRotation ball_land_pos
-	Sequencer
-	    TaskAdjustAirRotation ball_land_pos
+	    GuardIsMidAir
+		GuardWillBallHitGoal enemy_goal
+		TaskGoTowardsPoint ball_land_pos false true
+	TaskAdjustAirRotation ball_land_pos

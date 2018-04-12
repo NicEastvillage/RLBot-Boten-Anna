@@ -3,6 +3,7 @@ package botenanna;
 import botenanna.math.RLMath;
 import botenanna.math.Vector2;
 import botenanna.math.Vector3;
+import botenanna.math.zone.Box;
 import botenanna.physics.TimeTracker;
 import rlbot.api.GameData;
 
@@ -17,6 +18,8 @@ public class AgentInput {
     public static final double ARENA_WIDTH = 8240;
     public static final Vector3 BLUE_GOAL_BOX = Vector3.BACKWARDS.scale(5000);
     public static final Vector3 ORANGE_GOAL_BOX = Vector3.FORWARD.scale(5000);
+    public static final Box ORANGE_GOAL_BOX_AREA = new Box(new Vector3(-720 , 5200 , 0), new Vector3(720 , 4000 , 1000));
+    public static final Box BLUE_GOAL_BOX_AREA = new Box(new Vector3(-720 , -5200 , 0), new Vector3(720 , -4000 , 1000));
     public static final Vector2 BLUE_GOALPOST_LEFT = new Vector2(-720, -5200);
     public static final Vector2 BLUE_GOALPOST_RIGHT = new Vector2(720, -5200);
     public static final Vector2 RED_GOALPOST_LEFT = new Vector2(-720, 5200);
@@ -132,6 +135,10 @@ public class AgentInput {
 
         // Find angle to the given point
         return myCar.frontVector.getAngleTo(vectorToPoint);
+    }
+
+    public Box getEnemyBoxArea(int playerIndex) {
+        return playerIndex == 0 ? ORANGE_GOAL_BOX_AREA : BLUE_GOAL_BOX_AREA;
     }
 
     /** Used to access GameTickPacket */

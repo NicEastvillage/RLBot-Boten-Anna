@@ -15,18 +15,20 @@ import botenanna.physics.Path;
 
 import java.util.function.Function;
 
-public class GuardWillBallHitGoal extends Leaf {
+public class GuardIsPointInsideBox extends Leaf {
 
+    private Function<AgentInput, Object> givenPointFunc;
     private Function<AgentInput, Object> areaFunc;
 
-    public GuardWillBallHitGoal(String[] arguments) throws IllegalArgumentException {
+    public GuardIsPointInsideBox(String[] arguments) throws IllegalArgumentException {
         super(arguments);
 
-        if (arguments.length != 1){
+        if (arguments.length != 2){
             throw new IllegalArgumentException();
         }
 
-        areaFunc = ArgumentTranslator.get(arguments[0]);
+        givenPointFunc = ArgumentTranslator.get(arguments[0]);
+        areaFunc = ArgumentTranslator.get(arguments[1]);
 
     }
 
@@ -38,18 +40,12 @@ public class GuardWillBallHitGoal extends Leaf {
     @Override
     public NodeStatus run(AgentInput input) throws MissingNodeException {
 
-        // Determine time it will take for ball to hit next Y-positive wall
-        double time = input.ball.predictArrivalAtWallYPositive(Ball.RADIUS);
-
-        // Find path of ball
-        Path path = input.ball.getPath(time, 10);
-        Vector3 finalDestination = path.getLastItem();
-
-        // Determine area
+        // Determine point and area
+        Vector3 givenPoint = (Vector3) givenPointFunc.apply(input);
         Box boxArea = (Box) areaFunc.apply(input);
 
-        if (boxArea.isPointInBoxArea(finalDestination)) {
-            System.out.println("Ball will hit goal box");
+        if (boxArea.isPointInBoxArea(givenPoint)) {
+            System.out.println("Point is inside box");
             return NodeStatus.DEFAULT_SUCCESS;
         } else {
             return NodeStatus.DEFAULT_FAILURE;
