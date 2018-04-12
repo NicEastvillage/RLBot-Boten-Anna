@@ -4,7 +4,7 @@ import botenanna.game.Situation;
 import botenanna.math.Vector3;
 import botenanna.physics.Path;
 
-/** This class is used when you want a fitness value for "Drive over a point with a specific angle. */
+/** This class is used when you want a fitness value for "Drive over a point with a specific angle". */
 public class FitnessDriveOverPointWithAngle implements FitnessInterface {
 
     private final int DIST_SCALE = 450;

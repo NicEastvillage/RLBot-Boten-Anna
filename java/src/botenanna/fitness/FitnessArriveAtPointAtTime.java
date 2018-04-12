@@ -13,13 +13,13 @@ public class FitnessArriveAtPointAtTime implements FitnessInterface {
     private double distDeviation;
     private double velDeviation;
     private Path point;
-    private int arrivalTime;
+    private double arrivalTime;
 
     /** @param point the destination point.
      *  @param arrivalTime the desired time of arrival. //TODO: Mikkel... might have to be reworked :)
      *  @param distDeviation the deviation in distance to desired point.
      *  @param velDeviation the deviation in velocity. */
-    public FitnessArriveAtPointAtTime(Path point, int arrivalTime, double distDeviation, double velDeviation) {
+    public FitnessArriveAtPointAtTime(Path point, double arrivalTime, double distDeviation, double velDeviation) {
         this.distDeviation = distDeviation;
         this.velDeviation = velDeviation;
         this.point = point;
