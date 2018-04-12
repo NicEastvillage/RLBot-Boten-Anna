@@ -1,11 +1,13 @@
 package botenanna.behaviortree.guards;
 
 import botenanna.AgentInput;
+import botenanna.AgentOutput;
 import botenanna.ArgumentTranslator;
 import botenanna.Ball;
 import botenanna.behaviortree.Leaf;
 import botenanna.behaviortree.MissingNodeException;
 import botenanna.behaviortree.NodeStatus;
+import botenanna.behaviortree.Status;
 import botenanna.math.Vector2;
 import botenanna.math.Vector3;
 import botenanna.physics.Path;
@@ -38,28 +40,17 @@ public class GuardWillBallHitGoal extends Leaf {
         Path path = input.ball.getPath(time, 10);
         Vector3 finalDestination = path.getLastItem();
 
-        // TESTS
-        // System.out.println(input.ball.clone().stepped(0).getPosition());
-        System.out.println("Time: ["+time+"]"); // Works!
-        path.analyze();
-        /*for (int i = 0; i <= time; i++) {
-            System.out.println("Evaluated " + i + ": ["+path.evaluate(i)+"]");
-        }*/
-  /*      System.out.println("Path: " + finalDestination); // Returns NaN € x,y,z*/
-        System.out.println("");
-
-        /*// Check if this vector is inside goal area (2D)
+        // Check if this vector is inside goal area (2D)
             // Orange goal (A,C € x,y) (Perpendicular)
         int Ax = -720, Ay = 5200;
-        int Cx = 720, Cy = 4000;*/
+        int Cx = 720, Cy = 4000;
 
-        /*if (Ax < finalDestination.x && finalDestination.x < Cx
-                && Ay < finalDestination.y && finalDestination.y < Cy) {
+        if (Ax <= finalDestination.x && finalDestination.x <= Cx
+                && Cy <= finalDestination.y && finalDestination.y <= Ay) {
             System.out.println("Ball will hit goal box");
+            return NodeStatus.DEFAULT_SUCCESS;
         } else {
-            System.out.println("Ball will not hit goal box");
-        }*/
-
-        return NodeStatus.DEFAULT_SUCCESS;
+            return NodeStatus.DEFAULT_FAILURE;
+        }
     }
 }
