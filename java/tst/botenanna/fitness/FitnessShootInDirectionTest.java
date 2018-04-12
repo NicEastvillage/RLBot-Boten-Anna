@@ -1,6 +1,7 @@
 package botenanna.fitness;
 
 import botenanna.math.Vector3;
+import botenanna.physics.Path;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -17,7 +18,7 @@ public class FitnessShootInDirectionTest {
         Vector3 shootPoint = new Vector3(500,250,0);
         int timeSpent = 4;
 
-        FitnessShootInDirection fitness = new FitnessShootInDirection(shootPoint);
+        FitnessShootInDirection fitness = new FitnessShootInDirection(new Path(shootPoint), 0.2,0.2);
 
         double fitnessValue = fitness.calculateFitnessValue(ballLocation, ballVelocity, carLocation, carVelocity, timeSpent);
 
@@ -33,7 +34,7 @@ public class FitnessShootInDirectionTest {
         Vector3 shootPoint = new Vector3(500,-250,0);
         int timeSpent = 4;
 
-        FitnessShootInDirection fitness = new FitnessShootInDirection(shootPoint);
+        FitnessShootInDirection fitness = new FitnessShootInDirection(new Path(shootPoint), 0.2,0.2);
 
         double fitnessValue = fitness.calculateFitnessValue(ballLocation, ballVelocity, carLocation, carVelocity, timeSpent);
 
@@ -49,7 +50,7 @@ public class FitnessShootInDirectionTest {
         Vector3 shootPoint = new Vector3(500,20,0);
         int timeSpent = 4;
 
-        FitnessShootInDirection fitness = new FitnessShootInDirection(shootPoint);
+        FitnessShootInDirection fitness = new FitnessShootInDirection(new Path(shootPoint), 0.2,0.2);
 
         double fitnessValue = fitness.calculateFitnessValue(ballLocation, ballVelocity, carLocation, carVelocity, timeSpent);
 
@@ -66,7 +67,7 @@ public class FitnessShootInDirectionTest {
         Vector3 shootPoint1 = new Vector3(500,20,0);
         int timeSpent1 = 4;
 
-        FitnessShootInDirection fitness1 = new FitnessShootInDirection(shootPoint1);
+        FitnessShootInDirection fitness1 = new FitnessShootInDirection(new Path(shootPoint1), 0.2,0.2);
 
         double fitnessValue1 = fitness1.calculateFitnessValue(ballLocation1, ballVelocity1, carLocation1, carVelocity1, timeSpent1);
 
