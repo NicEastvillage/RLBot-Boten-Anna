@@ -8,21 +8,23 @@ import botenanna.game.simulation.AStar;
 import botenanna.physics.TimeLine;
 import botenanna.physics.TimeTracker;
 
+/** Intentions are nodes with no children. They use a fitness-function, the A*-algorithm, and simulation of the game to
+ * find a sequence of ActionSets that will fulfil the intention. They return FAILURE when the method
+ * {@link #shouldInterrupt(Situation)} returns true, and they return SUCCESS when the sequence is over. When there are
+ * steps left in the sequence, they will return RUNNING with the evaluated ActionSet. */
 public abstract class Intention extends Leaf {
 
     public static final double STEPSIZE = 0.1;
 
     private boolean isRunning = false;
     private FitnessInterface fitness;
-    private TimeTracker timeTracker;
     private TimeLine<ActionSet> sequence;
+    private TimeTracker timeTracker = new TimeTracker();
 
     public Intention(String[] arguments) throws IllegalArgumentException {
         super(arguments);
 
         if (arguments.length != 0) throw new IllegalArgumentException();
-
-        timeTracker = new TimeTracker();
     }
 
     @Override
