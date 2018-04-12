@@ -72,7 +72,17 @@ public class Vector3Test {
         assertEquals(0.18311081726248412793, angle, 1E-15);
     }
 
+    @Test
+    public void getAngleTo05(){
+        double angle = new Vector3(1,0,0).getAngleTo(new Vector3(-1,0,0));
+        assertEquals(Math.PI, angle, 1E-20);
+    }
 
+    @Test
+    public void getAngleTo06(){
+        double angle = new Vector3(1,0,0).getAngleTo(new Vector3(-1,1,0));
+        assertEquals(Math.PI * (double) 3/4, angle, 1E-20);
+    }
 
     @Test
     public void getProjectionOnto01(){
