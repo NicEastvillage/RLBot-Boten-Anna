@@ -70,11 +70,11 @@ public class Car extends Rigidbody {
         acceleration = 0.0388*getVelocity().asVector2().getMagnitude()+57.791;
     }
 
-    // Constructor for simulation
-    public Car(Car car, Vector3 position, Vector3 velocity, Vector3 angleVel, Vector3 rotation, Ball ball) {
+    // Constructor for new car based on an old instance of car
+    public Car(Car Oldcar, Ball ball) {
     //Team Indicators
-        team = car.team;
-        playerIndex = car.playerIndex;
+        team = Oldcar.team;
+        playerIndex = Oldcar.playerIndex;
         //RigidBody
         setPosition(position);
         setVelocity(velocity);
@@ -82,19 +82,19 @@ public class Car extends Rigidbody {
         setAffectedByGravity(true);
 
         //Is calculated as change in angle over time, set as default, but can be calculated as angle change after simulation
-        angularVelocity = angleVel;
+        angularVelocity = Oldcar.angularVelocity;
         acceleration = 0.0388*getVelocity().asVector2().getMagnitude()+57.791;
         upVector = RLMath.carUpVector(rotation);
         frontVector = RLMath.carFrontVector(rotation);
         sideVector = RLMath.carSideVector(rotation);
         //Opdater naar boost er en ting
-        boost = car.boost;
-        hasJumped = car.hasJumped;
-        hasDoubleJumped = car.hasDoubleJumped;
-        isDemolished = car.isDemolished;
-        isSupersonic = car.isSupersonic;
+        boost = Oldcar.boost;
+        hasJumped = Oldcar.hasJumped;
+        hasDoubleJumped = Oldcar.hasDoubleJumped;
+        isDemolished = Oldcar.isDemolished;
+        isSupersonic = Oldcar.isSupersonic;
         isCarOnGround = getPosition().z < 20;
-        isMidAir = car.isMidAir;
+        isMidAir = Oldcar.isMidAir;
         isCarUpsideDown = rotation.z < 0;
         distanceToBall = position.getDistanceTo(ball.getPosition());
         angleToBall = RLMath.carsAngleToPoint(position.asVector2(), rotation.yaw, ball.getPosition().asVector2());

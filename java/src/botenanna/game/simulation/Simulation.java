@@ -88,20 +88,25 @@ public class Simulation {
         Vector3 direction = RLMath.carFrontVector(simulatedCar.getRotation());
         double accelerationRate = (action.isBoostDepressed() && situation.myCar.getBoost()!=0) ? ACCELERATION_BOOST*step : simulatedCar.acceleration*step;
         double acceleration = accelerationRate*action.getThrottle();
+        Vector3 rotation = simulatedCar.getRotation();
+
 
         boosting = (action.isBoostDepressed() && simulatedCar.getBoost()!=0);
         maxVel = boosting ? MAX_VELOCITY : MAX_VELOCITY_BOOST;
 
-        // Car steer simulation also set car yaw //  TODO add steer speed as function of the velocity - As in how many degress the car turns per second given a certain speed
+        // Car steer simulation also set car yaw //  TODO add steer speed
         if (action.getSteer()!=0 && (action.getThrottle()!=0 || simulatedCar.getVelocity().getMagnitude()!=0 || simulatedCar.isMidAir)){
             //If the car can and is turning, change the direction of the car and the simulated cars rotation
             direction.asVector2().turn((action.getSteer()*TURN_RATE)*step);
-            simulatedCar.rotation.yaw += action.getSteer()*TURN_RATE*step;
+            rotation.yaw += (action.getSteer()*TURN_RATE*step);
         }
 
         // Car Pitch & Roll simulation SIMPLE VERSION  //TODO add roll and pitch speeds, roll acceleration? Better not worry as the car can correct itself
-        if (simulatedCar.isMidAir)simulatedCar.setRotation(simulateRaP(simulatedCar.getRotation(),  action,  step));
+        if (simulatedCar.isMidAir)rotation = simulateRaP(simulatedCar.getRotation(),  action,  step);
 
+
+        //Add simulated changes to rotation
+        simulatedCar.setRotation(rotation);
         // Car Velocity changes
         simulatedCar.setVelocity(simulateVel(simulatedCar.getVelocity(), acceleration, direction,direction, action, step));
 
@@ -127,7 +132,7 @@ public class Simulation {
                 simulatedCar.setBoost(inputCar.getBoost()+12);
             }
         }*/
-        return new Car(situation.myCar,simulatedCar.position,simulatedCar.velocity,simulatedCar.angularVelocity,simulatedCar.rotation,ball);
+        return new Car(simulatedCar,ball);
     }
 
     /** Simulates the car's rotation roll and pitch based on the actionSet given
