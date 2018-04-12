@@ -1,28 +1,37 @@
 package botenanna.math.zone;
 
-
-import botenanna.game.Situation;
 import botenanna.math.Vector3;
 
+public class Box {
+    private Vector3 boxCoordinates1;
+    private Vector3 boxCoordinates2;
+    private double Lowerpoint_x;
+    private double Lowerpoint_y;
+    private double Lowerpoint_z;
+    private double Maxpoint_x;
+    private double Maxpoint_y;
+    private double Maxpoint_z;
 
-public class Box{
+    public Box(Vector3 boxCoordinates1, Vector3 boxCoordinates2) {
+        this.boxCoordinates1 = boxCoordinates1;
+        this.boxCoordinates2 = boxCoordinates2;
 
-    private Vector3 FIRSTCORDINAT;
-    private Vector3 SEKUNDDINAT;
-    private Vector3 Position;
-
-    public Box(Vector3 Position, Vector3 FIRSTCORDINAT, Vector3 SEKUNDDINAT) {
-
-    this.FIRSTCORDINAT =FIRSTCORDINAT;
-    this.SEKUNDDINAT = SEKUNDDINAT;
-    this.Position = Position;
+      Lowerpoint_x=Math.min(boxCoordinates1.x, boxCoordinates2.x);
+      Lowerpoint_y=Math.min(boxCoordinates1.y, boxCoordinates2.y);
+      Lowerpoint_z=Math.min(boxCoordinates1.z, boxCoordinates2.z);
+      Maxpoint_x=Math.max(boxCoordinates1.x, boxCoordinates2.x);
+      Maxpoint_y=Math.max(boxCoordinates1.y, boxCoordinates2.y);
+      Maxpoint_z=Math.max(boxCoordinates1.z, boxCoordinates2.z);
 
     }
 
-    public boolean ballBox() {
+    public boolean isPointInBoxArea(Vector3 givenPoint) {
 
-        return (Position.x >= FIRSTCORDINAT.x && Position.x <= SEKUNDDINAT.x && Position.y >= FIRSTCORDINAT.y && Position.y <= SEKUNDDINAT.y && Position.z >= FIRSTCORDINAT.z && Position.z <= SEKUNDDINAT.z);
-
-
+        if (Lowerpoint_x < givenPoint.x && givenPoint.x < Maxpoint_x){
+            if (Lowerpoint_y < givenPoint.y && givenPoint.y < Maxpoint_y){
+                return Lowerpoint_z < givenPoint.z && givenPoint.z < Maxpoint_z;
+            }
+        }
+        return false;
     }
 }

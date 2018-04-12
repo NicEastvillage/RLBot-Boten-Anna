@@ -27,7 +27,7 @@ public class GuardIsBallNearWall extends Leaf {
     @Override
     public NodeStatus run(Situation situation) throws MissingNodeException {
 
-        Box isPointInBox = new Box(situation.ball.getPosition(), new Vector3(-720, 5200, 1000),new Vector3(720,4000,1000));
+        Box isPointInBox = new Box(situation.ball.getPosition(), new Vector3(-4080, -5080, 4060),new Vector3(4080,5080,0));
 
         if(isPointInBox.ballBox()){
 
