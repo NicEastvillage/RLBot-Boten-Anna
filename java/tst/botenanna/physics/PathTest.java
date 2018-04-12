@@ -29,4 +29,14 @@ public class PathTest {
 
         path.analyze();
     }*/
+
+    @Test
+    public void path03() {
+        Vector3 point = new Vector3(50, 50, 50);
+        Path path = new Path(point);
+
+        assertTrue(path.evaluate(0).equals(point));
+        assertTrue(path.evaluate(5).equals(point));
+        assertTrue(path.evaluate(100).equals(point));
+    }
 }

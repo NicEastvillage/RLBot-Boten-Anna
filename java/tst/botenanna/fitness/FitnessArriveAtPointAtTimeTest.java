@@ -1,6 +1,7 @@
 package botenanna.fitness;
 
 import botenanna.math.Vector3;
+import botenanna.physics.Path;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -13,7 +14,7 @@ public class FitnessArriveAtPointAtTimeTest {
         Vector3 point = new Vector3(1000,1000,0);
         int arrivalTime = 10;
 
-        FitnessArriveAtPointAtTime fitness = new FitnessArriveAtPointAtTime(point, arrivalTime, 0.2,0.2);
+        FitnessArriveAtPointAtTime fitness = new FitnessArriveAtPointAtTime(new Path(point), arrivalTime, 0.2,0.2);
 
         Vector3 myVelocity = new Vector3(10,0,0);
         Vector3 myPosition = new Vector3(0,0,0);
