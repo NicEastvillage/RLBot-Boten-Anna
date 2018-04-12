@@ -24,15 +24,10 @@ public class Simulation {
         if (step>0){
             throw new IllegalArgumentException("Step size must be more than zero. Current Step size is: "+step);
         }
-        System.out.println("Simulating");
         Ball simulatedBall = simulateBall(situation.ball, step);
-        System.out.println("Simulating Ball");
-        Car simulatedMyCar = simulateCarActions(situation, action,  simulatedBall, step);
-        System.out.println("Simulating My Car");
+        Car simulatedMyCar = simulateCarActions(situation.myCar, action,  simulatedBall, step);
         Car simulatedEnemyCar = steppedCar(situation.enemyCar,  step);
-        System.out.println("Simulating enemy Car");
         Boostpads simulatedBoostpads = simulateBoostpads(situation, simulatedEnemyCar, simulatedMyCar, step);
-        System.out.println("Simulating Boost pads");
 
         return new Situation(simulatedMyCar, simulatedEnemyCar, simulatedBall , simulatedBoostpads);
     }
@@ -78,18 +73,16 @@ public class Simulation {
     }
 
     /** Simulates a car with actions **
-     * @param situation The current situation in game
      * @param action the current actions from the Agent
      * @return a Car simulated forward in  the new situation     */
-    private static Car simulateCarActions(Situation situation, ActionSet action, Ball ball, double step){
+    private static Car simulateCarActions(Car inputCar , ActionSet action, Ball ball, double step){
 
         //Cars and starting direction
-        Car simulatedCar = situation.myCar;
+        Car simulatedCar = inputCar;
         Vector3 direction = RLMath.carFrontVector(simulatedCar.getRotation());
-        double accelerationRate = (action.isBoostDepressed() && situation.myCar.getBoost()!=0) ? ACCELERATION_BOOST*step : simulatedCar.acceleration*step;
+        double accelerationRate = (action.isBoostDepressed() && inputCar.getBoost()!=0) ? ACCELERATION_BOOST*step : simulatedCar.acceleration*step;
         double acceleration = accelerationRate*action.getThrottle();
         Vector3 rotation = simulatedCar.getRotation();
-
 
         boosting = (action.isBoostDepressed() && simulatedCar.getBoost()!=0);
         maxVel = boosting ? MAX_VELOCITY : MAX_VELOCITY_BOOST;
@@ -104,16 +97,16 @@ public class Simulation {
         // Car Pitch & Roll simulation SIMPLE VERSION  //TODO add roll and pitch speeds, roll acceleration? Better not worry as the car can correct itself
         if (simulatedCar.isMidAir)rotation = simulateRaP(simulatedCar.getRotation(),  action,  step);
 
+        // Car Velocity changes
+        simulatedCar.setVelocity(simulateVel(simulatedCar.getVelocity(), acceleration, direction,direction, action, step));
 
         //Add simulated changes to rotation
         simulatedCar.setRotation(rotation);
-        // Car Velocity changes
-        simulatedCar.setVelocity(simulateVel(simulatedCar.getVelocity(), acceleration, direction,direction, action, step));
 
         //After having changed the car according to its input, step it once.
         simulatedCar = steppedCar(simulatedCar, step);
 
-        /* TODO Add when boost is used, for now it serves little purpose to give the simulation more boost
+        /* TODO Uncomment when boost is used, for now it serves little purpose to give the simulation more boost
         //Checks if the car has gained boost during the simulation
         Boolean bigBoost = false;
         Boostpads boost = simulateBoostpads(situation, situation.enemyCar ,situation.myCar, step);
