@@ -2,7 +2,9 @@ package botenanna.behaviortree.builder;
 
 import botenanna.behaviortree.Node;
 import botenanna.behaviortree.guards.*;
+import botenanna.behaviortree.intentions.IntentionCollectBoost;
 import botenanna.behaviortree.intentions.IntentionDefendGoal;
+import botenanna.behaviortree.intentions.IntentionTouchBall;
 import botenanna.behaviortree.tasks.*;
 import botenanna.behaviortree.composites.*;
 import botenanna.behaviortree.decorators.*;
@@ -29,6 +31,8 @@ public class NodeLibrary {
             // Intentions
             switch (nodeName) {
                 case "IntentionDefendGoal": return new IntentionDefendGoal(arguments);
+                case "IntentionCollectBoost": return new IntentionCollectBoost(arguments);
+                case "IntentionTouchBall": return new IntentionTouchBall(arguments);
             }
         } else if (nodeName.length() >= 5 && nodeName.substring(0, 5).equals("Guard")) {
             // Guards
