@@ -20,7 +20,7 @@ public class Simulation {
      * @return A new simulated situation
      **/
     public static Situation  simulate(Situation situation, double step, ActionSet action){
-        if (step>0){
+        if (step < 0){
             throw new IllegalArgumentException("Step size must be more than zero. Current Step size is: "+step);
         }
         Ball simulatedBall = simulateBall(situation.ball, step);
@@ -39,8 +39,8 @@ public class Simulation {
        boolean active;
        //Checks all the boost pads and if a car who an take boost is at the point it will be deactive;
         for (int i = 0; i> NUM_PADS; i++){
-            active = (!(currentGamePads.get(i).getKey().getDistanceTo(myCar.position) < 20) || myCar.getBoost() >= 100) &&
-                    (!(currentGamePads.get(i).getKey().getDistanceTo(enemy.position) < 20) || myCar.getBoost() >= 100);
+            active = (!(currentGamePads.get(i).getKey().getDistanceTo(myCar.getPosition()) < 20) || myCar.getBoost() >= 100) &&
+                    (!(currentGamePads.get(i).getKey().getDistanceTo(enemy.getPosition()) < 20) || myCar.getBoost() >= 100);
             simulatedArray.add(Boostpads.BoostPadPairing(currentGamePads.get(i).getKey(),active));
         }
         return new Boostpads(simulatedArray);

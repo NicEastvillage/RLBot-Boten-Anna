@@ -37,8 +37,7 @@ public class FitnessDriveOverPointWithAngle implements FitnessInterface {
      *  @return a fitness value for the given situation. */
     @Override
     public double calculateFitness(Situation situation, double timeSpent){
-
-        return calculateFitnessValue(situation.myCar.position, situation.myCar.frontVector, timeSpent, situation.myCar.velocity);
+        return calculateFitnessValue(situation.myCar.getPosition(), situation.myCar.frontVector, timeSpent, situation.myCar.getVelocity());
     }
 
     /**	Takes the needed information and calculates the fitness value.
@@ -75,8 +74,8 @@ public class FitnessDriveOverPointWithAngle implements FitnessInterface {
     public boolean isDeviationFulfilled(Situation situation, double timeSpent) {
 
         //Calculate function variables
-        double distToPoint = situation.myCar.position.getDistanceTo(destinationPoint.evaluate(timeSpent)); // Distance
-        double angToPoint = situation.myCar.position.getAngleTo(destinationPoint.evaluate(timeSpent)); // Angle
+        double distToPoint = situation.myCar.getPosition().getDistanceTo(destinationPoint.evaluate(timeSpent)); // Distance
+        double angToPoint = situation.myCar.getPosition().getAngleTo(destinationPoint.evaluate(timeSpent)); // Angle
 
         if(distToPoint <= distDeviation){
             if(angToPoint <= angleDeviation)

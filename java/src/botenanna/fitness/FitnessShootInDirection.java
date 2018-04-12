@@ -31,7 +31,7 @@ public class FitnessShootInDirection implements FitnessInterface {
      *  @return a fitness value for the given situation. */
     @Override
     public double calculateFitness(Situation situation, double timeSpent) {
-        return calculateFitnessValue(situation.ball.getPosition(), situation.ball.getVelocity(), situation.myCar.position, situation.myCar.velocity, timeSpent);
+        return calculateFitnessValue(situation.ball.getPosition(), situation.ball.getVelocity(), situation.myCar.getPosition(), situation.myCar.getVelocity(), timeSpent);
     }
 
     /**	Takes the needed information and calculates the fitness value.
@@ -66,10 +66,10 @@ public class FitnessShootInDirection implements FitnessInterface {
     public boolean isDeviationFulfilled(Situation situation, double timeSpent) {
 
         //Calculate function variables
-        double distToBall = situation.myCar.position.getDistanceTo(shootTowardsPoint.evaluate(timeSpent)); // Distance
+        double distToBall = situation.myCar.getPosition().getDistanceTo(shootTowardsPoint.evaluate(timeSpent)); // Distance
 
-        Vector3 desiredShotDirection = shootTowardsPoint.evaluate(timeSpent).minus(situation.myCar.position); //From car to desiredPoint
-        Vector3 currentShotDirection = situation.ball.getVelocity().plus(situation.myCar.velocity);
+        Vector3 desiredShotDirection = shootTowardsPoint.evaluate(timeSpent).minus(situation.myCar.getPosition()); //From car to desiredPoint
+        Vector3 currentShotDirection = situation.ball.getVelocity().plus(situation.myCar.getVelocity());
         double angleDifference = desiredShotDirection.getAngleTo(currentShotDirection);
 
         if(distToBall <= distDeviation){

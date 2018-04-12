@@ -118,8 +118,8 @@ public class Situation {
             Vector3 boostLocation = Vector3.convert(boost.getLocation());
 
             if (boost.getIsActive()){
-                double angleToBoost = RLMath.carsAngleToPoint(new Vector2(myCar.position), myCar.position.yaw, boostLocation.asVector2());
-                double distance = myCar.position.getDistanceTo(boostLocation);
+                double angleToBoost = RLMath.carsAngleToPoint(new Vector2(myCar.getPosition()), myCar.getPosition().yaw, boostLocation.asVector2());
+                double distance = myCar.getPosition().getDistanceTo(boostLocation);
                 double distFunc = ((ARENA_LENGTH - distance) / ARENA_LENGTH); // Map width
                 double newBoostUtility = (Math.cos(angleToBoost) * distFunc); // Utility formula
 
@@ -190,11 +190,11 @@ public class Situation {
             expectedBall = ball.getVelocity().plus(ball.getVelocity().scale(predict));
 
             // If the car is not really driving, it should overextend its prediction to the future.
-            if (myCar.velocity.getMagnitude() < 800) {
+            if (myCar.getVelocity().getMagnitude() < 800) {
                 velocity = 800;
-            } else velocity = myCar.velocity.getMagnitude();
+            } else velocity = myCar.getVelocity().getMagnitude();
 
-            if (-25 < expectedBall.minus(myCar.position.plus(myCar.frontVector.scale(70))).getMagnitude() - velocity * predict && expectedBall.minus(myCar.position.plus(myCar.frontVector.scale(70))).getMagnitude() - velocity * predict < 25) {
+            if (-25 < expectedBall.minus(myCar.getPosition().plus(myCar.frontVector.scale(70))).getMagnitude() - velocity * predict && expectedBall.minus(myCar.getPosition().plus(myCar.frontVector.scale(70))).getMagnitude() - velocity * predict < 25) {
                 predictSeconds = predict;
             }
 

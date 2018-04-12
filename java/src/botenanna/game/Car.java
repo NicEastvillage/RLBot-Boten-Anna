@@ -18,9 +18,6 @@ public class Car extends Rigidbody {
     public double acceleration;
     public final int playerIndex;
     public final int team;
-    public Vector3 position;
-    public  Vector3 velocity;
-    public  Vector3 rotation;
     public final Vector3 angularVelocity;
     public final Vector3 upVector;
     public final Vector3 frontVector;
@@ -71,32 +68,32 @@ public class Car extends Rigidbody {
     }
 
     // Constructor for new car based on an old instance of car
-    public Car(Car Oldcar, Ball ball) {
+    public Car(Car oldCar, Ball ball) {
     //Team Indicators
-        team = Oldcar.team;
-        playerIndex = Oldcar.playerIndex;
+        team = oldCar.team;
+        playerIndex = oldCar.playerIndex;
         //RigidBody
-        setPosition(position);
-        setVelocity(velocity);
-        setRotation(rotation);
+        setPosition(oldCar.getPosition());
+        setVelocity(oldCar.getVelocity());
+        setRotation(oldCar.getRotation());
 
         //Is calculated as change in angle over time, set as default, but can be calculated as angle change after simulation
-        angularVelocity = Oldcar.angularVelocity;
+        angularVelocity = oldCar.angularVelocity;
         acceleration = 0.0388*getVelocity().asVector2().getMagnitude()+57.791;
-        upVector = RLMath.carUpVector(rotation);
-        frontVector = RLMath.carFrontVector(rotation);
-        sideVector = RLMath.carSideVector(rotation);
+        upVector = RLMath.carUpVector(getRotation());
+        frontVector = RLMath.carFrontVector(getRotation());
+        sideVector = RLMath.carSideVector(getRotation());
         //Opdater naar boost er en ting
-        boost = Oldcar.boost;
-        hasJumped = Oldcar.hasJumped;
-        hasDoubleJumped = Oldcar.hasDoubleJumped;
-        isDemolished = Oldcar.isDemolished;
-        isSupersonic = Oldcar.isSupersonic;
+        boost = oldCar.boost;
+        hasJumped = oldCar.hasJumped;
+        hasDoubleJumped = oldCar.hasDoubleJumped;
+        isDemolished = oldCar.isDemolished;
+        isSupersonic = oldCar.isSupersonic;
         isCarOnGround = getPosition().z < 20;
-        isMidAir = Oldcar.isMidAir;
-        isCarUpsideDown = rotation.z < 0;
-        distanceToBall = position.getDistanceTo(ball.getPosition());
-        angleToBall = RLMath.carsAngleToPoint(position.asVector2(), rotation.yaw, ball.getPosition().asVector2());
+        isMidAir = oldCar.isMidAir;
+        isCarUpsideDown = getRotation().z < 0;
+        distanceToBall = getPosition().getDistanceTo(ball.getPosition());
+        angleToBall = RLMath.carsAngleToPoint(getPosition().asVector2(), getRotation().yaw, ball.getPosition().asVector2());
         //TODO NEEDS TWEAKING
         isOnWall = getPosition().y==Situation.ARENA_LENGTH || getPosition().x == Situation.ARENA_WIDTH || getPosition().x == -Situation.ARENA_WIDTH || getPosition().y == -Situation.ARENA_LENGTH;
         acceleration = 0.0388*getVelocity().asVector2().getMagnitude()+57.791;

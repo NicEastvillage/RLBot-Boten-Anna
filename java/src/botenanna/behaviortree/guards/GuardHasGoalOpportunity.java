@@ -33,8 +33,8 @@ public class GuardHasGoalOpportunity extends Leaf {
     @Override
     public NodeStatus run(Situation input) throws MissingNodeException {
 
-        Vector2 myPosition = input.myCar.position.asVector2();
-        Vector3 myRotation = input.myCar.rotation;
+        Vector2 myPosition = input.myCar.getPosition().asVector2();
+        Vector3 myRotation = input.myCar.getRotation();
         double angToBall = input.myCar.angleToBall;
 
         if(input.myCar.team == 1) {

@@ -12,12 +12,12 @@ public class ArgumentTranslator {
             case "my_index": return (Situation a) -> a.myPlayerIndex;          // index (int)
             case "enemy_index": return (Situation a) -> a.enemyPlayerIndex;    // index (int)
 
-            case "my_pos": return (Situation a) -> a.myCar.position;               // Vector3
-            case "my_vel": return (Situation a) -> a.myCar.velocity;               // Vector3
-            case "my_rot": return (Situation a) -> a.myCar.rotation;               // Vector3
-            case "enemy_pos": return (Situation a) -> a.enemyCar.position;         // Vector3
-            case "enemy_vel": return (Situation a) -> a.enemyCar.velocity;         // Vector3
-            case "enemy_rot": return (Situation a) -> a.enemyCar.rotation;         // Vector3
+            case "my_pos": return (Situation a) -> a.myCar.getPosition();               // Vector3
+            case "my_vel": return (Situation a) -> a.myCar.getVelocity();               // Vector3
+            case "my_rot": return (Situation a) -> a.myCar.getRotation();               // Vector3
+            case "enemy_pos": return (Situation a) -> a.enemyCar.getPosition();         // Vector3
+            case "enemy_vel": return (Situation a) -> a.enemyCar.getVelocity();         // Vector3
+            case "enemy_rot": return (Situation a) -> a.enemyCar.getRotation();         // Vector3
 
             case "ball_pos": return (Situation a) -> a.ball.getPosition();          // Vector3
             case "ball_vel": return (Situation a) -> a.ball.getVelocity();          // Vector3

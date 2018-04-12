@@ -30,7 +30,7 @@ public class AStar {
      * The method uses a modified version of A*. */
     public static SteppedTimeLine<ActionSet> findSequence(Situation startSituation, FitnessInterface fitness, double stepsize) {
 
-        TimeNode startNode = new TimeNode(startSituation, null, null, 0);
+        TimeNode startNode = new TimeNode(startSituation, new ActionSet(), null, 0);
 
         TreeSet<TimeNode> openSet = new TreeSet<>((n1, n2) -> {
             double fit = fitness.calculateFitness(n1.situation, n1.timeSpent) - fitness.calculateFitness(n2.situation, n2.timeSpent);
@@ -51,6 +51,7 @@ public class AStar {
             }
 
             openSet.remove(current);
+            System.out.println(fitness.calculateFitness(current.situation, current.timeSpent));
 
             // Try all sensible actions and simulate what situations they create
             List<ActionSet> followingActions = getFollowingActionSets(current.situation, current.actionTaken);
@@ -105,11 +106,11 @@ public class AStar {
         List<ActionSet> following = new LinkedList<>();
         following.add(current);
 
-        double[] newThrottles = getFollowingDirections(current.getThrottle());
-        double[] newSteerings = getFollowingDirections(current.getSteer());
+        double[] newThrottles = getFollowingDirections(current == null ? 0 : current.getThrottle());
+        double[] newSteerings = getFollowingDirections(current == null ? 0 : current.getSteer());
         // pitch and roll is 0, if car is grounded
-        double[] newPitches = situation.myCar.isMidAir ? getFollowingDirections(current.getPitch()) : new double[]{0};
-        double[] newRolls = situation.myCar.isMidAir ? getFollowingDirections(current.getRoll()) : new double[]{0};
+        double[] newPitches = situation.myCar.isMidAir ? getFollowingDirections(current == null ? 0 : current.getPitch()) : new double[]{0};
+        double[] newRolls = situation.myCar.isMidAir ? getFollowingDirections(current == null ? 0 : current.getRoll()) : new double[]{0};
         // jump is false, if jumping has no effect // FIXME With current implementation, second jump will always be one step long
         boolean[] newJumps = !situation.myCar.hasDoubleJumped ? new boolean[]{true, false} : new boolean[]{false};
         // boost is false, if car has no boost
@@ -118,6 +119,7 @@ public class AStar {
 
         for (double throttle : newThrottles) {
             for (double steer : newSteerings) {
+                /* // TODO: Add Actions as they can be simulated
                 for (double pitch : newPitches) {
                     for (double roll : newRolls) {
                         for (boolean jump : newJumps) {
@@ -128,20 +130,20 @@ public class AStar {
                                 for (boolean slide : newSlides) {
                                     // slide is false, when boost is true, or when steer == 0
                                     if (slide && (boost || steer == 0)) continue;
-
+*/
                                     following.add(new ActionSet()
                                             .withThrottle(throttle)
-                                            .withSteer(steer)
+                                            .withSteer(steer)); /*
                                             .withPitch(pitch)
                                             .withRoll(roll)
                                             .withJump(jump)
                                             .withBoost(boost)
-                                            .withSlide(slide));
-                                }
+                                            .withSlide(slide));*/
+                                /*}
                             }
                         }
                     }
-                }
+                }*/
             }
         }
 
