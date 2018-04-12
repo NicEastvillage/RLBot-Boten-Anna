@@ -20,11 +20,11 @@ public class Vector3 {
 
     // Vector3 are also used to represent rotations, but these variables are the same as x, y, z
     /** Angle of counterclockwise rotation around the x-axis */
-    public final double pitch;
+    public double pitch;
     /** Angle of counterclockwise rotation around the y-axis */
-    public final double roll;
+    public double roll;
     /** Angle of counterclockwise rotation around the z-axis */
-    public final double yaw;
+    public double yaw;
 
 
     public Vector3() {

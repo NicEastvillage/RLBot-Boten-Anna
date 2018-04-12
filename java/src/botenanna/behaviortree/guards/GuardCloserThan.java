@@ -1,6 +1,6 @@
 package botenanna.behaviortree.guards;
 
-import botenanna.AgentInput;
+import botenanna.game.Situation;
 import botenanna.ArgumentTranslator;
 import botenanna.behaviortree.Leaf;
 import botenanna.behaviortree.MissingNodeException;
@@ -11,9 +11,9 @@ import java.util.function.Function;
 
 
 public class GuardCloserThan extends Leaf {
-private Function<AgentInput, Object> to;
-private Function<AgentInput, Object> fromA;
-private Function<AgentInput, Object> fromB;
+private Function<Situation, Object> to;
+private Function<Situation, Object> fromA;
+private Function<Situation, Object> fromB;
 
     /** The GuardCloserThan compares 3 Vector3 and returns whether the distance between those are less than
      * a given distance. Can be inverted to check if distance is greater than instead.
@@ -28,8 +28,8 @@ private Function<AgentInput, Object> fromB;
         }
 
         to = ArgumentTranslator.get(arguments[0]);
-        fromA = ArgumentTranslator.get(arguments[2]);
-        fromB = ArgumentTranslator.get(arguments[1]);
+        fromA = ArgumentTranslator.get(arguments[1]);
+        fromB = ArgumentTranslator.get(arguments[2]);
     }
     @Override
     public void reset() {
@@ -37,7 +37,7 @@ private Function<AgentInput, Object> fromB;
     }
 
     @Override
-    public NodeStatus run(AgentInput input) throws MissingNodeException {
+    public NodeStatus run(Situation input) throws MissingNodeException {
         Vector3 A = (Vector3) fromA.apply(input);
         Vector3 B = (Vector3) fromB.apply(input);
         Vector3 C = (Vector3) to.apply(input);

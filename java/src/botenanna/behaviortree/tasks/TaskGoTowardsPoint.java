@@ -1,7 +1,7 @@
 package botenanna.behaviortree.tasks;
 
-import botenanna.AgentInput;
-import botenanna.AgentOutput;
+import botenanna.game.ActionSet;
+import botenanna.game.Situation;
 import botenanna.ArgumentTranslator;
 import botenanna.behaviortree.*;
 import botenanna.math.RLMath;
@@ -13,7 +13,7 @@ public class TaskGoTowardsPoint extends Leaf {
 
     public static final double SLIDE_ANGLE = 1.7;
 
-    private Function<AgentInput, Object> pointFunc;
+    private Function<Situation, Object> pointFunc;
     private boolean allowSlide = true;
     private boolean useBoost = false;
 
@@ -49,7 +49,7 @@ public class TaskGoTowardsPoint extends Leaf {
     }
 
     @Override
-    public NodeStatus run(AgentInput input) throws MissingNodeException {
+    public NodeStatus run(Situation input) throws MissingNodeException {
 
         // Get the needed positions and rotations
         Vector3 myPos = input.myCar.position;
@@ -61,12 +61,12 @@ public class TaskGoTowardsPoint extends Leaf {
         // Smooth the angle to a steering amount - this avoids wobbling
         double steering = RLMath.steeringSmooth(ang);
 
-        AgentOutput output;
+        ActionSet output;
 
         if(useBoost)
-            output = new AgentOutput().withAcceleration(1).withSteer(steering).withBoost();
+            output = new ActionSet().withThrottle(1).withSteer(steering).withBoost();
         else
-            output = new AgentOutput().withAcceleration(1).withSteer(steering);
+            output = new ActionSet().withThrottle(1).withSteer(steering);
 
         if (allowSlide) {
             // Do slide for sharp turning

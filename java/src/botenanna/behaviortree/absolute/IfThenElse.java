@@ -1,6 +1,6 @@
 package botenanna.behaviortree.absolute;
 
-import botenanna.AgentInput;
+import botenanna.game.Situation;
 import botenanna.behaviortree.MissingNodeException;
 import botenanna.behaviortree.NodeStatus;
 import botenanna.behaviortree.Status;
@@ -31,7 +31,7 @@ public class IfThenElse extends Absolute {
     }
 
     @Override
-    public NodeStatus run(AgentInput input) throws MissingNodeException {
+    public NodeStatus run(Situation input) throws MissingNodeException {
 
         // Run condition-branch
         NodeStatus condition = child(IF).run(input);

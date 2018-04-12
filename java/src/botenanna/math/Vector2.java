@@ -4,6 +4,9 @@ package botenanna.math;
 import java.util.Objects;
 import java.util.Vector;
 
+import static java.lang.Math.cos;
+import static java.lang.Math.sin;
+
 /** A vector with two components: x and y */
 public class Vector2 {
 
@@ -101,6 +104,12 @@ public class Vector2 {
         Vector2 that = (Vector2) other;
 
         return this.minus(that).isZero();
+    }
+
+    /** Turns a vector radians
+     * @return a turned vector2 */
+    public Vector2 turn(double inputRadians){
+        return  new Vector2(x*cos(inputRadians)-y*sin(inputRadians),x*sin(inputRadians)+y*cos(inputRadians));
     }
 
     /** Generate a hash for this vector. */

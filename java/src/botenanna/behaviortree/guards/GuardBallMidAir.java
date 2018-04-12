@@ -1,6 +1,6 @@
 package botenanna.behaviortree.guards;
 
-import botenanna.AgentInput;
+import botenanna.game.Situation;
 import botenanna.behaviortree.Leaf;
 import botenanna.behaviortree.MissingNodeException;
 import botenanna.behaviortree.NodeStatus;
@@ -24,7 +24,7 @@ public class GuardBallMidAir extends Leaf{
     }
 
     @Override
-    public NodeStatus run(AgentInput input) throws MissingNodeException {
+    public NodeStatus run(Situation input) throws MissingNodeException {
 
         if(input.ball.getPosition().z > 200){
             return NodeStatus.DEFAULT_SUCCESS;

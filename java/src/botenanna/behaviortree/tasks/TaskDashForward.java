@@ -1,7 +1,7 @@
 package botenanna.behaviortree.tasks;
 
-import botenanna.AgentInput;
-import botenanna.AgentOutput;
+import botenanna.game.ActionSet;
+import botenanna.game.Situation;
 import botenanna.behaviortree.Leaf;
 import botenanna.behaviortree.MissingNodeException;
 import botenanna.behaviortree.NodeStatus;
@@ -11,7 +11,7 @@ import botenanna.physics.SteppedTimeLine;
 
 public class TaskDashForward extends Leaf {
 
-    private SteppedTimeLine<NodeStatus> steppedTimeLine;
+    private SteppedTimeLine<NodeStatus> timeLine;
     private boolean currentlyActive;
 
     /** <p>The TaskDashForward makes the car dash forward.</p>
@@ -27,37 +27,37 @@ public class TaskDashForward extends Leaf {
         currentlyActive = false;
 
         //Creating timeline object
-        steppedTimeLine = new SteppedTimeLine<>();
+        timeLine = new SteppedTimeLine<>();
 
         //Setting time stamps
-        steppedTimeLine.addTimeStep(0, new NodeStatus(Status.RUNNING, new AgentOutput().withJump().withPitch(-1).withAcceleration(1), this, true));
-        steppedTimeLine.addTimeStep(0.15, new NodeStatus(Status.RUNNING, new AgentOutput().withJump(false).withAcceleration(1), this, true));
-        steppedTimeLine.addTimeStep(0.20, new NodeStatus(Status.RUNNING, new AgentOutput().withJump().withPitch(-1).withAcceleration(1), this, true));
-        steppedTimeLine.addTimeStep(0.30, new NodeStatus(Status.RUNNING, new AgentOutput().withJump(false).withAcceleration(1), this, true));
-        steppedTimeLine.addTimeStep(1, new NodeStatus(Status.RUNNING, new AgentOutput().withJump(false).withAcceleration(1), this, false));
-        steppedTimeLine.addTimeStep(1.35, null);
+        timeLine.addTimeStep(0, new NodeStatus(Status.RUNNING, new ActionSet().withJump().withPitch(-1).withThrottle(1), this, true));
+        timeLine.addTimeStep(0.15, new NodeStatus(Status.RUNNING, new ActionSet().withJump(false).withThrottle(1), this, true));
+        timeLine.addTimeStep(0.20, new NodeStatus(Status.RUNNING, new ActionSet().withJump().withPitch(-1).withThrottle(1), this, true));
+        timeLine.addTimeStep(0.30, new NodeStatus(Status.RUNNING, new ActionSet().withJump(false).withThrottle(1), this, true));
+        timeLine.addTimeStep(1, new NodeStatus(Status.RUNNING, new ActionSet().withJump(false).withThrottle(1), this, false));
+        timeLine.addTimeStep(1.35, null);
     }
 
     @Override
     public void reset() {
         this.currentlyActive = false;
-        steppedTimeLine.reset();
+        timeLine.reset();
     }
 
     @Override
-    public NodeStatus run(AgentInput input) throws MissingNodeException {
+    public NodeStatus run(Situation input) throws MissingNodeException {
 
         if(currentlyActive == false){
-            steppedTimeLine.reset();
+            timeLine.reset();
             currentlyActive = true;
-            return new NodeStatus(Status.RUNNING, new AgentOutput().withJump(false).withAcceleration(1), this, true);
+            return new NodeStatus(Status.RUNNING, new ActionSet().withJump(false).withThrottle(1), this, true);
         }
 
-        if (steppedTimeLine.evaluate() == null){
+        if (timeLine.evaluate() == null){
             currentlyActive = false;
-            return new NodeStatus(Status.RUNNING, new AgentOutput().withJump(false).withAcceleration(1), this, true);
+            return new NodeStatus(Status.RUNNING, new ActionSet().withJump(false).withThrottle(1), this, true);
         }
 
-        return steppedTimeLine.evaluate();
+        return timeLine.evaluate();
     }
 }

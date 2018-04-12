@@ -1,5 +1,6 @@
-package botenanna;
+package botenanna.game;
 
+import botenanna.Ball;
 import botenanna.math.RLMath;
 import botenanna.math.Vector2;
 import botenanna.math.Vector3;
@@ -10,7 +11,7 @@ import rlbot.api.GameData;
 
 /** This manages the input (packet).
  *  It handles calculations and other measures. */
-public class AgentInput {
+public class Situation {
 
     public static final double ARENA_LENGTH = 10280;
     public static final double ARENA_WIDTH = 8240;
@@ -21,8 +22,8 @@ public class AgentInput {
     public static final Vector2 RED_GOALPOST_LEFT = new Vector2(-720, 5200);
     public static final Vector2 RED_GOALPOST_RIGHT = new Vector2(720, 5200);
     public static final Vector3[] BIG_BOOST_PADS = {new Vector3(-3070, 4100), new Vector3(3070,-4100), new Vector3(-3070,-4100),new Vector3(-3580,0), new Vector3(3580,0), new Vector3(3070, 4100)};
-    private double WALL_X = 10280/2, WALL_Y=8240/2;
 
+    private double WALL_X = ARENA_WIDTH/2, WALL_Y = ARENA_LENGTH/2;
 
     private GameData.GameTickPacket packet;
     private TimeTracker timeTracker;
@@ -44,13 +45,15 @@ public class AgentInput {
     public final boolean gameIsOvertime;
     public final boolean gameIsRoundActive;
     public final int gamePlayerCount;
+    public Boostpads gameBoostPads;
 
     /** The constructor.
      * @param packet the GameTickPacket.
      * @param timeTracker the class that tracks and handles time. */
-    public AgentInput(GameData.GameTickPacket packet, TimeTracker timeTracker){
+    public Situation(GameData.GameTickPacket packet, TimeTracker timeTracker){
         this.packet = packet;
         this.timeTracker = timeTracker;
+        gameBoostPads = new Boostpads(packet);
 
         /* CARS */
         myPlayerIndex = packet.getPlayerIndex();
@@ -76,6 +79,32 @@ public class AgentInput {
         this.gameIsOvertime = packet.getGameInfo().getIsOvertime();
         this.gameIsRoundActive = packet.getGameInfo().getIsRoundActive();
         this.gamePlayerCount = packet.getPlayersCount();
+    }
+    // Constructor  for simulation
+    public Situation(Car car, Car enemyCar, Ball ball, Boostpads pads) {
+        this.myPlayerIndex = car.playerIndex;
+        this.enemyPlayerIndex = enemyCar.playerIndex;
+        this.myCar = car;
+        this.enemyCar = enemyCar;
+        this.ball = ball;
+        this.gameBoostPads = pads;
+
+
+        // Udregn
+        double landingTime = ball.predictArrivalAtHeight(Ball.RADIUS);
+        if (Double.isNaN(landingTime)) {
+            this.ballLandingTime = 0;
+            this.ballLandingPosition = ball.getPosition();
+        } else {
+            this.ballLandingTime = landingTime;
+            this.ballLandingPosition = ball.stepped(ballLandingTime).getPosition();
+        }
+        // TODO Hardcode Specific situations in simulation
+        this.gameIsKickOffPause = false;
+        this.gameIsMatchEnded = false;
+        this.gameIsOvertime = false;
+        this.gameIsRoundActive = true;
+        this.gamePlayerCount = 2;
     }
 
     public Vector3 getBestBoostPad(){
@@ -124,7 +153,7 @@ public class AgentInput {
         return playerIndex == 0 ? -1 : 1;
     }
 
-    public Vector3 getGoalBox(int playerIndex) {
+    public static Vector3 getGoalBox(int playerIndex) {
         return playerIndex == 0 ? BLUE_GOAL_BOX : ORANGE_GOAL_BOX;
     }
 
@@ -184,70 +213,12 @@ public class AgentInput {
     }
 
     /**checks if the ball is within the field*/
-
-    public boolean BallIsWithinField(Vector2 point) {
-
+    public boolean IsBallWithinField(Vector2 point) {
         return (point.x >= WALL_X-Ball.RADIUS*3 && point.x <= -WALL_X+Ball.RADIUS*3 && point.y >= WALL_Y-Ball.RADIUS*3 && point.y <= -WALL_Y+Ball.RADIUS*3);
-
     }
 
-    /**Cheks if the agent is on the wall*/
-
-    public boolean AgentIsWithinField(Vector2 point) {
+    /**Checks if the agent is on the wall*/
+    public boolean IsAgentWithinField(Vector2 point) {
         return (point.x >= WALL_X-30&& point.x <= -WALL_X+30 && point.y >= WALL_Y-30 && point.y <= -WALL_Y+30);
-    }
-
-
-
-
-    public class Car {
-        public final int playerIndex;
-        public final int team;
-        public final Vector3 position;
-        public final Vector3 velocity;
-        public final Vector3 rotation;
-        public final Vector3 angularVelocity;
-        public final Vector3 upVector;
-        public final Vector3 frontVector;
-        public final Vector3 sideVector;
-        public final int boost;
-        public final boolean hasJumped;
-        public final boolean hasDoubleJumped;
-        public final boolean isDemolished;
-        public final boolean isSupersonic;
-        public final boolean isCarOnGround;
-        public final boolean isMidAir;
-        public final boolean isCarUpsideDown;
-        public final double distanceToBall;
-        public final double angleToBall;
-        public final double carLength;
-        public final double carHeight;
-        public final double carWidth;
-
-        public Car(int index, GameData.GameTickPacket packet) {
-            playerIndex = index;
-            GameData.PlayerInfo info = packet.getPlayers(index);
-            team = info.getTeam();
-            position = Vector3.convert(packet.getPlayers(myPlayerIndex).getLocation());
-            velocity = Vector3.convert(packet.getPlayers(myPlayerIndex).getVelocity());
-            rotation = Vector3.convert(packet.getPlayers(myPlayerIndex).getRotation());
-            angularVelocity = Vector3.convert(packet.getPlayers(myPlayerIndex).getAngularVelocity());
-            upVector = RLMath.carUpVector(Vector3.convert(packet.getPlayers(myPlayerIndex).getRotation()));
-            frontVector = RLMath.carFrontVector(Vector3.convert(packet.getPlayers(myPlayerIndex).getRotation()));
-            sideVector = RLMath.carSideVector(Vector3.convert(packet.getPlayers(myPlayerIndex).getRotation()));
-            boost = packet.getPlayers(myPlayerIndex).getBoost();
-            hasJumped = packet.getPlayers(myPlayerIndex).getJumped();
-            hasDoubleJumped = packet.getPlayers(myPlayerIndex).getDoubleJumped();
-            isDemolished = packet.getPlayers(myPlayerIndex).getIsDemolished();
-            isSupersonic = packet.getPlayers(myPlayerIndex).getIsSupersonic();
-            isCarOnGround = packet.getPlayers(myPlayerIndex).getLocation().getZ() < 20;
-            isMidAir = packet.getPlayers(myPlayerIndex).getIsMidair();
-            isCarUpsideDown = RLMath.carUpVector(Vector3.convert(packet.getPlayers(myPlayerIndex).getRotation())).z < 0;
-            distanceToBall = Vector3.convert(packet.getPlayers(myPlayerIndex).getLocation()).getDistanceTo(Vector3.convert(packet.getBall().getLocation()));
-            angleToBall = RLMath.carsAngleToPoint(position.asVector2(), rotation.yaw, Vector3.convert(packet.getBall().getLocation()).asVector2());
-            carLength = 118.01;
-            carHeight = 36.16;
-            carWidth = 84.20;
-        }
     }
 }

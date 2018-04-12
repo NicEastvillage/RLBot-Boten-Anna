@@ -1,6 +1,6 @@
 package botenanna.behaviortree.guards;
 
-import botenanna.AgentInput;
+import botenanna.game.Situation;
 import botenanna.behaviortree.Leaf;
 import botenanna.behaviortree.MissingNodeException;
 import botenanna.behaviortree.NodeStatus;
@@ -22,7 +22,7 @@ public class GuardIsMidAir extends Leaf {
     }
 
     @Override
-    public NodeStatus run(AgentInput input) throws MissingNodeException {
+    public NodeStatus run(Situation input) throws MissingNodeException {
         // Simply check the isMidAir variable from input
         return input.myCar.isMidAir ? NodeStatus.DEFAULT_SUCCESS : NodeStatus.DEFAULT_FAILURE;
     }

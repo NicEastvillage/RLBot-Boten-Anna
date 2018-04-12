@@ -1,6 +1,6 @@
 package botenanna.behaviortree.decorators;
 
-import botenanna.AgentInput;
+import botenanna.game.Situation;
 import botenanna.behaviortree.MissingNodeException;
 import botenanna.behaviortree.NodeStatus;
 import botenanna.behaviortree.Status;
@@ -15,7 +15,7 @@ public class AlwaysSuccess extends Decorator {
     }
 
     @Override
-    public NodeStatus run(AgentInput input) throws MissingNodeException {
+    public NodeStatus run(Situation input) throws MissingNodeException {
         NodeStatus status = child.run(input);
         if (status.status == Status.RUNNING) return status;
         else return NodeStatus.DEFAULT_SUCCESS;

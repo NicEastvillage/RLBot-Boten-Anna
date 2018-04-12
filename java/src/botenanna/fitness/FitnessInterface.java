@@ -1,12 +1,12 @@
 package botenanna.fitness;
 
-import botenanna.AgentInput;
+import botenanna.game.Situation;
 
 public interface FitnessInterface {
 
     /** Used to calculate the fitness value. */
-    double calculateFitness(AgentInput situation, double timeSpent);
+    double calculateFitness(Situation situation, double timeSpent);
 
     /** Checks if the deviations are fulfilled. */
-    boolean isDeviationFulfilled(AgentInput situation, double timeSpent);
+    boolean isDeviationFulfilled(Situation situation, double timeSpent);
 }

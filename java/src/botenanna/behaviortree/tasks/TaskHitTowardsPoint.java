@@ -1,7 +1,7 @@
 package botenanna.behaviortree.tasks;
 
-import botenanna.AgentInput;
-import botenanna.AgentOutput;
+import botenanna.game.ActionSet;
+import botenanna.game.Situation;
 import botenanna.ArgumentTranslator;
 import botenanna.behaviortree.*;
 import botenanna.math.RLMath;
@@ -16,7 +16,7 @@ import static java.lang.Math.cos;
 
 public class TaskHitTowardsPoint extends Leaf{
 
-    private Function<AgentInput, Object> pointFunc;
+    private Function<Situation, Object> pointFunc;
     private static final double SLIDE_ANGLE = 1.7;
     private static double carPotentialSpeed = 1300;
     private boolean withBoost = true;
@@ -51,7 +51,7 @@ public class TaskHitTowardsPoint extends Leaf{
     }
 
     @Override
-    public NodeStatus run(AgentInput input) throws MissingNodeException {
+    public NodeStatus run(Situation input) throws MissingNodeException {
 
         //TODO Change current target to target aquired though arguments
         //TODO Version 2 add 3d and expand on circlePoint
@@ -76,7 +76,7 @@ public class TaskHitTowardsPoint extends Leaf{
         //Same as drive towards point, it will  turn toward the point and drive there.
         double ang = RLMath.carsAngleToPoint(myPos.asVector2(), input.myCar.rotation.yaw, point);
         double steering = RLMath.steeringSmooth(ang);
-        AgentOutput output = new AgentOutput().withAcceleration(1).withSteer(steering);
+        ActionSet output = new ActionSet().withThrottle(1).withSteer(steering);
         //Sharp turning with slide
         if (ang > SLIDE_ANGLE || ang < -SLIDE_ANGLE) {
                 output.withSlide();
@@ -120,7 +120,7 @@ public class TaskHitTowardsPoint extends Leaf{
     /** Searches for vector2 point on the far side of the target and ball velocity vectors
      * @return a vector2 on the far side of the target and velocity scaled based on the distance/velocity to the ball.
      */
-    private Vector2 searchAngle(AgentInput input, Vector2 target){
+    private Vector2 searchAngle(Situation input, Vector2 target){
         Vector2 ballPos = input.ballLandingPosition.asVector2();
         Vector2 ballV = input.ball.getVelocity().asVector2();
         return ballPos.plus(ballV.plus(target).getNormalized().scale(-1 * ((input.myCar.distanceToBall * 400) / (input.ball.getVelocity().getMagnitude() + 1)) * input.getGoalDirection(input.myPlayerIndex)));

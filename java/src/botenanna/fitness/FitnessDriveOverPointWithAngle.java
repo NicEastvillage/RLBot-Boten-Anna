@@ -1,6 +1,6 @@
 package botenanna.fitness;
 
-import botenanna.AgentInput;
+import botenanna.game.Situation;
 import botenanna.math.Vector3;
 import botenanna.physics.Path;
 
@@ -30,13 +30,13 @@ public class FitnessDriveOverPointWithAngle implements FitnessInterface {
     }
 
     /**	Takes a situation and time spent and returns a fitness value of that situation.
-     *  This method extracts needed data from agentInput and passes in on to calculation.
+     *  This method extracts needed data from Situation and passes in on to calculation.
      *  This is done to make the method testable.
      *  @param situation the situation to be evaluated.
      *  @param timeSpent the seconds used since origin of situation.
      *  @return a fitness value for the given situation. */
     @Override
-    public double calculateFitness(AgentInput situation, double timeSpent){
+    public double calculateFitness(Situation situation, double timeSpent){
 
         return calculateFitnessValue(situation.myCar.position, situation.myCar.frontVector, timeSpent, situation.myCar.velocity);
     }
@@ -72,7 +72,7 @@ public class FitnessDriveOverPointWithAngle implements FitnessInterface {
      *  @param timeSpent the time spend since origin.
      *  @return true if the variables are less or equal to the deviation. */
     @Override
-    public boolean isDeviationFulfilled(AgentInput situation, double timeSpent) {
+    public boolean isDeviationFulfilled(Situation situation, double timeSpent) {
 
         //Calculate function variables
         double distToPoint = situation.myCar.position.getDistanceTo(destinationPoint.evaluate(timeSpent)); // Distance

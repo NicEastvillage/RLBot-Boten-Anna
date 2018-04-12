@@ -1,6 +1,6 @@
 package botenanna.overlayWindow;
 
-import botenanna.AgentInput;
+import botenanna.game.Situation;
 import botenanna.Bot;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
@@ -33,7 +33,7 @@ public class BotInfoDisplay extends VBox {
     }
 
     public void update(Bot bot) {
-        AgentInput input = bot.getLastInputReceived();
+        Situation input = bot.getLastInputReceived();
         if (input == null)
             return;
 

@@ -14,6 +14,13 @@ public class Ball extends Rigidbody {
     public static final double BALL_GROUND_BOUNCINESS = -0.6;
     public static final double BALL_WALL_BOUNCINESS = -0.6;
 
+    public Ball(Vector3 position, Vector3 velocity, Vector3 rotation) {
+        setPosition(position);
+        setVelocity(velocity);
+        setRotation(rotation);
+        setAffectedByGravity(true);
+    }
+
     public Ball() {
         setAffectedByGravity(true);
     }

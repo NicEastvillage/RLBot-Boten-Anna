@@ -1,6 +1,8 @@
 package botenanna;
 
 import botenanna.behaviortree.*;
+import botenanna.game.ActionSet;
+import botenanna.game.Situation;
 
 public class Bot {
 
@@ -11,7 +13,7 @@ public class Bot {
     private final Team team;
     private final int playerIndex;
     private BehaviorTree behaviorTree;
-    private AgentInput lastInputReceived;
+    private Situation lastInputReceived;
 
     /** A Rocket League agent. */
     public Bot(int playerIndex, int teamIndex, BehaviorTree tree) {
@@ -22,9 +24,9 @@ public class Bot {
 
     /** Let the bot process the information from the input packet
      * @param packet the game tick packet from the game
-     * @return an AgentOutput of what the agent want to do
+     * @return an ActionSet of what the agent want to do
      */
-    public AgentOutput process(AgentInput packet) {
+    public ActionSet process(Situation packet) {
         return behaviorTree.evaluate(packet);
     }
 
@@ -42,11 +44,11 @@ public class Bot {
         return behaviorTree;
     }
 
-    public AgentInput getLastInputReceived() {
+    public Situation getLastInputReceived() {
         return lastInputReceived;
     }
 
-    public void setLastInputReceived(AgentInput lastInputReceived) {
+    public void setLastInputReceived(Situation lastInputReceived) {
         this.lastInputReceived = lastInputReceived;
     }
 }

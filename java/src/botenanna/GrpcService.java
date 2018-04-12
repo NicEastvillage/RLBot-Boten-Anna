@@ -1,6 +1,8 @@
 package botenanna;
 
 import botenanna.behaviortree.BehaviorTree;
+import botenanna.game.ActionSet;
+import botenanna.game.Situation;
 import botenanna.physics.TimeTracker;
 import io.grpc.stub.StreamObserver;
 import rlbot.api.BotGrpc;
@@ -43,13 +45,13 @@ public class GrpcService extends BotGrpc.BotImplBase {
             // If the index of this player is greater than the playerCount,
             // then we don't know anything about this car
             if (request.getPlayersCount() <= playerIndex) {
-                return new AgentOutput().toControllerState();
+                return new ActionSet().toControllerState();
             }
 
             request.getGameInfo().getGameTimeRemaining();
 
             // Rework the package
-            AgentInput input = new AgentInput(request, timeTracker);
+            Situation input = new Situation(request, timeTracker);
 
             // Create and register bot from this packet if necessary
             synchronized (this) {
@@ -73,7 +75,7 @@ public class GrpcService extends BotGrpc.BotImplBase {
         } catch (Exception e) {
             e.printStackTrace();
             // Return default ControllerState on errors
-            return new AgentOutput().toControllerState();
+            return new ActionSet().toControllerState();
         }
     }
 }

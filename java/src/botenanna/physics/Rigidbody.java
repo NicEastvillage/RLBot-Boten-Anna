@@ -1,6 +1,6 @@
 package botenanna.physics;
 
-import botenanna.AgentInput;
+import botenanna.game.Situation;
 import botenanna.math.Vector2;
 import botenanna.math.Vector3;
 import rlbot.api.GameData;
@@ -178,7 +178,7 @@ public class Rigidbody implements Cloneable {
     /** @param offset the offset from the wall. Relevant for any objects with a radius.
      * @return the time until arrival at wall at x positive. */
     public double predictArrivalAtWallXPositive(double offset) {
-        double distance = AgentInput.ARENA_LENGTH / 2 - offset;
+        double distance = Situation.ARENA_LENGTH / 2 - offset;
         if (position.x < distance) {
             if (velocity.x > 0) {
                 return (distance - position.x) / velocity.x;
@@ -193,7 +193,7 @@ public class Rigidbody implements Cloneable {
     /** @param offset the offset from the wall. Relevant for any objects with a radius.
      * @return the time until arrival at wall at x negative. */
     public double predictArrivalAtWallXNegative(double offset) {
-        double distance = AgentInput.ARENA_LENGTH / 2 - offset;
+        double distance = Situation.ARENA_LENGTH / 2 - offset;
         if (position.x > -distance) {
             if (velocity.x < 0) {
                 return (-distance - position.x) / velocity.x;
@@ -208,7 +208,7 @@ public class Rigidbody implements Cloneable {
     /** @param offset the offset from the wall. Relevant for any objects with a radius.
      * @return the time until arrival at wall at y positive. */
     public double predictArrivalAtWallYPositive(double offset) {
-        double distance = AgentInput.ARENA_LENGTH / 2 - offset;
+        double distance = Situation.ARENA_LENGTH / 2 - offset;
         if (position.y < distance) {
             if (velocity.y > 0) {
                 return (distance - position.y) / velocity.y;
@@ -223,7 +223,7 @@ public class Rigidbody implements Cloneable {
     /** @param offset the offset from the wall. Relevant for any objects with a radius.
      * @return the time until arrival at wall at y negative. */
     public double predictArrivalAtWallYNegative(double offset) {
-        double distance = AgentInput.ARENA_LENGTH / 2 - offset;
+        double distance = Situation.ARENA_LENGTH / 2 - offset;
         if (position.y > -distance) {
             if (velocity.y < 0) {
                 return (-distance - position.y) / velocity.y;

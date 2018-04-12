@@ -1,8 +1,7 @@
 package botenanna.overlayWindow;
 
-import botenanna.AgentInput;
+import botenanna.game.Situation;
 import botenanna.Ball;
-import botenanna.Bot;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
@@ -31,7 +30,7 @@ public class BallInfoDisplay extends VBox {
         getChildren().add(infoLabel);
     }
 
-    public void update(AgentInput input) {
+    public void update(Situation input) {
         if (input == null)
             return;
 

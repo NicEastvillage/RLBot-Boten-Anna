@@ -1,7 +1,7 @@
 package botenanna.behaviortree.tasks;
 
-import botenanna.AgentInput;
-import botenanna.AgentOutput;
+import botenanna.game.Situation;
+import botenanna.game.ActionSet;
 import botenanna.behaviortree.*;
 import botenanna.math.RLMath;
 import botenanna.math.Vector2;
@@ -31,7 +31,7 @@ public class TaskBallTowardsGoal extends Leaf {
     }
 
     @Override
-    public NodeStatus run(AgentInput input) throws MissingNodeException {
+    public NodeStatus run(Situation input) throws MissingNodeException {
 
         //TODO: The agent is only trying to shoot the ball towards the middle of opponents goal, there are commented math for right and left side of the goal
         //TODO: Do so the agent shoots towards the "easisest" place in the goal.
@@ -87,17 +87,17 @@ public class TaskBallTowardsGoal extends Leaf {
         Vector2 middleOfGoal;
 
         if (input.myCar.team == 1) {
-            //ballToRightGoalPostVector = AgentInput.BLUE_GOALPOST_RIGHT.minus(expectedBallLocation.asVector2());
-            //ballToLeftGoalPostVector = AgentInput.BLUE_GOALPOST_LEFT.minus(expectedBallLocation.asVector2());
+            //ballToRightGoalPostVector = Situation.BLUE_GOALPOST_RIGHT.minus(expectedBallLocation.asVector2());
+            //ballToLeftGoalPostVector = Situation.BLUE_GOALPOST_LEFT.minus(expectedBallLocation.asVector2());
             middleOfGoal = new Vector2(0,-5200);
-            //rightGoalPost = AgentInput.BLUE_GOALPOST_RIGHT;
-            //leftGoalPost = AgentInput.BLUE_GOALPOST_LEFT;
+            //rightGoalPost = Situation.BLUE_GOALPOST_RIGHT;
+            //leftGoalPost = Situation.BLUE_GOALPOST_LEFT;
         }
         else {
-            //ballToRightGoalPostVector = AgentInput.RED_GOALPOST_RIGHT.minus(expectedBallLocation.asVector2());
-            //ballToLeftGoalPostVector = AgentInput.RED_GOALPOST_LEFT.minus(expectedBallLocation.asVector2());
-            //rightGoalPost = AgentInput.RED_GOALPOST_RIGHT;
-            //leftGoalPost = AgentInput.RED_GOALPOST_LEFT;
+            //ballToRightGoalPostVector = Situation.RED_GOALPOST_RIGHT.minus(expectedBallLocation.asVector2());
+            //ballToLeftGoalPostVector = Situation.RED_GOALPOST_LEFT.minus(expectedBallLocation.asVector2());
+            //rightGoalPost = Situation.RED_GOALPOST_RIGHT;
+            //leftGoalPost = Situation.RED_GOALPOST_LEFT;
             middleOfGoal = new Vector2(0,5200);
         }
 
@@ -145,6 +145,6 @@ public class TaskBallTowardsGoal extends Leaf {
             boost = true;
         }
 
-        return new NodeStatus(Status.RUNNING, new AgentOutput().withAcceleration(1).withSteer(steering).withBoost(boost), this);
+        return new NodeStatus(Status.RUNNING, new ActionSet().withThrottle(1).withSteer(steering).withBoost(boost), this);
     }
 }
