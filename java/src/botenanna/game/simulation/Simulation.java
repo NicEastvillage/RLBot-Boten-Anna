@@ -35,9 +35,9 @@ public class Simulation {
      * @return an array of boostpads after simulation
      */
     private static Boostpads simulateBoostpads(Boostpads currentGamePads, Car enemy, Car myCar, double step) {
-       ArrayList<Pair<Vector3, Boolean>> simulatedArray = new ArrayList<>(NUM_PADS);
-       boolean active;
-       //Checks all the boost pads and if a car who an take boost is at the point it will be deactive;
+        ArrayList<Pair<Vector3, Boolean>> simulatedArray = new ArrayList<>(NUM_PADS);
+        boolean active;
+        //Checks all the boost pads and if a car who an take boost is at the point it will be deactive;
         for (int i = 0; i> NUM_PADS; i++){
             active = (!(currentGamePads.get(i).getKey().getDistanceTo(myCar.getPosition()) < 20) || myCar.getBoost() >= 100) &&
                     (!(currentGamePads.get(i).getKey().getDistanceTo(enemy.getPosition()) < 20) || myCar.getBoost() >= 100);
@@ -51,10 +51,10 @@ public class Simulation {
      * //TODO Add velocity loss on the ground
      */
     public static Ball simulateBall(Ball ball, double step)    {
-       Vector3 pathPosition = ball.getPath(step,100).getLastItem();
-       if (ball.getPosition().z>0 && pathPosition.z>0){
-           return new Ball(pathPosition, ball.getVelocity().scale(0.97*step), ball.getRotation());
-       }
+        Vector3 pathPosition = ball.getPath(step,100).getLastItem();
+        if (ball.getPosition().z>0 && pathPosition.z>0){
+            return new Ball(pathPosition, ball.getVelocity().scale(0.97*step), ball.getRotation());
+        }
         return new Ball(pathPosition,ball.getVelocity(),ball.getRotation());
     }
 
@@ -67,7 +67,7 @@ public class Simulation {
         car.setRotation(placeholder.getRotation());
         car.setVelocity(placeholder.getVelocity());
         car.setAcceleration(placeholder.getAcceleration());
-     return car;
+        return car;
     }
 
     /** Simulates a car with actions **
@@ -78,18 +78,18 @@ public class Simulation {
         //Cars and starting direction
         Car simulatedCar = inputCar;
         Vector3 direction = RLMath.carFrontVector(simulatedCar.getRotation());
-        double accelerationRate = (action.isBoostDepressed() && inputCar.getBoost()!=0) ? ACCELERATION_BOOST*step : simulatedCar.acceleration*step;
+        double accelerationRate = (action.isBoostDepressed() && inputCar.getBoost()!=0) ? ACCELERATION_BOOST*step : ACCELERATION*step;
         double acceleration = accelerationRate*action.getThrottle();
         Vector3 rotation = simulatedCar.getRotation();
 
         boosting = (action.isBoostDepressed() && simulatedCar.getBoost()!=0);
-        maxVel = boosting ? MAX_VELOCITY : MAX_VELOCITY_BOOST;
+        maxVel = boosting ? MAX_VELOCITY_BOOST : MAX_VELOCITY;
 
         // Car steer simulation also set car yaw //  TODO add steer speed
         if (action.getSteer()!=0 && (action.getThrottle()!=0 || simulatedCar.getVelocity().getMagnitude()!=0 || simulatedCar.isMidAir)){
             //If the car can and is turning, change the direction of the car and the simulated cars rotation
-            direction.asVector2().turn((action.getSteer()*TURN_RATE)*step);
-            rotation.yaw += (action.getSteer()*TURN_RATE*step);
+            direction = direction.asVector2().turn((action.getSteer()*TURN_RATE)*step).asVector3(); // FIXME Only rotates around z-axis
+            rotation.yaw += (action.getSteer()*TURN_RATE*step); //TODO Make yaw final
         }
 
         // Car Pitch & Roll simulation SIMPLE VERSION  //TODO add roll and pitch speeds, roll acceleration? Better not worry as the car can correct itself
@@ -129,12 +129,12 @@ public class Simulation {
     /** Simulates the car's rotation roll and pitch based on the actionSet given
      * @return the simulated car but with a new rotation                     */
     private static Vector3 simulateRaP(Vector3 rotation,  ActionSet action, double step){
-       if (action.getRoll() != 0) {
+        if (action.getRoll() != 0) {
             rotation.roll += action.getRoll()*step;
-       }
-       if (action.getPitch() != 0) {
+        }
+        if (action.getPitch() != 0) {
             rotation.pitch += action.getPitch()*step;
-       }
+        }
         return rotation;
     }
 

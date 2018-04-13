@@ -9,6 +9,7 @@ import rlbot.api.GameData;
 public class Car extends Rigidbody {
     //GLobal Variables
     public final static double ACCELERATION_BOOST = 650;
+    public final static double ACCELERATION = 400;
     //TURNRATE IS A FUNCTION OF THE CURRENT SPEED
     public final static double TURN_RATE = Math.toRadians(5);
     public final static double MAX_VELOCITY = 1410;
