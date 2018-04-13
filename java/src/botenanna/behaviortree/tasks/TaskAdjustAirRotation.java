@@ -47,7 +47,7 @@ public class TaskAdjustAirRotation extends Leaf {
     public NodeStatus run(Situation input) throws MissingNodeException {
         ActionSet out = new ActionSet();
 
-        Vector3 myRot = input.myCar.rotation;
+        Vector3 myRot = input.myCar.getRotation();
 
         double smoothPitch = RLMath.steeringSmooth(-myRot.pitch * ROTATION_STRENGTH);
         out.withPitch(smoothPitch);

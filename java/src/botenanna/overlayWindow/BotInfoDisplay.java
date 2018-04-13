@@ -34,7 +34,7 @@ public class BotInfoDisplay extends VBox {
 
     public void update(Bot bot) {
         Situation input = bot.getLastInputReceived();
-        if (input == null)
+        if (input == null || input.myCar.getPosition() == null)
             return;
 
         infoLabel.setText(String.format(
@@ -42,9 +42,9 @@ public class BotInfoDisplay extends VBox {
                 "Vel: %s\n" +
                 "Rot: %s\n" +
                 "AngToBall: %f",
-                input.myCar.position.toStringFixedSize(),
-                input.myCar.velocity.toStringFixedSize(),
-                input.myCar.rotation.toStringFixedSize(),
+                input.myCar.getPosition().toStringFixedSize(),
+                input.myCar.getVelocity().toStringFixedSize(),
+                input.myCar.getRotation().toStringFixedSize(),
                 input.myCar.angleToBall));
     }
 }

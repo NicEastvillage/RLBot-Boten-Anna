@@ -22,11 +22,8 @@ public class Situation {
     public static final Vector2 RED_GOALPOST_LEFT = new Vector2(-720, 5200);
     public static final Vector2 RED_GOALPOST_RIGHT = new Vector2(720, 5200);
     public static final Vector3[] BIG_BOOST_PADS = {new Vector3(-3070, 4100), new Vector3(3070,-4100), new Vector3(-3070,-4100),new Vector3(-3580,0), new Vector3(3580,0), new Vector3(3070, 4100)};
-    private double UPPERLEFT_CORNER_X1 = 10280/2- Ball.RADIUS*3, UPPERRIGHT_CORNER_y1=8240/2-Ball.RADIUS*3;   // lower left
-    private double LOWERLEFT_CORNER_X2 = -10280/2+Ball.RADIUS*3, LOWERRIGHT_CORNER_y2=-8240/2+Ball.RADIUS*3;   // upper right
-    private double q1 = 10280/2-30, w1=8240/2-30;   // lower left
-    private double q2 = -10280/2+30, w2=-8240/2+30;   // upper right
 
+    private double WALL_X = ARENA_WIDTH/2, WALL_Y = ARENA_LENGTH/2;
 
     private GameData.GameTickPacket packet;
     private TimeTracker timeTracker;
@@ -121,8 +118,8 @@ public class Situation {
             Vector3 boostLocation = Vector3.convert(boost.getLocation());
 
             if (boost.getIsActive()){
-                double angleToBoost = RLMath.carsAngleToPoint(new Vector2(myCar.position), myCar.position.yaw, boostLocation.asVector2());
-                double distance = myCar.position.getDistanceTo(boostLocation);
+                double angleToBoost = RLMath.carsAngleToPoint(new Vector2(myCar.getPosition()), myCar.getPosition().yaw, boostLocation.asVector2());
+                double distance = myCar.getPosition().getDistanceTo(boostLocation);
                 double distFunc = ((ARENA_LENGTH - distance) / ARENA_LENGTH); // Map width
                 double newBoostUtility = (Math.cos(angleToBoost) * distFunc); // Utility formula
 
@@ -156,7 +153,7 @@ public class Situation {
         return playerIndex == 0 ? -1 : 1;
     }
 
-    public Vector3 getGoalBox(int playerIndex) {
+    public static Vector3 getGoalBox(int playerIndex) {
         return playerIndex == 0 ? BLUE_GOAL_BOX : ORANGE_GOAL_BOX;
     }
 
@@ -193,11 +190,11 @@ public class Situation {
             expectedBall = ball.getVelocity().plus(ball.getVelocity().scale(predict));
 
             // If the car is not really driving, it should overextend its prediction to the future.
-            if (myCar.velocity.getMagnitude() < 800) {
+            if (myCar.getVelocity().getMagnitude() < 800) {
                 velocity = 800;
-            } else velocity = myCar.velocity.getMagnitude();
+            } else velocity = myCar.getVelocity().getMagnitude();
 
-            if (-25 < expectedBall.minus(myCar.position.plus(myCar.frontVector.scale(70))).getMagnitude() - velocity * predict && expectedBall.minus(myCar.position.plus(myCar.frontVector.scale(70))).getMagnitude() - velocity * predict < 25) {
+            if (-25 < expectedBall.minus(myCar.getPosition().plus(myCar.frontVector.scale(70))).getMagnitude() - velocity * predict && expectedBall.minus(myCar.getPosition().plus(myCar.frontVector.scale(70))).getMagnitude() - velocity * predict < 25) {
                 predictSeconds = predict;
             }
 
@@ -215,11 +212,13 @@ public class Situation {
         return predictSeconds;
     }
 
-    public boolean BallIsWithinField(Vector2 point) {
-        return (point.x >= UPPERLEFT_CORNER_X1 && point.x <= LOWERLEFT_CORNER_X2 && point.y >= UPPERRIGHT_CORNER_y1 && point.y <= LOWERRIGHT_CORNER_y2);
+    /**checks if the ball is within the field*/
+    public boolean IsBallWithinField(Vector2 point) {
+        return (point.x >= WALL_X-Ball.RADIUS*3 && point.x <= -WALL_X+Ball.RADIUS*3 && point.y >= WALL_Y-Ball.RADIUS*3 && point.y <= -WALL_Y+Ball.RADIUS*3);
     }
 
-    public boolean AgentIsWithinField(Vector2 point) {
-        return (point.x >= q1 && point.x <= q2 && point.y >= w1 && point.y <= w2);
+    /**Checks if the agent is on the wall*/
+    public boolean IsAgentWithinField(Vector2 point) {
+        return (point.x >= WALL_X-30&& point.x <= -WALL_X+30 && point.y >= WALL_Y-30 && point.y <= -WALL_Y+30);
     }
 }
