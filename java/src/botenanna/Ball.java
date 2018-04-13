@@ -18,9 +18,7 @@ public class Ball extends Rigidbody {
         setPosition(position);
         setVelocity(velocity);
         setRotation(rotation);
-        setAffectedByGravity(true);
     }
-
     public Ball() {
         setAffectedByGravity(true);
     }
@@ -62,6 +60,8 @@ public class Ball extends Rigidbody {
             nextWallHit = simulation.predictArrivalAtAnyWall(RADIUS);
             nextGroundHit = simulation.predictArrivalAtHeight(RADIUS);
 
+            if (Double.isNaN(nextGroundHit)) nextGroundHit = 0;
+
             // Check if ball doesn't hits anything
             if (timeLeft < nextGroundHit && timeLeft < nextWallHit) {
                 extendPathWithNoCollision(path, simulation, timeSpent, timeLeft, stepsize);
@@ -76,15 +76,18 @@ public class Ball extends Rigidbody {
                 } else {
                     simulation.setVelocity(new Vector3(vel.x, vel.y * BALL_WALL_BOUNCINESS, vel.z));
                 }
-            } else if (nextGroundHit == 0) {
+            } else if (nextGroundHit < 1E-15) {
                 // Simulate ball rolling until it hits wall
                 simulation.setAffectedByGravity(false);
                 simulation.setVelocity(new Vector3(simulation.getVelocity().x, simulation.getVelocity().y, 0));
 
                 extendPathWithNoCollision(path, simulation, timeSpent, Math.min(nextWallHit, timeLeft), stepsize);
+                if (timeLeft <= nextWallHit || nextWallHit == 0) {
+                    return path;
+                }
                 timeSpent += nextWallHit;
                 Vector3 vel = simulation.getVelocity();
-                if (willHitSideWallNext(RADIUS)) {
+                if (!willHitSideWallNext(RADIUS)) {
                     simulation.setVelocity(new Vector3(vel.x * BALL_WALL_BOUNCINESS, vel.y, vel.z));
                 } else {
                     simulation.setVelocity(new Vector3(vel.x, vel.y * BALL_WALL_BOUNCINESS, vel.z));
@@ -98,7 +101,7 @@ public class Ball extends Rigidbody {
             }
 
             timeLeft = duration - timeSpent;
-        } while (timeSpent <= duration);
+        } while (timeSpent < duration);
 
         return path;
     }

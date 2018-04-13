@@ -41,10 +41,12 @@ public class BotInfoDisplay extends VBox {
                 "Pos: %s\n" +
                 "Vel: %s\n" +
                 "Rot: %s\n" +
-                "AngToBall: %f",
+                "AngToBall: %f\n" +
+                "HasPossession: %b",
                 input.myCar.getPosition().toStringFixedSize(),
                 input.myCar.getVelocity().toStringFixedSize(),
                 input.myCar.getRotation().toStringFixedSize(),
-                input.myCar.angleToBall));
+                input.myCar.angleToBall,
+                input.whoHasPossession()));
     }
 }

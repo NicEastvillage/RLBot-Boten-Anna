@@ -4,6 +4,7 @@ import botenanna.Ball;
 import botenanna.game.*;
 import botenanna.math.RLMath;
 import botenanna.math.Vector3;
+import botenanna.math.zone.Box;
 import botenanna.physics.Rigidbody;
 import javafx.util.Pair;
 import java.util.ArrayList;
@@ -94,9 +95,6 @@ public class Simulation {
 
         // Car Pitch & Roll simulation SIMPLE VERSION  //TODO add roll and pitch speeds, roll acceleration? Better not worry as the car can correct itself
         if (simulatedCar.isMidAir)rotation = simulateRaP(simulatedCar.getRotation(),  action,  step);
-
-        // Car Velocity changes
-        simulatedCar.setVelocity(simulateVel(simulatedCar.getVelocity(), acceleration, direction,direction, action, step));
 
         //Add simulated changes to rotation
         simulatedCar.setRotation(rotation);
