@@ -83,6 +83,23 @@ public class FitnessDriveOverPointWithAngleTest {
     }
 
     @Test
+    public void calculateFitnessValue05(){ //stopOnPoint = false
+
+        Vector3 destinationPoint = new Vector3(0,0,100.4827880);
+        Vector3 nextPoint = new Vector3(0,-5000,0);
+        Vector3 velocity = new Vector3(0,0,0);
+
+        FitnessDriveOverPointWithAngle fitness = new FitnessDriveOverPointWithAngle(new Path(destinationPoint), new Path(nextPoint), 0.2,0.2, false);
+
+        Vector3 myDirection = new Vector3(1.39070918E-7,0.9999999999,0);
+        Vector3 myPos = new Vector3(255.998899,-3839.991455,43.5251007);
+
+        double fitnessValue = fitness.calculateFitnessValue(myPos, myDirection,0, velocity);
+
+        assertEquals(-0.00022931730147115153045, fitnessValue,1E-18);
+    }
+
+    @Test
     public void calculateFitnessValueComparison01(){
 
         Vector3 destinationPoint1 = new Vector3(-100,-100,0);
