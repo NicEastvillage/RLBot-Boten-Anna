@@ -1,17 +1,18 @@
 package botenanna.behaviortree.guards;
 
-import botenanna.AgentInput;
+
 import botenanna.ArgumentTranslator;
 import botenanna.behaviortree.Leaf;
 import botenanna.behaviortree.MissingNodeException;
 import botenanna.behaviortree.NodeStatus;
+import botenanna.game.Situation;
 import botenanna.math.Vector3;
 
 import java.util.function.Function;
 
 public class GuardIsPointBehind extends Leaf {
 
-    private Function<AgentInput, Object> point;
+    private Function<Situation, Object> point;
 
     public GuardIsPointBehind(String[] arguments) throws IllegalArgumentException {
         super(arguments);
@@ -30,7 +31,7 @@ public class GuardIsPointBehind extends Leaf {
     }
 
     @Override
-    public NodeStatus run(AgentInput input) throws MissingNodeException {
+    public NodeStatus run(Situation input) throws MissingNodeException {
         // Convert given input to a Vector
         Vector3 givenPoint = (Vector3) point.apply(input);
 

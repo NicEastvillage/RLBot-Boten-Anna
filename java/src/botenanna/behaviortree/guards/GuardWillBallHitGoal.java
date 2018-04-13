@@ -1,13 +1,14 @@
 package botenanna.behaviortree.guards;
 
-import botenanna.AgentInput;
-import botenanna.AgentOutput;
+import botenanna.game.Situation;
+import botenanna.game.ActionSet;
 import botenanna.ArgumentTranslator;
 import botenanna.Ball;
 import botenanna.behaviortree.Leaf;
 import botenanna.behaviortree.MissingNodeException;
 import botenanna.behaviortree.NodeStatus;
 import botenanna.behaviortree.Status;
+import botenanna.game.Situation;
 import botenanna.math.Vector2;
 import botenanna.math.Vector3;
 import botenanna.math.zone.Box;
@@ -17,7 +18,7 @@ import java.util.function.Function;
 
 public class GuardWillBallHitGoal extends Leaf {
 
-    private Function<AgentInput, Object> areaFunc;
+    private Function<Situation, Object> areaFunc;
 
     public GuardWillBallHitGoal(String[] arguments) throws IllegalArgumentException {
         super(arguments);
@@ -36,20 +37,19 @@ public class GuardWillBallHitGoal extends Leaf {
     }
 
     @Override
-    public NodeStatus run(AgentInput input) throws MissingNodeException {
+    public NodeStatus run(Situation situation) throws MissingNodeException {
 
         // Determine time it will take for ball to hit next Y-positive wall
-        double time = input.ball.predictArrivalAtWallYPositive(Ball.RADIUS);
+        double time = situation.ball.predictArrivalAtWallYPositive(Ball.RADIUS);
 
         // Find path of ball
-        Path path = input.ball.getPath(time, 10);
+        Path path = situation.ball.getPath(time, 10);
         Vector3 finalDestination = path.getLastItem();
 
         // Determine area
-        Box boxArea = (Box) areaFunc.apply(input);
+        Box boxArea = (Box) areaFunc.apply(situation);
 
         if (boxArea.isPointInBoxArea(finalDestination)) {
-            System.out.println("Ball will hit goal box");
             return NodeStatus.DEFAULT_SUCCESS;
         } else {
             return NodeStatus.DEFAULT_FAILURE;
