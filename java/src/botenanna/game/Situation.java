@@ -27,6 +27,8 @@ public class Situation {
     public static final Vector2 RED_GOALPOST_RIGHT = new Vector2(720, 5200);
     public static final Vector3[] BIG_BOOST_PADS = {new Vector3(-3070, 4100), new Vector3(3070,-4100), new Vector3(-3070,-4100),new Vector3(-3580,0), new Vector3(3580,0), new Vector3(3070, 4100)};
 
+    private double WALL_X = ARENA_WIDTH/2, WALL_Y = ARENA_LENGTH/2;
+
     private GameData.GameTickPacket packet;
     private TimeTracker timeTracker;
 
@@ -121,8 +123,8 @@ public class Situation {
             Vector3 boostLocation = Vector3.convert(boost.getLocation());
 
             if (boost.getIsActive()){
-                double angleToBoost = RLMath.carsAngleToPoint(new Vector2(myCar.position), myCar.position.yaw, boostLocation.asVector2());
-                double distance = myCar.position.getDistanceTo(boostLocation);
+                double angleToBoost = RLMath.carsAngleToPoint(new Vector2(myCar.getPosition()), myCar.getPosition().yaw, boostLocation.asVector2());
+                double distance = myCar.getPosition().getDistanceTo(boostLocation);
                 double distFunc = ((ARENA_LENGTH - distance) / ARENA_LENGTH); // Map width
                 double newBoostUtility = (Math.cos(angleToBoost) * distFunc); // Utility formula
 
@@ -148,9 +150,9 @@ public class Situation {
     /* Help function to calculate and return the possession utility of a given car
     * Currently weighed equally and therefore can be considered inaccurate. Requires more testing. */
     private double possessionUtility (Car car){
-        double distanceUtility = 1-car.position.getDistanceTo(ball.getPosition())/ARENA_LENGTH;
+        double distanceUtility = 1-car.getPosition().getDistanceTo(ball.getPosition())/ARENA_LENGTH;
         double angleUtility = Math.cos(car.angleToBall);
-        double velocityUtility = car.velocity.getMagnitude()/MAX_VELOCITY_NO_BOOST;
+        double velocityUtility = car.getVelocity().getMagnitude()/MAX_VELOCITY_NO_BOOST;
 
         // Returns the total utility points.
         return distanceUtility + angleUtility + velocityUtility;
@@ -158,7 +160,7 @@ public class Situation {
 
     public double whichSideOfPlane(Vector3 pointVector){
         // Determine vector to the given point from front vector
-        Vector3 vectorToPoint = pointVector.minus(myCar.position);
+        Vector3 vectorToPoint = pointVector.minus(myCar.getPosition());
 
         // Find angle to the given point
         return myCar.frontVector.getAngleTo(vectorToPoint);
@@ -225,11 +227,11 @@ public class Situation {
             expectedBall = ball.getVelocity().plus(ball.getVelocity().scale(predict));
 
             // If the car is not really driving, it should overextend its prediction to the future.
-            if (myCar.velocity.getMagnitude() < 800) {
+            if (myCar.getVelocity().getMagnitude() < 800) {
                 velocity = 800;
-            } else velocity = myCar.velocity.getMagnitude();
+            } else velocity = myCar.getVelocity().getMagnitude();
 
-            if (-25 < expectedBall.minus(myCar.position.plus(myCar.frontVector.scale(70))).getMagnitude() - velocity * predict && expectedBall.minus(myCar.position.plus(myCar.frontVector.scale(70))).getMagnitude() - velocity * predict < 25) {
+            if (-25 < expectedBall.minus(myCar.getPosition().plus(myCar.frontVector.scale(70))).getMagnitude() - velocity * predict && expectedBall.minus(myCar.getPosition().plus(myCar.frontVector.scale(70))).getMagnitude() - velocity * predict < 25) {
                 predictSeconds = predict;
             }
 
@@ -245,5 +247,15 @@ public class Situation {
             predictSeconds = 0;
         }
         return predictSeconds;
+    }
+
+    /**checks if the ball is within the field*/
+    public boolean IsBallWithinField(Vector2 point) {
+        return (point.x >= WALL_X-Ball.RADIUS*3 && point.x <= -WALL_X+Ball.RADIUS*3 && point.y >= WALL_Y-Ball.RADIUS*3 && point.y <= -WALL_Y+Ball.RADIUS*3);
+    }
+
+    /**Checks if the agent is on the wall*/
+    public boolean IsAgentWithinField(Vector2 point) {
+        return (point.x >= WALL_X-30&& point.x <= -WALL_X+30 && point.y >= WALL_Y-30 && point.y <= -WALL_Y+30);
     }
 }

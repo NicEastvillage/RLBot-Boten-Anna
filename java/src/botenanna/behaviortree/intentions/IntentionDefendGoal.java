@@ -3,6 +3,7 @@ package botenanna.behaviortree.intentions;
 import botenanna.game.Situation;
 import botenanna.fitness.*;
 import botenanna.math.Vector3;
+import botenanna.physics.Path;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ public class IntentionDefendGoal extends Intention {
 
     @Override
     protected FitnessInterface getFitnessFunction(Situation input) {
-        return new FitnessDriveOverPointWithAngle(Situation.getGoalBox(input.myPlayerIndex), new Vector3(), 0.30, 60);
+        return new FitnessDriveOverPointWithAngle(new Path(Situation.getGoalBox(input.myPlayerIndex)), new Path(new Vector3()), 0.30, 60, true);
     }
 
     @Override

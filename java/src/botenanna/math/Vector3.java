@@ -105,6 +105,11 @@ public class Vector3 {
         return Math.acos((this.dot(other)) / (this.getMagnitude() * other.getMagnitude()));
     }
 
+    /** @return the projection vector. This projected onto other. */
+    public Vector3 getProjectionOnto(Vector3 other){
+        return other.scale(((other.dot(this)) / Math.pow(other.getMagnitude(), 2)));
+    }
+
     /** @return a vector with the same direction, but a length of one. If this is a zero vector, this returns a new zero vector. */
     public Vector3 getNormalized() {
         if (isZero()) return new Vector3();

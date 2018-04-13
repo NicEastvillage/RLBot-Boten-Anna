@@ -63,7 +63,7 @@ public class TaskHitTowardsPoint extends Leaf{
         Vector2 ballPos = input.ballLandingPosition.plus(input.ball.getVelocity().scale(input.getCollisionTime())).asVector2();
         Vector3 ballVelocity = input.ball.getVelocity();
         //Car
-        Vector3 myPos = input.myCar.position;
+        Vector3 myPos = input.myCar.getPosition();
         //CirclePoint
         Vector2 point =  findCirclePoint(myPos,ballPos);
 
@@ -74,7 +74,7 @@ public class TaskHitTowardsPoint extends Leaf{
        }
 
         //Same as drive towards point, it will  turn toward the point and drive there.
-        double ang = RLMath.carsAngleToPoint(myPos.asVector2(), input.myCar.rotation.yaw, point);
+        double ang = RLMath.carsAngleToPoint(myPos.asVector2(), input.myCar.getRotation().yaw, point);
         double steering = RLMath.steeringSmooth(ang);
         ActionSet output = new ActionSet().withThrottle(1).withSteer(steering);
         //Sharp turning with slide
@@ -82,8 +82,8 @@ public class TaskHitTowardsPoint extends Leaf{
                 output.withSlide();
             }
         //Speed boost towards hit
-        if (input.myCar.velocity.asVector2().getMagnitude()<carPotentialSpeed
-                && RLMath.carsAngleToPoint(ballPos, input.myCar.rotation.yaw,input.ballLandingPosition.asVector2()) > 0.2
+        if (input.myCar.getVelocity().asVector2().getMagnitude()<carPotentialSpeed
+                && RLMath.carsAngleToPoint(ballPos, input.myCar.getRotation().yaw,input.ballLandingPosition.asVector2()) > 0.2
                 && withBoost){
             output.withBoost();
         }

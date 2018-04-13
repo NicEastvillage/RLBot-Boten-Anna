@@ -119,8 +119,8 @@ public class TaskBallTowardsGoal extends Leaf {
 
 
         // Get the needed positions and rotations
-        Vector3 myPos = input.myCar.position.plus(input.myCar.frontVector.scale(70));
-        Vector3 myRotation = input.myCar.position;
+        Vector3 myPos = input.myCar.getPosition().plus(input.myCar.frontVector.scale(70));
+        Vector3 myRotation = input.myCar.getPosition();
 
         double ang = 0;
 

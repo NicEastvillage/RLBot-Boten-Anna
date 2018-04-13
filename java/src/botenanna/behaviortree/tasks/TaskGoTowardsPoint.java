@@ -52,8 +52,8 @@ public class TaskGoTowardsPoint extends Leaf {
     public NodeStatus run(Situation input) throws MissingNodeException {
 
         // Get the needed positions and rotations
-        Vector3 myPos = input.myCar.position;
-        Vector3 myRotation = input.myCar.rotation;
+        Vector3 myPos = input.myCar.getPosition();
+        Vector3 myRotation = input.myCar.getRotation();
         Vector3 point = (Vector3) pointFunc.apply(input);
 
         double ang = RLMath.carsAngleToPoint(myPos.asVector2(), myRotation.yaw, point.asVector2());

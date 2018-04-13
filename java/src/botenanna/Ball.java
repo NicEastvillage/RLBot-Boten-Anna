@@ -41,6 +41,10 @@ public class Ball extends Rigidbody {
         if (duration < 0) throw new IllegalArgumentException("Duration must be zero or positive.");
         if (stepsize <= 0) throw new IllegalArgumentException("Step size must be positive.");
 
+        if (getVelocity().isZero()) {
+            return new Path(getPosition());
+        }
+
         Rigidbody simulation = this.clone();
 
         Path path = new Path();

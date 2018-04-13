@@ -1,0 +1,11 @@
+Sequencer
+    Sequencer
+        Selector
+	        GuardIsBallOnMyHalf
+	        GuardIsDistanceLessThan my_pos ball_pos 1000
+        IntentionTouchBall
+    Sequencer
+        Inverter
+            GuardHasBoost 70
+        IntentionCollectBoost
+    IntentionDefendGoal
