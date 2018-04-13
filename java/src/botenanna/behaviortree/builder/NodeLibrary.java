@@ -47,6 +47,8 @@ public class NodeLibrary {
                 case "GuardIsDistanceLessThanDistance": return new GuardIsDistanceLessThanDistance(arguments);
                 case "GuardWillBallHitGoal": return new GuardWillBallHitGoal(arguments);
                 case "GuardIsPointInsideBox": return new GuardIsPointInsideBox(arguments);
+                case "GuardIsBallNearWall": return new GuardIsBallNearWall(arguments);
+                case "GuardBallMidAir": return new GuardBallMidAir(arguments);
             }
         } else {
             // Other nodes
