@@ -4,6 +4,7 @@ import botenanna.Ball;
 import botenanna.game.*;
 import botenanna.math.RLMath;
 import botenanna.math.Vector3;
+import botenanna.math.zone.Box;
 import botenanna.physics.Rigidbody;
 import javafx.util.Pair;
 import java.util.ArrayList;
@@ -77,7 +78,9 @@ public class Simulation {
         Car simulatedCar = situation.myCar;
         Vector3 direction = RLMath.carFrontVector(startingCar.rotation);
 
-        if (!situation.AgentIsWithinField(startingCar.getPosition().asVector2())){
+        Box boxArea = new Box(new Vector3(-4080, -5080, 4060),new Vector3(4080,5080,0));
+
+        if (!boxArea.isPointInBoxArea(situation.myCar.getPosition())){
             //TODO WALLRIDER!
         }
         // Car steer simulation
