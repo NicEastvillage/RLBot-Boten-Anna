@@ -1,9 +1,10 @@
 package botenanna.behaviortree.guards;
 
-import botenanna.Situation;
+
 import botenanna.behaviortree.Leaf;
 import botenanna.behaviortree.MissingNodeException;
 import botenanna.behaviortree.NodeStatus;
+import botenanna.game.Situation;
 
 public class GuardHasBallPossession extends Leaf {
 
