@@ -144,7 +144,7 @@ public class Rigidbody implements Cloneable {
         };
         double earliestTimeOfArrival = Double.NaN;
         for (int i = 0; i < arrivalTimes.length; i++) {
-            if (!Double.isNaN(arrivalTimes[i]) && arrivalTimes[i] < earliestTimeOfArrival) {
+            if (!Double.isNaN(arrivalTimes[i]) && (Double.isNaN(earliestTimeOfArrival) || arrivalTimes[i] < earliestTimeOfArrival)) {
                 earliestTimeOfArrival = arrivalTimes[i];
             }
         }

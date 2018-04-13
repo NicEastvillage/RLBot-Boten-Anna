@@ -11,13 +11,15 @@ public class Ball extends Rigidbody {
     public static final double RADIUS = 92.2;
     public static final double DIAMETER = RADIUS * 2;
     public static final double SLIDE_DECCELERATION = -230;
-    public static final double BALL_GROUND_BOUNCINESS = -1;
+    public static final double BALL_GROUND_BOUNCINESS = -0.6;
     public static final double BALL_WALL_BOUNCINESS = -0.6;
 
     public Ball(Vector3 position, Vector3 velocity, Vector3 rotation) {
         setPosition(position);
         setVelocity(velocity);
         setRotation(rotation);
+    }
+    public Ball() {
         setAffectedByGravity(true);
     }
 
@@ -44,29 +46,23 @@ public class Ball extends Rigidbody {
         Path path = new Path();
         double timeSpent = 0;
         double timeLeft = duration;
-        boolean checkCollision = true;
-        double nextWallHit = 999999;
-        double nextGroundHit = 999999;
+        double nextWallHit;
+        double nextGroundHit;
+
+        path.addTimeStep(0, simulation.getPosition());
 
         do {
-            if (checkCollision) {
-                nextWallHit = predictArrivalAtAnyWall(RADIUS);
-                nextGroundHit = predictArrivalAtHeight(RADIUS);
-                checkCollision = false;
-            }
+
+            nextWallHit = simulation.predictArrivalAtAnyWall(RADIUS);
+            nextGroundHit = simulation.predictArrivalAtHeight(RADIUS);
+
+            if (Double.isNaN(nextGroundHit)) nextGroundHit = 0;
 
             // Check if ball doesn't hits anything
             if (timeLeft < nextGroundHit && timeLeft < nextWallHit) {
-                extendPathWithNoCollision(path, simulation, timeSpent, duration - timeSpent, stepsize);
+                extendPathWithNoCollision(path, simulation, timeSpent, timeLeft, stepsize);
                 return path;
-            } else if (nextGroundHit < nextWallHit) {
-                // Simulate until ball it hits ground
-                extendPathWithNoCollision(path, simulation, timeSpent, nextGroundHit, stepsize);
-                timeSpent += nextGroundHit;
-                Vector3 vel = simulation.getVelocity();
-                simulation.setVelocity(new Vector3(vel.x, vel.y, vel.z * BALL_GROUND_BOUNCINESS));
-                checkCollision = true;
-            } else {
+            } else if (nextWallHit < nextGroundHit) {
                 // Simulate until ball it hits wall
                 extendPathWithNoCollision(path, simulation, timeSpent, nextWallHit, stepsize);
                 timeSpent += nextWallHit;
@@ -76,19 +72,39 @@ public class Ball extends Rigidbody {
                 } else {
                     simulation.setVelocity(new Vector3(vel.x, vel.y * BALL_WALL_BOUNCINESS, vel.z));
                 }
+            } else if (nextGroundHit < 1E-15) {
+                // Simulate ball rolling until it hits wall
+                simulation.setAffectedByGravity(false);
+                simulation.setVelocity(new Vector3(simulation.getVelocity().x, simulation.getVelocity().y, 0));
 
-                checkCollision = true;
+                extendPathWithNoCollision(path, simulation, timeSpent, Math.min(nextWallHit, timeLeft), stepsize);
+                if (timeLeft <= nextWallHit || nextWallHit == 0) {
+                    return path;
+                }
+                timeSpent += nextWallHit;
+                Vector3 vel = simulation.getVelocity();
+                if (!willHitSideWallNext(RADIUS)) {
+                    simulation.setVelocity(new Vector3(vel.x * BALL_WALL_BOUNCINESS, vel.y, vel.z));
+                } else {
+                    simulation.setVelocity(new Vector3(vel.x, vel.y * BALL_WALL_BOUNCINESS, vel.z));
+                }
+            } else {
+                // Simulate until ball it hits ground
+                extendPathWithNoCollision(path, simulation, timeSpent, nextGroundHit, stepsize);
+                timeSpent += nextGroundHit;
+                Vector3 vel = simulation.getVelocity();
+                simulation.setVelocity(new Vector3(vel.x, vel.y, vel.z * BALL_GROUND_BOUNCINESS));
             }
 
             timeLeft = duration - timeSpent;
-        } while (timeSpent <= duration);
+        } while (timeSpent < duration);
 
         return path;
     }
 
     /** Simulate and extend already existing path. Helper function to {@link #getPath(double, double)}. */
     private void extendPathWithNoCollision(Path path, Rigidbody ballCopy, double timeSpent, double timeLeft, double stepsize) {
-        while (timeLeft > 0) {
+        while (timeLeft - stepsize > 0) {
             timeSpent += stepsize;
             timeLeft -= stepsize;
 

@@ -3,7 +3,6 @@ package botenanna.math.zone;
 import botenanna.math.Vector3;
 
 
-
 public class Box {
     private Vector3 boxCoordinates1;
     private Vector3 boxCoordinates2;
@@ -15,20 +14,19 @@ public class Box {
     private double Maxpoint_z;
 
 
-
-
     public Box(Vector3 boxCoordinates1, Vector3 boxCoordinates2) {
         this.boxCoordinates1 = boxCoordinates1;
         this.boxCoordinates2 = boxCoordinates2;
 
-      Lowerpoint_x=Math.min(boxCoordinates1.x, boxCoordinates2.x);
-      Lowerpoint_y=Math.min(boxCoordinates1.y, boxCoordinates2.y);
-      Lowerpoint_z=Math.min(boxCoordinates1.z, boxCoordinates2.z);
-      Maxpoint_x=Math.max(boxCoordinates1.x, boxCoordinates2.x);
-      Maxpoint_y=Math.max(boxCoordinates1.y, boxCoordinates2.y);
-      Maxpoint_z=Math.max(boxCoordinates1.z, boxCoordinates2.z);
+        this.Lowerpoint_x = Math.min(boxCoordinates1.x, boxCoordinates2.x);
+        this.Lowerpoint_y = Math.min(boxCoordinates1.y, boxCoordinates2.y);
+        this.Lowerpoint_z = Math.min(boxCoordinates1.z, boxCoordinates2.z);
+        this.Maxpoint_x = Math.max(boxCoordinates1.x, boxCoordinates2.x);
+        this.Maxpoint_y = Math.max(boxCoordinates1.y, boxCoordinates2.y);
+        this.Maxpoint_z = Math.max(boxCoordinates1.z, boxCoordinates2.z);
 
     }
+
 
     public boolean isPointInBoxArea(Vector3 givenPoint) {
 

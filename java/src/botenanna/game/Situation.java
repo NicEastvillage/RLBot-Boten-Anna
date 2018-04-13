@@ -4,6 +4,7 @@ import botenanna.Ball;
 import botenanna.math.RLMath;
 import botenanna.math.Vector2;
 import botenanna.math.Vector3;
+import botenanna.math.zone.Box;
 import botenanna.physics.TimeTracker;
 import rlbot.api.GameData;
 
@@ -14,9 +15,12 @@ import rlbot.api.GameData;
 public class Situation {
 
     public static final double ARENA_LENGTH = 10280;
+    public static final double MAX_VELOCITY_NO_BOOST = 1410.1;
     public static final double ARENA_WIDTH = 8240;
     public static final Vector3 BLUE_GOAL_BOX = Vector3.BACKWARDS.scale(5000);
     public static final Vector3 ORANGE_GOAL_BOX = Vector3.FORWARD.scale(5000);
+    public static final Box ORANGE_GOAL_BOX_AREA = new Box(new Vector3(-720 , 5200 , 0), new Vector3(720 , 4000 , 1000));
+    public static final Box BLUE_GOAL_BOX_AREA = new Box(new Vector3(-720 , -5200 , 0), new Vector3(720 , -4000 , 1000));
     public static final Vector2 BLUE_GOALPOST_LEFT = new Vector2(-720, -5200);
     public static final Vector2 BLUE_GOALPOST_RIGHT = new Vector2(720, -5200);
     public static final Vector2 RED_GOALPOST_LEFT = new Vector2(-720, 5200);
@@ -53,10 +57,11 @@ public class Situation {
         this.timeTracker = timeTracker;
         gameBoostPads = new Boostpads(packet);
 
+
         /* CARS */
         myPlayerIndex = packet.getPlayerIndex();
         myCar = new Car(myPlayerIndex, packet);
-        enemyPlayerIndex = this.myPlayerIndex == 1 ? 0 :  1;
+        enemyPlayerIndex = this.myPlayerIndex == 1 ? 0 : 1;
         enemyCar = new Car(enemyPlayerIndex, packet);
 
         /* BALL */
@@ -108,10 +113,10 @@ public class Situation {
     public Vector3 getBestBoostPad(){
         double bestBoostUtility = 0;
         Vector3 bestBoostPad = null;
-        int allBoostPads = packet.getBoostPadsCount();
+        int totalBoostPads = packet.getBoostPadsCount();
         /*int[] bigBoostIndex = {7,8,9,10,11,12}; // Index of big boosts*/
 
-        for (int i = 0; i < allBoostPads; i++) {
+        for (int i = 0; i < totalBoostPads; i++) {
             GameData.BoostInfo boost = packet.getBoostPads(i);
             Vector3 boostLocation = Vector3.convert(boost.getLocation());
 
@@ -129,6 +134,38 @@ public class Situation {
         }
 
         return bestBoostPad; // Return the boostPad with highest utility
+    }
+
+    /* Method that returns true if myCar has ball possession by comparing using utility
+    * The car with the highest utility is the car with possession. */
+    public boolean whoHasPossession(){
+        double myUtility = possessionUtility(myCar);
+        double enemyUtility = possessionUtility(enemyCar);
+
+        return (myUtility >= enemyUtility);
+    }
+
+    /* Help function to calculate and return the possession utility of a given car
+    * Currently weighed equally and therefore can be considered inaccurate. Requires more testing. */
+    private double possessionUtility (Car car){
+        double distanceUtility = 1-car.position.getDistanceTo(ball.getPosition())/ARENA_LENGTH;
+        double angleUtility = Math.cos(car.angleToBall);
+        double velocityUtility = car.velocity.getMagnitude()/MAX_VELOCITY_NO_BOOST;
+
+        // Returns the total utility points.
+        return distanceUtility + angleUtility + velocityUtility;
+    }
+
+    public double whichSideOfPlane(Vector3 pointVector){
+        // Determine vector to the given point from front vector
+        Vector3 vectorToPoint = pointVector.minus(myCar.position);
+
+        // Find angle to the given point
+        return myCar.frontVector.getAngleTo(vectorToPoint);
+    }
+
+    public Box getEnemyBoxArea(int playerIndex) {
+        return playerIndex == 0 ? ORANGE_GOAL_BOX_AREA : BLUE_GOAL_BOX_AREA;
     }
 
     /** Used to access GameTickPacket */

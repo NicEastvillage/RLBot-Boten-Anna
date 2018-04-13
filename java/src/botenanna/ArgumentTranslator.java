@@ -9,6 +9,7 @@ import java.util.function.Function;
 public class ArgumentTranslator {
     public static Function<Situation, Object> get(String key) throws UnknownBTKeyException {
         switch (key) {
+
             case "my_index": return (Situation a) -> a.myPlayerIndex;          // index (int)
             case "enemy_index": return (Situation a) -> a.enemyPlayerIndex;    // index (int)
 
@@ -26,6 +27,8 @@ public class ArgumentTranslator {
             case "enemy_goal_box": return (Situation a) -> a.getGoalBox(a.enemyPlayerIndex); // Vector3
             case "my_corner_plus": return (Situation a) ->  a.getMyCorner(1);       // Vector3
             case "my_corner_minus": return (Situation a) ->  a.getMyCorner(-1);     // Vector3
+
+            case "enemy_goal": return (Situation a) -> a.getEnemyBoxArea(a.myPlayerIndex);     // Box
 
             case "ball_land_time": return (Situation a) -> a.ballLandingTime;       // time (double)
             case "ball_land_pos": return (Situation a) -> a.ballLandingPosition;    // Vector3
