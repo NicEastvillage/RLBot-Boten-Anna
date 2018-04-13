@@ -5,5 +5,5 @@ Selector
 	Sequencer
 	    GuardIsMidAir
 		GuardWillBallHitGoal enemy_goal
-		TaskGoTowardsPoint ball_land_pos false true
+		TaskAdjustAirRotation ball_land_pos
 	TaskAdjustAirRotation ball_land_pos
