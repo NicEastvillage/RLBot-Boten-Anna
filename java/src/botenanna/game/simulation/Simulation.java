@@ -25,7 +25,7 @@ public class Simulation {
         }
         Ball simulatedBall = simulateBall(situation.ball, step);
         Car simulatedMyCar = simulateCarActions(situation.myCar, action,  simulatedBall, step);
-        Car simulatedEnemyCar = steppedCar(situation.enemyCar,  step);
+        Car simulatedEnemyCar = steppedCar(situation.enemyCar,  step ,simulatedBall);
         Boostpads simulatedBoostpads = simulateBoostpads(situation.gameBoostPads, simulatedEnemyCar, simulatedMyCar, step);
 
         return new Situation(simulatedMyCar, simulatedEnemyCar, simulatedBall , simulatedBoostpads);
@@ -37,7 +37,7 @@ public class Simulation {
     private static Boostpads simulateBoostpads(Boostpads currentGamePads, Car enemy, Car myCar, double step) {
         ArrayList<Pair<Vector3, Boolean>> simulatedArray = new ArrayList<>(NUM_PADS);
         boolean active;
-        //Checks all the boost pads and if a car who an take boost is at the point it will be deactive;
+        //Checks all the boost pads and if a car who can take boost is at the point it will be deactive;
         for (int i = 0; i> NUM_PADS; i++){
             active = (!(currentGamePads.get(i).getKey().getDistanceTo(myCar.getPosition()) < 20) || myCar.getBoost() >= 100) &&
                     (!(currentGamePads.get(i).getKey().getDistanceTo(enemy.getPosition()) < 20) || myCar.getBoost() >= 100);
@@ -59,9 +59,10 @@ public class Simulation {
     }
 
     /** Steppes the cars rigidbody forward 1 step
-     * @param car is the car with no output
+     * @param oldcar is the car with no output
      * @return a simulated car                                    */
-    private static Car steppedCar(Car car, double step) {
+    private static Car steppedCar(Car oldcar, double step , Ball ball) {
+        Car car = new Car(oldcar, ball.getPosition());
         Rigidbody placeholder = car.stepped(1*step);
         car.setPosition(placeholder.getPosition());
         car.setRotation(placeholder.getRotation());
@@ -76,7 +77,7 @@ public class Simulation {
     private static Car simulateCarActions(Car inputCar , ActionSet action, Ball ball, double step){
 
         //Cars and starting direction
-        Car simulatedCar = inputCar;
+        Car simulatedCar = new Car(inputCar, ball.getPosition());
         Vector3 direction = RLMath.carFrontVector(simulatedCar.getRotation());
         double accelerationRate = (action.isBoostDepressed() && inputCar.getBoost()!=0) ? ACCELERATION_BOOST*step : ACCELERATION*step;
         double acceleration = accelerationRate*action.getThrottle();
@@ -102,7 +103,7 @@ public class Simulation {
         simulatedCar.setRotation(rotation);
 
         //After having changed the car according to its input, step it once.
-        simulatedCar = steppedCar(simulatedCar, step);
+        simulatedCar = steppedCar(simulatedCar, step , ball);
 
         /* TODO Uncomment when boost is used, for now it serves little purpose to give the simulation more boost
         //Checks if the car has gained boost during the simulation
