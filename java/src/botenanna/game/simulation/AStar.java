@@ -109,12 +109,12 @@ public class AStar {
         double[] newThrottles = getFollowingDirections(current == null ? 0 : current.getThrottle());
         double[] newSteerings = getFollowingDirections(current == null ? 0 : current.getSteer());
         // pitch and roll is 0, if car is grounded
-        double[] newPitches = situation.myCar.isMidAir ? getFollowingDirections(current == null ? 0 : current.getPitch()) : new double[]{0};
-        double[] newRolls = situation.myCar.isMidAir ? getFollowingDirections(current == null ? 0 : current.getRoll()) : new double[]{0};
+        double[] newPitches = situation.myCar.isMidAir() ? getFollowingDirections(current == null ? 0 : current.getPitch()) : new double[]{0};
+        double[] newRolls = situation.myCar.isMidAir() ? getFollowingDirections(current == null ? 0 : current.getRoll()) : new double[]{0};
         // jump is false, if jumping has no effect // FIXME With current implementation, second jump will always be one step long
-        boolean[] newJumps = !situation.myCar.hasDoubleJumped ? new boolean[]{true, false} : new boolean[]{false};
+        boolean[] newJumps = !situation.myCar.isHasDoubleJumped() ? new boolean[]{true, false} : new boolean[]{false};
         // boost is false, if car has no boost
-        boolean[] newBoosts = situation.myCar.boost > 0 ? new boolean[]{true, false} : new boolean[]{false};
+        boolean[] newBoosts = situation.myCar.getBoost() > 0 ? new boolean[]{true, false} : new boolean[]{false};
         boolean[] newSlides = new boolean[]{true, false};
 
         for (double throttle : newThrottles) {

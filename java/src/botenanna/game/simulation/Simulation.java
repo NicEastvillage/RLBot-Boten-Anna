@@ -86,14 +86,14 @@ public class Simulation {
         maxVel = boosting ? MAX_VELOCITY_BOOST : MAX_VELOCITY;
 
         // Car steer simulation also set car yaw //  TODO add steer speed
-        if (action.getSteer()!=0 && (action.getThrottle()!=0 || simulatedCar.getVelocity().getMagnitude()!=0 || simulatedCar.isMidAir)){
+        if (action.getSteer()!=0 && (action.getThrottle()!=0 || simulatedCar.getVelocity().getMagnitude()!=0 || simulatedCar.isMidAir())){
             //If the car can and is turning, change the direction of the car and the simulated cars rotation
             direction = direction.asVector2().turn((action.getSteer()*TURN_RATE)*step).asVector3(); // FIXME Only rotates around z-axis
             rotation.yaw += (action.getSteer()*TURN_RATE*step); //TODO Make yaw final
         }
 
         // Car Pitch & Roll simulation SIMPLE VERSION  //TODO add roll and pitch speeds, roll acceleration? Better not worry as the car can correct itself
-        if (simulatedCar.isMidAir)rotation = simulateRaP(simulatedCar.getRotation(),  action,  step);
+        if (simulatedCar.isMidAir())rotation = simulateRaP(simulatedCar.getRotation(),  action,  step);
 
         // Car Velocity changes
         simulatedCar.setVelocity(simulateVel(simulatedCar.getVelocity(), acceleration, direction,direction, action, step));
@@ -123,7 +123,7 @@ public class Simulation {
                 simulatedCar.setBoost(inputCar.getBoost()+12);
             }
         }*/
-        return new Car(simulatedCar,ball);
+        return new Car(simulatedCar, ball.getPosition());
     }
 
     /** Simulates the car's rotation roll and pitch based on the actionSet given

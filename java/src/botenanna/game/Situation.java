@@ -82,8 +82,8 @@ public class Situation {
     }
     // Constructor  for simulation
     public Situation(Car car, Car enemyCar, Ball ball, Boostpads pads) {
-        this.myPlayerIndex = car.playerIndex;
-        this.enemyPlayerIndex = enemyCar.playerIndex;
+        this.myPlayerIndex = car.getPlayerIndex();
+        this.enemyPlayerIndex = enemyCar.getPlayerIndex();
         this.myCar = car;
         this.enemyCar = enemyCar;
         this.ball = ball;
@@ -194,7 +194,7 @@ public class Situation {
                 velocity = 800;
             } else velocity = myCar.getVelocity().getMagnitude();
 
-            if (-25 < expectedBall.minus(myCar.getPosition().plus(myCar.frontVector.scale(70))).getMagnitude() - velocity * predict && expectedBall.minus(myCar.getPosition().plus(myCar.frontVector.scale(70))).getMagnitude() - velocity * predict < 25) {
+            if (-25 < expectedBall.minus(myCar.getPosition().plus(myCar.getFrontVector().scale(70))).getMagnitude() - velocity * predict && expectedBall.minus(myCar.getPosition().plus(myCar.getFrontVector().scale(70))).getMagnitude() - velocity * predict < 25) {
                 predictSeconds = predict;
             }
 

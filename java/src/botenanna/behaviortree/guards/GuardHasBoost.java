@@ -34,7 +34,7 @@ public class GuardHasBoost extends Leaf {
     @Override
     public NodeStatus run(Situation input) throws MissingNodeException {
 
-        if (amount <= input.myCar.boost) {
+        if (amount <= input.myCar.getBoost()) {
             // Return success
             return NodeStatus.DEFAULT_SUCCESS;
         }

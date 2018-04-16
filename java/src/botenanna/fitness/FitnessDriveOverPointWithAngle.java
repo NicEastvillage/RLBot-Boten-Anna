@@ -37,7 +37,7 @@ public class FitnessDriveOverPointWithAngle implements FitnessInterface {
      *  @return a fitness value for the given situation. */
     @Override
     public double calculateFitness(Situation situation, double timeSpent){
-        return calculateFitnessValue(situation.myCar.getPosition(), situation.myCar.frontVector, timeSpent, situation.myCar.getVelocity());
+        return calculateFitnessValue(situation.myCar.getPosition(), situation.myCar.getFrontVector(), timeSpent, situation.myCar.getVelocity());
     }
 
     /**	Takes the needed information and calculates the fitness value.

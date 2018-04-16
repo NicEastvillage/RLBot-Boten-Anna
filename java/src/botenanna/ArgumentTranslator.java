@@ -30,8 +30,8 @@ public class ArgumentTranslator {
             case "ball_land_time": return (Situation a) -> a.ballLandingTime;       // time (double)
             case "ball_land_pos": return (Situation a) -> a.ballLandingPosition;    // Vector3
 
-            case "ang_ball": return (Situation a) -> a.myCar.angleToBall;           // angle (double)
-            case "enemy_ang_ball": return (Situation a) -> a.enemyCar.angleToBall;  // angle (double)
+            case "ang_ball": return (Situation a) -> a.myCar.getAngleToBall();           // angle (double)
+            case "enemy_ang_ball": return (Situation a) -> a.enemyCar.getAngleToBall();  // angle (double)
 
             default: throw new UnknownBTKeyException(key);
         }

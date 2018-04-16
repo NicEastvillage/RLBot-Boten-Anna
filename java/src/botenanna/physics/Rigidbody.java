@@ -14,6 +14,7 @@ public class Rigidbody implements Cloneable {
     private Vector3 velocity = new Vector3();
     private Vector3 acceleration = new Vector3();
     private Vector3 rotation = new Vector3();
+    private Vector3 angularVelocity = new Vector3();
 
     private boolean affectedByGravity = false;
 
@@ -315,5 +316,13 @@ public class Rigidbody implements Cloneable {
 
     public void setRotation(Vector3 rotation) {
         this.rotation = rotation;
+    }
+
+    public Vector3 getAngularVelocity() {
+        return angularVelocity;
+    }
+
+    public void setAngularVelocity(Vector3 angularVelocity) {
+        this.angularVelocity = angularVelocity;
     }
 }
