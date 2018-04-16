@@ -113,7 +113,8 @@ public class MeasurementDisplay extends VBox {
                 try (PrintWriter out = new PrintWriter(new FileWriter(file, true))) {
                     out.println(nf.format(time.getElapsedSecondsTimer()) + ";"
                             + nf.format(lastVelocity[0]) + ";"
-                            + nf.format(newVelocity - lastVelocity[0]) + ";");
+                            + nf.format(newVelocity - lastVelocity[0]) + ";"
+                            + nf.format(car.rotation.yaw) + ";");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
