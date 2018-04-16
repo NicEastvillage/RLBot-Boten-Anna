@@ -55,7 +55,7 @@ public class FitnessShootInDirection implements FitnessInterface {
         double distanceToBall = ballLocation.getDistanceTo(carLocation);
         double angleDiffernce = desiredShotDirection.getAngleTo(currentShotDirection);
 
-        return (Math.pow(Math.E, -(timeSpent + (distanceToBall / DIST_SCALE) + angleDiffernce * ANGLE_SCALE)));
+        return -(timeSpent + (distanceToBall / DIST_SCALE) + angleDiffernce * ANGLE_SCALE);
     }
 
     /** Checks if the deviations are fulfilled.

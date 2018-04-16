@@ -124,9 +124,6 @@ public class FitnessDriveOverPointWithAngleTest {
 
         double fitnessValue2 = fitness2.calculateFitnessValue(myPos2, myDirection2,3, myCarVelocity2);
 
-        System.out.println(fitnessValue1);
-        System.out.println(fitnessValue2);
-
         assertTrue(fitnessValue1 < fitnessValue2);
     }
 
