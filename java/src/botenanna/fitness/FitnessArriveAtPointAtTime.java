@@ -50,7 +50,7 @@ public class FitnessArriveAtPointAtTime implements FitnessInterface {
         double velocity = myVelocity.getMagnitude(); // Velocity
         double timeValue = (timeSpent < arrivalTime) ? timeSpent / arrivalTime : -(timeSpent/arrivalTime) + 2;
 
-        return Math.pow(Math.E, -(distToPoint / DIST_SCALE) + (velocity / VEL_SCALE)) * timeValue;
+        return -((distToPoint / DIST_SCALE) + (velocity / VEL_SCALE)) * timeValue;
     }
 
     /** Checks if the deviations are fulfilled.

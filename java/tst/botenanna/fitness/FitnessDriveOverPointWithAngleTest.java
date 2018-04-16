@@ -25,7 +25,7 @@ public class FitnessDriveOverPointWithAngleTest {
 
         double fitnessValue = fitness.calculateFitnessValue(myPos, myDirection,10, velocity);
 
-        assertEquals(-5.2985724020139235189E-8, fitnessValue,1E-20);
+        assertEquals(58.329620035741777241, fitnessValue,1E-10);
 
     }
 
@@ -43,7 +43,7 @@ public class FitnessDriveOverPointWithAngleTest {
 
         double fitnessValue = fitness.calculateFitnessValue(myPos, myDirection,4, velocity);
 
-        assertEquals(-0.00012110219072383959279, fitnessValue,1E-18);
+        assertEquals(15.632299441756103165, fitnessValue,1E-10);
     }
 
     @Test
@@ -61,7 +61,7 @@ public class FitnessDriveOverPointWithAngleTest {
 
         double fitnessValue = fitness.calculateFitnessValue(myPos, myDirection,10, velocity);
 
-        assertEquals(5.2985724020139235189E-8, fitnessValue,1E-20);
+        assertEquals(-58.329620035741777241, fitnessValue,1E-10);
 
     }
 
@@ -79,7 +79,7 @@ public class FitnessDriveOverPointWithAngleTest {
 
         double fitnessValue = fitness.calculateFitnessValue(myPos, myDirection,4, velocity);
 
-        assertEquals(0.00012110219072383959279, fitnessValue,1E-18);
+        assertEquals(-15.632299441756103165, fitnessValue,1E-10);
     }
 
     @Test
@@ -96,35 +96,35 @@ public class FitnessDriveOverPointWithAngleTest {
 
         double fitnessValue = fitness.calculateFitnessValue(myPos, myDirection,0, velocity);
 
-        assertEquals(-0.00022931730147115153045, fitnessValue,1E-18);
+        assertEquals(Double.MIN_VALUE, fitnessValue, 1E-100);
     }
 
     @Test
     public void calculateFitnessValueComparison01(){
 
-        Vector3 destinationPoint1 = new Vector3(-100,-100,0);
-        Vector3 nextPoint1 = new Vector3(750,1250,0);
-        Vector3 myCarVelocity1 = new Vector3(1400,0,0);
+        Vector3 destinationPoint1 = new Vector3(750,500,0);
+        Vector3 nextPoint1 = new Vector3(750,0,0);
+        Vector3 myCarVelocity1 = new Vector3(400,0,0);
 
         FitnessDriveOverPointWithAngle fitness1 = new FitnessDriveOverPointWithAngle(new Path(destinationPoint1), new Path(nextPoint1), 0.2,0.2, true);
 
         Vector3 myDirection1 = new Vector3(10,0,0);
-        Vector3 myPos1 = new Vector3(20,20,0);
+        Vector3 myPos1 = new Vector3(0,0,0);
 
-        double fitnessValue1 = fitness1.calculateFitnessValue(myPos1, myDirection1,4, myCarVelocity1);
+        double fitnessValue1 = fitness1.calculateFitnessValue(myPos1, myDirection1,3, myCarVelocity1);
 
-        Vector3 destinationPoint2 = new Vector3(-100,-100,0);
-        Vector3 nextPoint2 = new Vector3(750,1250,0);
+        Vector3 nextPoint2 = new Vector3(750,100,0);
+        Vector3 destinationPoint2 = new Vector3(750,0,0);
 
         FitnessDriveOverPointWithAngle fitness2 = new FitnessDriveOverPointWithAngle(new Path(destinationPoint2), new Path(nextPoint2), 0.2,0.2, true);
 
         Vector3 myDirection2 = new Vector3(10,0,0);
         Vector3 myPos2 = new Vector3(0,0,0);
-        Vector3 myCarVelocity2 = new Vector3(500,0,0);
+        Vector3 myCarVelocity2 = new Vector3(300,0,0);
 
         double fitnessValue2 = fitness2.calculateFitnessValue(myPos2, myDirection2,3, myCarVelocity2);
 
-        assertTrue(fitnessValue1 > fitnessValue2);
+        assertTrue(fitnessValue1 < fitnessValue2);
     }
 
 
