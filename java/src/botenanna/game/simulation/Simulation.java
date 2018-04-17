@@ -70,41 +70,53 @@ public class Simulation {
     /** Simulates a car with actions **
      * @param action the current actions from the Agent
      * @return a Car simulated forward in  the new situation     */
-    private static Car simulateCarActions(Car inputCar , ActionSet action, Rigidbody ball, double step){
+    private static Car simulateCarActions(Car inputCar , ActionSet action, Rigidbody ball, double delta){
 
-        //Cars and starting direction
-        Car simulatedCar = new Car(inputCar);
-        Vector3 direction = RLMath.carFrontVector(simulatedCar.getRotation());
-        double accelerationRate = (action.isBoostDepressed() && inputCar.getBoost()!=0) ? ACCELERATION_BOOST*step : ACCELERATION*step;
-        double acceleration = accelerationRate*action.getThrottle();
-        Vector3 rotation = simulatedCar.getRotation();
+        Car car = new Car(inputCar);
 
-        boosting = (action.isBoostDepressed() && simulatedCar.getBoost()!=0);
-        maxVel = boosting ? MAX_VELOCITY_BOOST : MAX_VELOCITY;
+        boosting = (action.isBoostDepressed() && car.getBoost() != 0);
 
-        // Car steer simulation also set car yaw //  TODO add steer speed
-        if (action.getSteer()!=0 && (action.getThrottle()!=0 || simulatedCar.getVelocity().getMagnitude()!=0 || simulatedCar.isMidAir())){
-            //If the car can and is turning, change the direction of the car and the simulated cars rotation
-            direction = direction.asVector2().turn((action.getSteer()*TURN_RATE)*step).asVector3(); // FIXME Only rotates around z-axis
-            rotation.yaw += (action.getSteer()*TURN_RATE*step); //TODO Make yaw final
+        if (car.isMidAir()) {
+
+        } else {
+            // We are on the ground
+            double newYaw = TURN_RATE * action.getSteer() * delta;
+            car.setRotation(car.getRotation().withYaw(newYaw));
+
+            Vector3 acceleration = new Vector3();
+
+            if (boosting) {
+                acceleration = acceleration.plus(car.getFrontVector().scale(ACCELERATION_BOOST));
+            } else if (action.getThrottle() != 0) {
+                acceleration = acceleration.plus(car.getFrontVector().scale(ACCELERATION * action.getThrottle()));
+            } else {
+                // we assume our velocity is never sideways
+                acceleration = acceleration.plus(car.getVelocity().getNormalized().scale(DECELERATION));
+            }
+
+            if (action.getSteer() != 0) {
+                acceleration.scale(TURN_ACCELERATION_DECREASE);
+            }
+
+            car.setAcceleration(acceleration);
         }
 
+        /*
         // Car Pitch & Roll simulation SIMPLE VERSION  //TODO add roll and pitch speeds, roll acceleration? Better not worry as the car can correct itself
-        if (simulatedCar.isMidAir())rotation = simulateRaP(simulatedCar.getRotation(),  action,  step);
+        if (car.isMidAir())rotation = simulateRaP(car.getRotation(),  action,  delta);
 
         // Car Velocity changes
-        simulatedCar.setVelocity(simulateVel(simulatedCar.getVelocity(), acceleration, direction,direction, action, step));
+        car.setVelocity(simulateVel(car.getVelocity(), acceleration, direction,direction, action, delta));
 
         //Add simulated changes to rotation
-        simulatedCar.setRotation(rotation);
+        car.setRotation(rotation);*/
 
-        //After having changed the car according to its input, step it once.
-        simulatedCar = steppedCar(simulatedCar, step);
+        //After having changed the car according to its input, delta it once.
 
         /* TODO Uncomment when boost is used, for now it serves little purpose to give the simulation more boost
         //Checks if the car has gained boost during the simulation
         Boolean bigBoost = false;
-        Boostpads boost = simulateBoostpads(situation, situation.enemyCar ,situation.myCar, step);
+        Boostpads boost = simulateBoostpads(situation, situation.enemyCar ,situation.myCar, delta);
 
         for (int i = 0; i>NUM_PADS ;i++){
             for (int j = 0; j>NUM_BIGBOOST; j++){//Checks if the boost is big
@@ -121,42 +133,8 @@ public class Simulation {
             }
         }*/
 
-        return simulatedCar;
-    }
+        car = steppedCar(car, delta);
 
-    /** Simulates the car's rotation roll and pitch based on the actionSet given
-     * @return the simulated car but with a new rotation                     */
-    private static Vector3 simulateRaP(Vector3 rotation,  ActionSet action, double step){
-        if (action.getRoll() != 0) {
-            rotation.roll += action.getRoll()*step;
-        }
-        if (action.getPitch() != 0) {
-            rotation.pitch += action.getPitch()*step;
-        }
-        return rotation;
+        return car;
     }
-
-    /** Simulates the cars velocity based on the actions and current acceleration
-     * @return a velocity vector
-     */
-    private static Vector3 simulateVel(Vector3 velocity, double acceleration, Vector3 originalDirection, Vector3 direction, ActionSet action, double step){
-        //Add acceleration to the current velocity
-        if ((boosting || acceleration!=0) && velocity.asVector2().getMagnitude()<maxVel){
-            // If the car is sliding the car will keep moving in the direction of its original front vector
-            if (action.isSlideDepressed()){
-               velocity = (velocity.plus(originalDirection.scale(acceleration*step)));
-            }
-            else velocity = velocity.plus(direction.scale(acceleration*step));
-        }
-        else if (!boosting){
-            if (acceleration<0){
-                velocity =  velocity.plus(direction.scale(acceleration*step));
-            }
-            if (acceleration==0 ){
-                velocity = velocity.scale(DECELERATION*step);
-            }
-        }
-        return velocity;
-    }
-
 }

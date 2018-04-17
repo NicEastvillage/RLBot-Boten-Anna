@@ -14,8 +14,11 @@ public class Car extends Rigidbody {
     public final static double TURN_RATE = Math.toRadians(5); // TODO Turn rate is a function of current speed
     public final static double MAX_VELOCITY = 1410;
     public final static double MAX_VELOCITY_BOOST = 2300;
+    public final static double TURN_ACCELERATION_DECREASE = 0.85;
+    public final static double MAX_VELOCITY_WHILE_TURNING = MAX_VELOCITY * TURN_ACCELERATION_DECREASE;
+    public final static double MAX_VELOCITY_WHILE_TURNING_BOOST = MAX_VELOCITY_BOOST * TURN_ACCELERATION_DECREASE;
     public final static double SUPERSONIC_SPEED_REQUIRED = MAX_VELOCITY_BOOST * 0.95;
-    public final static double DECELERATION = 18;
+    public final static double DECELERATION = -18;
     public final static double GROUND_OFFSET = 17.03;
 
     private final int team;
