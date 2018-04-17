@@ -36,6 +36,16 @@ public class Vector2 {
         return new Vector3(this);
     }
 
+    /** @return a NEW vector where the x is changed. */
+    public Vector2 withX(double x) {
+        return new Vector2(x, y);
+    }
+
+    /** @return a NEW vector where the y is changed. */
+    public Vector2 withY(double y) {
+        return new Vector2(x, y);
+    }
+
     /** @return this vector plus the other vector */
     public Vector2 plus(Vector2 other){
         return new Vector2(this.x + other.x, this.y + other.y);
