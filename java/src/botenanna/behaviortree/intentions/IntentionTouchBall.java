@@ -3,6 +3,7 @@ package botenanna.behaviortree.intentions;
 import botenanna.fitness.FitnessDriveOverPointWithAngle;
 import botenanna.fitness.FitnessInterface;
 import botenanna.game.Situation;
+import botenanna.physics.BallPhysics;
 import botenanna.physics.Path;
 
 /** The IntentionTouchBall is the intention to go to the ball's position. The agent will try to arrive with an
@@ -19,7 +20,7 @@ public class IntentionTouchBall extends Intention {
 
     @Override
     protected FitnessInterface getFitnessFunction(Situation input) {
-        return new FitnessDriveOverPointWithAngle(input.ball.getPath(50, STEPSIZE), new Path(Situation.getGoalBox(input.myPlayerIndex)), 0.7, 20, false);
+        return new FitnessDriveOverPointWithAngle(BallPhysics.getPath(input.ball, 50, STEPSIZE), new Path(Situation.getGoalBox(input.myPlayerIndex)), 0.7, 20, false);
     }
 
     @Override

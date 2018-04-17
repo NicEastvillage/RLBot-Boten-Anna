@@ -22,13 +22,15 @@ public class Simulation {
      * @return A new simulated situation
      **/
     public static Situation  simulate(Situation situation, double step, ActionSet action){
-        if (step < 0){
-            throw new IllegalArgumentException("Step size must be more than zero. Current Step size is: "+step);
-        }
+        if (step < 0) throw new IllegalArgumentException("Step size must be more than zero. Current Step size is: "+step);
+
         Rigidbody simulatedBall = simulateBall(situation.ball, step);
         Car simulatedMyCar = simulateCarActions(situation.myCar, action,  simulatedBall, step);
-        Car simulatedEnemyCar = steppedCar(situation.enemyCar,  step);
+        Car simulatedEnemyCar = steppedCar(situation.enemyCar, step);
         Boostpads simulatedBoostpads = simulateBoostpads(situation.gameBoostPads, simulatedEnemyCar, simulatedMyCar, step);
+
+        simulatedMyCar.setBallDependentVariables(simulatedBall.getPosition());
+        simulatedEnemyCar.setBallDependentVariables(simulatedBall.getPosition());
 
         return new Situation(simulatedMyCar, simulatedEnemyCar, simulatedBall , simulatedBoostpads);
     }
@@ -39,7 +41,7 @@ public class Simulation {
     private static Boostpads simulateBoostpads(Boostpads currentGamePads, Car enemy, Car myCar, double step) {
         ArrayList<Pair<Vector3, Boolean>> simulatedArray = new ArrayList<>(NUM_PADS);
         boolean active;
-        //Checks all the boost pads and if a car who an take boost is at the point it will be deactive;
+        //Checks all the boost pads and if a car who can take boost is at the point it will be deactive;
         for (int i = 0; i> NUM_PADS; i++){
             active = (!(currentGamePads.get(i).getKey().getDistanceTo(myCar.getPosition()) < 20) || myCar.getBoost() >= 100) &&
                     (!(currentGamePads.get(i).getKey().getDistanceTo(enemy.getPosition()) < 20) || myCar.getBoost() >= 100);
@@ -71,7 +73,7 @@ public class Simulation {
     private static Car simulateCarActions(Car inputCar , ActionSet action, Rigidbody ball, double step){
 
         //Cars and starting direction
-        Car simulatedCar = inputCar;
+        Car simulatedCar = new Car(inputCar);
         Vector3 direction = RLMath.carFrontVector(simulatedCar.getRotation());
         double accelerationRate = (action.isBoostDepressed() && inputCar.getBoost()!=0) ? ACCELERATION_BOOST*step : ACCELERATION*step;
         double acceleration = accelerationRate*action.getThrottle();
@@ -119,7 +121,7 @@ public class Simulation {
             }
         }*/
 
-        return new Car(simulatedCar);
+        return simulatedCar;
     }
 
     /** Simulates the car's rotation roll and pitch based on the actionSet given

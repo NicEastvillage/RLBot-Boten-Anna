@@ -2,6 +2,7 @@ package botenanna.overlayWindow;
 
 import botenanna.game.Situation;
 import botenanna.Ball;
+import botenanna.physics.Rigidbody;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
@@ -34,7 +35,7 @@ public class BallInfoDisplay extends VBox {
         if (input == null)
             return;
 
-        Ball ball = input.ball;
+        Rigidbody ball = input.ball;
         infoLabel.setText(String.format(
                 "Pos: %s\n" +
                 "Vel: %s\n" +
