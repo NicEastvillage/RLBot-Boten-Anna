@@ -57,8 +57,6 @@ public class Car extends Rigidbody {
         isMidAir = packet.getPlayers(index).getIsMidair();
         setBallDependentVariables(Vector3.convert(packet.getBall().getLocation()));
 
-        setAffectedByGravity(isMidAir);
-
         isOnWall = getPosition().y==Situation.ARENA_LENGTH || getPosition().x == Situation.ARENA_WIDTH || getPosition().x == -Situation.ARENA_WIDTH || getPosition().y == -Situation.ARENA_LENGTH;
     }
 
@@ -80,8 +78,6 @@ public class Car extends Rigidbody {
         isSupersonic = oldCar.isSupersonic;
         isMidAir = oldCar.isMidAir;
         setBallDependentVariables(ballPosition);
-
-        setAffectedByGravity(isMidAir());
 
         isOnWall = getPosition().y==Situation.ARENA_LENGTH || getPosition().x == Situation.ARENA_WIDTH || getPosition().x == -Situation.ARENA_WIDTH || getPosition().y == -Situation.ARENA_LENGTH;
     }
