@@ -7,19 +7,11 @@ public class SimplePhysics {
 
     public static final Vector3 GRAVITY = Vector3.DOWN.scale(650);
 
-    /** Make a copy of a Rigidbody and move it {@code time} seconds into the future.
-     * @param body the Rigidbody to be simulated
-     * @param time time passed in seconds
-     * @return a copy of {@code body} simulated {@code time} seconds. */
-    public static Rigidbody stepped(Rigidbody body, double time, boolean affectedByGravity) {
-        return step(body.clone(), time, affectedByGravity);
-    }
-
     /** Move a Rigidbody {@code time} seconds into the future.
      * @param body the Rigidbody to be simulated
      * @param time time passed in seconds
      * @return the {@code body} simulated {@code time} seconds. */
-    public static Rigidbody step(Rigidbody body, double time, boolean affectedByGravity) {
+    public static <T extends Rigidbody> T step(T body, double time, boolean affectedByGravity) {
         Vector3 actualAcceleration = affectedByGravity ? body.getAcceleration().plus(GRAVITY) : body.getAcceleration();
 
         // new_position = p + (1/2 * a * t^2) + (v * t)
@@ -42,7 +34,7 @@ public class SimplePhysics {
         Path path = new Path();
 
         for (double time = 0; time <= duration; time += stepsize) {
-            Vector3 pos = stepped(body, time, affectedByGravity).getPosition();
+            Vector3 pos = step(body.clone(), time, affectedByGravity).getPosition();
             path.addTimeStep(time, pos);
         }
 

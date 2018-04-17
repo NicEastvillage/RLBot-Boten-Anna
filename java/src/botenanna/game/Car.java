@@ -16,6 +16,7 @@ public class Car extends Rigidbody {
     public final static double MAX_VELOCITY_BOOST = 2300;
     public final static double SUPERSONIC_SPEED_REQUIRED = MAX_VELOCITY_BOOST * 0.95;
     public final static double DECELERATION = 18;
+    public final static double GROUND_OFFSET = 17.03;
 
     private final int team;
     private final int playerIndex;
@@ -61,7 +62,7 @@ public class Car extends Rigidbody {
     }
 
     /** Constructor for new car based on an old instance of car */
-    public Car(Car oldCar, Vector3 ballPosition) {
+    public Car(Car oldCar) {
 
         team = oldCar.team;
         playerIndex = oldCar.playerIndex;
@@ -77,9 +78,15 @@ public class Car extends Rigidbody {
         isDemolished = oldCar.isDemolished;
         isSupersonic = oldCar.isSupersonic;
         isMidAir = oldCar.isMidAir;
-        setBallDependentVariables(ballPosition);
+        distanceToBall = oldCar.distanceToBall;
+        angleToBall = oldCar.angleToBall;
 
         isOnWall = getPosition().y==Situation.ARENA_LENGTH || getPosition().x == Situation.ARENA_WIDTH || getPosition().x == -Situation.ARENA_WIDTH || getPosition().y == -Situation.ARENA_LENGTH;
+    }
+
+    @Override
+    public Car clone() {
+        return new Car(this);
     }
 
     public int getTeam() {

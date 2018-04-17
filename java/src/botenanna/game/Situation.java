@@ -4,6 +4,8 @@ import botenanna.Ball;
 import botenanna.math.RLMath;
 import botenanna.math.Vector2;
 import botenanna.math.Vector3;
+import botenanna.physics.Rigidbody;
+import botenanna.physics.SimplePhysics;
 import botenanna.physics.TimeTracker;
 import rlbot.api.GameData;
 
@@ -35,7 +37,7 @@ public class Situation {
     public final Car enemyCar;
 
     /* BALL */
-    public final Ball ball;
+    public final Rigidbody ball;
     public final double ballLandingTime;
     public final Vector3 ballLandingPosition;
 
@@ -63,14 +65,14 @@ public class Situation {
 
         /* BALL */
         // this.ballHasAcceleration = packet.getBall().hasAcceleration(); // What is this?
-        this.ball = new Ball(packet.getBall());
-        double landingTime = ball.predictArrivalAtHeight(Ball.RADIUS);
+        this.ball = Ball.get(packet.getBall());
+        double landingTime = SimplePhysics.predictArrivalAtHeight(ball, Ball.RADIUS, true);
         if (Double.isNaN(landingTime)) {
             this.ballLandingTime = 0;
             this.ballLandingPosition = ball.getPosition();
         } else {
             this.ballLandingTime = landingTime;
-            this.ballLandingPosition = ball.stepped(ballLandingTime).getPosition();
+            this.ballLandingPosition = SimplePhysics.step(ball.clone(), ballLandingTime, true).getPosition();
         }
 
         /* GAME */
@@ -81,7 +83,7 @@ public class Situation {
         this.gamePlayerCount = packet.getPlayersCount();
     }
     // Constructor  for simulation
-    public Situation(Car car, Car enemyCar, Ball ball, Boostpads pads) {
+    public Situation(Car car, Car enemyCar, Rigidbody ball, Boostpads pads) {
         this.myPlayerIndex = car.getPlayerIndex();
         this.enemyPlayerIndex = enemyCar.getPlayerIndex();
         this.myCar = car;
@@ -89,16 +91,16 @@ public class Situation {
         this.ball = ball;
         this.gameBoostPads = pads;
 
-
-        // Udregn
-        double landingTime = ball.predictArrivalAtHeight(Ball.RADIUS);
+        // Ball landing
+        double landingTime = SimplePhysics.predictArrivalAtHeight(ball, Ball.RADIUS, true);
         if (Double.isNaN(landingTime)) {
             this.ballLandingTime = 0;
             this.ballLandingPosition = ball.getPosition();
         } else {
             this.ballLandingTime = landingTime;
-            this.ballLandingPosition = ball.stepped(ballLandingTime).getPosition();
+            this.ballLandingPosition = SimplePhysics.step(ball.clone(), ballLandingTime, true).getPosition();
         }
+
         // TODO Hardcode Specific situations in simulation
         this.gameIsKickOffPause = false;
         this.gameIsMatchEnded = false;

@@ -16,7 +16,7 @@ public class Ball {
 
     /** Create a ball from the GameData's BallInfo. This way position, velocity,
      * acceleration, rotation and gravity is set immediately. */
-    public Rigidbody get(GameData.BallInfo ball) {
+    public static Rigidbody get(GameData.BallInfo ball) {
         Rigidbody body = new Rigidbody();
         body.setPosition(Vector3.convert(ball.getLocation()));
         body.setVelocity(Vector3.convert(ball.getVelocity()));

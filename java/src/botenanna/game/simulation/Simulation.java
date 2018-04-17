@@ -4,7 +4,9 @@ import botenanna.Ball;
 import botenanna.game.*;
 import botenanna.math.RLMath;
 import botenanna.math.Vector3;
+import botenanna.physics.BallPhysics;
 import botenanna.physics.Rigidbody;
+import botenanna.physics.SimplePhysics;
 import javafx.util.Pair;
 import java.util.ArrayList;
 import static botenanna.game.Boostpads.*;
@@ -23,7 +25,7 @@ public class Simulation {
         if (step < 0){
             throw new IllegalArgumentException("Step size must be more than zero. Current Step size is: "+step);
         }
-        Ball simulatedBall = simulateBall(situation.ball, step);
+        Rigidbody simulatedBall = simulateBall(situation.ball, step);
         Car simulatedMyCar = simulateCarActions(situation.myCar, action,  simulatedBall, step);
         Car simulatedEnemyCar = steppedCar(situation.enemyCar,  step);
         Boostpads simulatedBoostpads = simulateBoostpads(situation.gameBoostPads, simulatedEnemyCar, simulatedMyCar, step);
@@ -46,34 +48,27 @@ public class Simulation {
         return new Boostpads(simulatedArray);
     }
 
-    /**
-     * @return a new ball who has been stepped forward its path, if the ball is in the air the velocity will slow.
-     * //TODO Add velocity loss on the ground
-     */
-    public static Ball simulateBall(Ball ball, double step)    {
-        Vector3 pathPosition = ball.getPath(step,100).getLastItem();
-        if (ball.getPosition().z>0 && pathPosition.z>0){
-            return new Ball(pathPosition, ball.getVelocity().scale(0.97*step), ball.getRotation());
-        }
-        return new Ball(pathPosition,ball.getVelocity(),ball.getRotation());
+    /** @return a new ball which has been moved forwards. */
+    public static Rigidbody simulateBall(Rigidbody ball, double step)    {
+        return BallPhysics.step(ball.clone(), step);
     }
 
-    /** Steppes the cars rigidbody forward 1 step
-     * @param car is the car with no output
-     * @return a simulated car                                    */
+    /** @return a new car which has been moved forwards. */
     private static Car steppedCar(Car car, double step) {
-        Rigidbody placeholder = car.stepped(1*step);
-        car.setPosition(placeholder.getPosition());
-        car.setRotation(placeholder.getRotation());
-        car.setVelocity(placeholder.getVelocity());
-        car.setAcceleration(placeholder.getAcceleration());
-        return car;
+        Car newCar = SimplePhysics.step(car.clone(), step, car.isMidAir());
+        Vector3 pos = newCar.getPosition();
+        if (pos.z < Car.GROUND_OFFSET) {
+            //Hit ground
+            newCar.setPosition(new Vector3(pos.x, pos.y, Car.GROUND_OFFSET));
+            newCar.setVelocity(newCar.getVelocity().asVector2().asVector3());
+        }
+        return newCar;
     }
 
     /** Simulates a car with actions **
      * @param action the current actions from the Agent
      * @return a Car simulated forward in  the new situation     */
-    private static Car simulateCarActions(Car inputCar , ActionSet action, Ball ball, double step){
+    private static Car simulateCarActions(Car inputCar , ActionSet action, Rigidbody ball, double step){
 
         //Cars and starting direction
         Car simulatedCar = inputCar;
@@ -123,7 +118,8 @@ public class Simulation {
                 simulatedCar.setBoost(inputCar.getBoost()+12);
             }
         }*/
-        return new Car(simulatedCar, ball.getPosition());
+
+        return new Car(simulatedCar);
     }
 
     /** Simulates the car's rotation roll and pitch based on the actionSet given
