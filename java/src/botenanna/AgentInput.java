@@ -140,7 +140,12 @@ public class AgentInput {
         return new Vector3(x*3070, 4100*getGoalDirection(myPlayerIndex));
     }
 
-        /** @return a double for the time to collision between ball and car  */
+    /** @return the time since last packat*/
+    public double getDeltaTime() {
+        return deltaTime;
+    }
+
+    /** @return a double for the time to collision between ball and car  */
     public double getCollisionTime() {
 
         // TODO CLEAN UP THE CODE AND IMPROVE PREDICTION
