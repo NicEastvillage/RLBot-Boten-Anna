@@ -57,12 +57,13 @@ public class Simulation {
 
     /** @return a new car which has been moved forwards. */
     private static Car steppedCar(Car car, double step) {
-        Car newCar = SimplePhysics.step(car.clone(), step, car.isMidAir());
+        Car newCar = SimplePhysics.step(car, step, car.isMidAir());
         Vector3 pos = newCar.getPosition();
         if (pos.z < Car.GROUND_OFFSET) {
             //Hit ground
             newCar.setPosition(new Vector3(pos.x, pos.y, Car.GROUND_OFFSET));
             newCar.setVelocity(newCar.getVelocity().asVector2().asVector3());
+            newCar.setIsMidAir(false);
         }
         return newCar;
     }

@@ -51,7 +51,8 @@ public class AStar {
             }
 
             openSet.remove(current);
-            System.out.println(fitness.calculateFitness(current.situation, current.timeSpent));
+            System.out.println(current.situation.myCar.getAcceleration());
+            //System.out.println(fitness.calculateFitness(current.situation, current.timeSpent));
 
             // Try all sensible actions and simulate what situations they create
             List<ActionSet> followingActions = getFollowingActionSets(current.situation, current.actionTaken);
@@ -104,7 +105,6 @@ public class AStar {
         */
 
         List<ActionSet> following = new LinkedList<>();
-        following.add(current);
 
         double[] newThrottles = getFollowingDirections(current == null ? 0 : current.getThrottle());
         double[] newSteerings = getFollowingDirections(current == null ? 0 : current.getSteer());

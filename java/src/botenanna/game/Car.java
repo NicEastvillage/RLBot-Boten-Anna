@@ -212,4 +212,8 @@ public class Car extends Rigidbody {
     public double getAngleToBall() {
         return angleToBall;
     }
+
+    public void setIsMidAir(boolean midAir) {
+        isMidAir = midAir;
+    }
 }
