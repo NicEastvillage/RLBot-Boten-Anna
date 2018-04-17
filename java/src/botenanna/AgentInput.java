@@ -24,6 +24,7 @@ public class AgentInput {
 
     private GameData.GameTickPacket packet;
     private TimeTracker timeTracker;
+    private double deltaTime;
 
     /* CARS */
     public final int myPlayerIndex;
@@ -43,12 +44,15 @@ public class AgentInput {
     public final boolean gameIsRoundActive;
     public final int gamePlayerCount;
 
+
     /** The constructor.
      * @param packet the GameTickPacket.
      * @param timeTracker the class that tracks and handles time. */
-    public AgentInput(GameData.GameTickPacket packet, TimeTracker timeTracker){
+    public AgentInput(GameData.GameTickPacket packet, TimeTracker timeTracker, double delta){
         this.packet = packet;
         this.timeTracker = timeTracker;
+
+        this.deltaTime = delta;
 
         /* CARS */
         myPlayerIndex = packet.getPlayerIndex();

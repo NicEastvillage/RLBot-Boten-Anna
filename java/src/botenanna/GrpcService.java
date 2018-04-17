@@ -15,6 +15,7 @@ public class GrpcService extends BotGrpc.BotImplBase {
     private TimeTracker timeTracker = new TimeTracker();
     private Map<Integer, Bot> registeredBots = new HashMap<>();
     private ArrayBlockingQueue<Bot> botUpdateQueue;
+    private double timeSinceLastPacket =  0;
 
     public GrpcService(ArrayBlockingQueue<Bot> botUpdateQueue) {
         this.botUpdateQueue = botUpdateQueue;
@@ -47,9 +48,10 @@ public class GrpcService extends BotGrpc.BotImplBase {
             }
 
             request.getGameInfo().getGameTimeRemaining();
-
             // Rework the package
-            AgentInput input = new AgentInput(request, timeTracker);
+            double delta = timeTracker.getSecondsSinceServerStart()-timeSinceLastPacket;
+            AgentInput input = new AgentInput(request, timeTracker, delta);
+            timeSinceLastPacket = timeTracker.getSecondsSinceServerStart();
 
             // Create and register bot from this packet if necessary
             synchronized (this) {
