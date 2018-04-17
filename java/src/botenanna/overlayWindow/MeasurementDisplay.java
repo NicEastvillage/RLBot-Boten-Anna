@@ -14,6 +14,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import sun.management.Agent;
 
 import java.io.*;
 import java.text.DecimalFormat;
@@ -32,7 +33,9 @@ public class MeasurementDisplay extends VBox {
     private AgentInput.Car car;
     private boolean timerIsRunning;
     private double newVelocity;
-    private final double[] lastVelocity = {0};
+    private double lastVelocity;
+    private double newRotation;
+    private double lastRotation;
 
     public MeasurementDisplay() throws FileNotFoundException {
         super();
@@ -108,17 +111,21 @@ public class MeasurementDisplay extends VBox {
             File file = new File(System.getProperty("user.home"), "/Desktop/velocity.csv");
             NumberFormat nf = new DecimalFormat("##.#####");
             newVelocity = car.velocity.getMagnitude();
-            if (newVelocity != lastVelocity[0]) {
+            newRotation = car.rotation.yaw;
+            if (newVelocity != lastVelocity) {
                 System.out.println(time.getElapsedSecondsTimer());
                 try (PrintWriter out = new PrintWriter(new FileWriter(file, true))) {
-                    out.println(nf.format(time.getElapsedSecondsTimer()) + ";"
-                            + nf.format(lastVelocity[0]) + ";"
-                            + nf.format(newVelocity - lastVelocity[0]) + ";"
-                            + nf.format(car.rotation.yaw) + ";");
+                            out.println(nf.format(time.getElapsedSecondsTimer()) + ";"
+                            + nf.format(lastVelocity) + ";"
+                            + nf.format((newVelocity - lastVelocity)/input.getDeltaTime()) + ";"
+                            + nf.format(lastRotation) + ";"
+                            + nf.format((newRotation-lastRotation)/input.getDeltaTime()) + ";"
+                            + nf.format(car.angularVelocity + ";"));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                lastVelocity[0] = newVelocity;
+                lastVelocity = newVelocity;
+                lastRotation = newRotation;
             }
         }
 
