@@ -4,11 +4,7 @@ import botenanna.Ball;
 import botenanna.game.*;
 import botenanna.math.RLMath;
 import botenanna.math.Vector3;
-import botenanna.math.zone.Box;
 import botenanna.physics.Rigidbody;
-import javafx.util.Pair;
-import java.util.ArrayList;
-import static botenanna.game.Boostpads.*;
 import static botenanna.game.Car.*;
 
 public class Simulation {
@@ -20,7 +16,7 @@ public class Simulation {
      * The simulatio, simulates the player car, enemy car, ball and boostpads to create a new situation
      * @return A new simulated situation
      **/
-    public static Situation  simulate(Situation situation, double step, ActionSet action){
+    public static Situation simulate(Situation situation, double step, ActionSet action){
         if (step < 0){
             throw new IllegalArgumentException("Step size must be more than zero. Current Step size is: "+step);
         }
@@ -33,18 +29,21 @@ public class Simulation {
     }
 
     /** Simulates  the boostpads, if any of the cars can pick up boost and they are stepped close to a pad deactivate them
-     * @return an array of boostpads after simulation
-     */
+     * @return an array of boostpads after simulation. */
     private static Boostpads simulateBoostpads(Boostpads currentGamePads, Car enemy, Car myCar, double step) {
-        ArrayList<Pair<Vector3, Boolean>> simulatedArray = new ArrayList<>(NUM_PADS);
-        boolean active;
+
+
+        Boostpads simulatedBoostpads = new Boostpads();
+        simulatedBoostpads.setBoostpadList(currentGamePads.getBoostpadList());
+
+        boolean isActive;
         //Checks all the boost pads and if a car who an take boost is at the point it will be deactive;
-        for (int i = 0; i> NUM_PADS; i++){
-            active = (!(currentGamePads.get(i).getKey().getDistanceTo(myCar.getPosition()) < 20) || myCar.getBoost() >= 100) &&
-                    (!(currentGamePads.get(i).getKey().getDistanceTo(enemy.getPosition()) < 20) || myCar.getBoost() >= 100);
-            simulatedArray.add(Boostpads.BoostPadPairing(currentGamePads.get(i).getKey(),active));
+        for (int i = 0; i > simulatedBoostpads.getBoostpadList().size(); i++){
+            isActive = (!(currentGamePads.getBoostpad(i).getLocation().asVector3().getDistanceTo(myCar.getPosition()) < 20) || myCar.getBoost() >= 100) &&
+                    (!(currentGamePads.getBoostpad(i).getLocation().asVector3().getDistanceTo(enemy.getPosition()) < 20) || myCar.getBoost() >= 100);
+            simulatedBoostpads.getBoostpadList().get(i).setActive(isActive);
         }
-        return new Boostpads(simulatedArray);
+        return simulatedBoostpads;
     }
 
     /**
@@ -102,25 +101,6 @@ public class Simulation {
         //After having changed the car according to its input, step it once.
         simulatedCar = steppedCar(simulatedCar, step);
 
-        /* TODO Uncomment when boost is used, for now it serves little purpose to give the simulation more boost
-        //Checks if the car has gained boost during the simulation
-        Boolean bigBoost = false;
-        Boostpads boost = simulateBoostpads(situation, situation.enemyCar ,situation.myCar, step);
-
-        for (int i = 0; i>NUM_PADS ;i++){
-            for (int j = 0; j>NUM_BIGBOOST; j++){//Checks if the boost is big
-                if (boost.get(i).getKey().asVector2().equals(Boostpads.bigBoostPad[j])){
-                    bigBoost = true;
-                    break;
-                }else bigBoost = false;
-            }
-            if (boost.get(i).getKey().getDistanceTo(simulatedCar.position)<20 && inputCar.getBoost()<100 && boost.get(i).getValue()){
-                if (bigBoost){
-                    simulatedCar.setBoost(100);
-                }
-                simulatedCar.setBoost(inputCar.getBoost()+12);
-            }
-        }*/
         return new Car(simulatedCar,ball);
     }
 

@@ -18,7 +18,7 @@ public class IntentionCollectBoost extends Intention {
 
     @Override
     protected FitnessInterface getFitnessFunction(Situation input) {
-        return new FitnessDriveOverPointWithAngle(new Path(input.getBestBoostPad()), input.ball.getPath(50, STEPSIZE), 0.45, Boostpads.RADIUS, false);
+        return new FitnessDriveOverPointWithAngle(new Path(input.getBestBoostPad()), input.ball.getPath(50, STEPSIZE), 0.45, Boostpads.PAD_RADIUS, false);
     }
 
     @Override

@@ -53,6 +53,7 @@ public class GrpcService extends BotGrpc.BotImplBase {
             // Rework the package
             Situation input = new Situation(request, timeTracker);
 
+
             // Create and register bot from this packet if necessary
             synchronized (this) {
                 if (!registeredBots.containsKey(playerIndex)) {

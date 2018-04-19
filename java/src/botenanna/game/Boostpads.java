@@ -1,8 +1,6 @@
 package botenanna.game;
 
 import botenanna.math.Vector2;
-import botenanna.math.Vector3;
-import javafx.util.Pair;
 import rlbot.api.GameData;
 
 import java.util.ArrayList;
@@ -10,60 +8,127 @@ import java.util.List;
 
 public class Boostpads {
 
-    public static final int NUM_PADS = 34;
-    public static final int NUM_BIGBOOST = 6;
-    public static final double RADIUS = 40;
+    public static final int PAD_RADIUS = 165; //Tested
+    public static final int COUNT_BIG_PADS = 6; //Tested
+    public static final int COUNT_SMALL_PADS = 28; //Tested
+    public static final int COUNT_TOTAL_PADS = 34; //Tested
 
-    public ArrayList<Pair<Vector3,Boolean>> boostPadList;
+    private ArrayList<Boostpad> boostpadList;
+    private Boolean isInitialized = false;
 
-    public Boostpads(GameData.GameTickPacket packet){
+    /** Formats the boostInfo packet object to be used in this call.
+     *  Removes boostpad element number 7 (6 if counting with 0) because its invalid.
+     *  @param boostInfo The boostInfo object from the packet.
+     *  @return Formatted array of boostpads. */
+    private ArrayList<Boostpad> createListOfBoostpads(List<GameData.BoostInfo> boostInfo){
 
-        List<GameData.BoostInfo> boostInfolist = packet.getBoostPadsList();
-        boostPadList = new ArrayList<>();
+        ArrayList<Boostpad> boostpadList = new ArrayList<>();
 
-        for (int i = 0; i>NUM_PADS; i++){
-            Vector3 padLocation = new Vector3(boostInfolist.get(i).getLocation().getX(),boostInfolist.get(i).getLocation().getY(),boostInfolist.get(i).getLocation().getZ());
-            boostPadList.add(i,BoostPadPairing(padLocation, boostInfolist.get(i).getIsActive()));
+        for(int i = 0; i < boostInfo.size(); i++){
+
+            if(i != 6) //element 6 is invalid
+                boostpadList.add(new Boostpad(boostInfo.get(i).getLocation().getX(), boostInfo.get(i).getLocation().getY(), boostInfo.get(i).getIsActive(), boostInfo.get(i).getTimer()));
         }
+
+        return boostpadList;
     }
 
+    /** Updates or initializes the boostpad list.
+     *  @param boostInfo the object boostInfo from the game packet. */
+    public void updateBoostpadList(List<GameData.BoostInfo> boostInfo){
 
-    public static Pair<Vector3, Boolean> BoostPadPairing( Vector3 vector, Boolean bool){
-        return  new Pair<>(vector,bool);
-    }
+        ArrayList<Boostpad> inputArray = createListOfBoostpads(boostInfo);
 
-    public Boostpads(ArrayList<Pair<Vector3,Boolean>> list){
-        boostPadList = list;
-    }
+        if(!isInitialized){
+            boostpadList = inputArray;
+            isInitialized = true;
+        }else{
+            if(boostInfo.size() != inputArray.size())
+                System.out.println("SOMETHING WENT WRONG! Boostpad2 class. Contact -> MIKKEL!"); //TODO keep? Should never get here!
 
-    public static Vector2[] bigBoostPad = {
-            new Vector2(-3070, 4100), //Index 7
-            new Vector2(3070,-4100), //Index 8
-                new Vector2(-3070,-4100),new Vector2(-3580,0), new Vector2(3580,0), new Vector2(3070, 4100)
-    };
-
-    public Vector2 collectNearestBoost(GameData.GameTickPacket packet, Vector2 playerPos){
-        int i;
-        int index = 0;
-        double mainDistance = 99999;
-        double secondaryDistance;
-        Vector2 temp;
-
-        for(i = 0; i <= 5; i++) {
-            GameData.BoostInfo isActive = packet.getBoostPads(7+i);
-            if(isActive.getIsActive()) {
-                temp = playerPos.minus(bigBoostPad[i]);
-                secondaryDistance = temp.getMagnitude();
-                if (secondaryDistance < mainDistance) {
-                    mainDistance = secondaryDistance;
-                    index = i;
-                }
+            for(int i = 0; i < boostInfo.size(); i++){
+                boostpadList.get(i).setLocation(inputArray.get(i).getLocation());
+                boostpadList.get(i).setActive(inputArray.get(i).isActive());
+                boostpadList.get(i).setTimer(inputArray.get(i).getTimer());
             }
         }
-        return bigBoostPad[index];
     }
 
-    public Pair<Vector3, Boolean> get(int i) {
-        return boostPadList.get(i);
+    public Boostpad getBoostpad(int index){
+        if(isInitialized)
+            return boostpadList.get(index);
+        else
+            return null;
+    }
+
+    /** Prints out the information in the boostpad list. */
+    public void printBoostpadList(){
+        if(isInitialized){
+            for(int i = 0; i < boostpadList.size(); i++){
+                System.out.println(i + ": " + boostpadList.get(i).toString());
+            }
+        }else
+            System.out.println("The boostpad list has not yet been updated.");
+    }
+
+    /** @return the ArrayList of boostpads. Returns null if the list is not initialized. */
+    public ArrayList<Boostpad> getBoostpadList() {
+        if(isInitialized)
+            return boostpadList;
+        else
+            return null;
+    }
+
+    /** Replaces the current boostpadList with a given one.
+     *  @param boostpadList the boostpadList to be copyed. */
+    public void setBoostpadList(ArrayList<Boostpad> boostpadList){
+        this.boostpadList = new ArrayList<>();
+
+        for(int i = 0; i < boostpadList.size(); i++)
+            this.boostpadList.add(boostpadList.get(i));
+    }
+
+    /** The boostpad as a object. */
+    public class Boostpad{
+
+        private Vector2 location;
+        private Boolean isActive;
+        private int timer;
+
+        public Boostpad(float x, float y, Boolean isActive, int timer) {
+            this.location = new Vector2(x, y);
+            this.isActive = isActive;
+            this.timer = timer;
+        }
+
+        @Override
+        public String toString() {
+            return "x: " + location.x + ". y: " + location.y +
+                    ". active: " + isActive + ". timer: " + timer;
+        }
+
+        public Vector2 getLocation() {
+            return location;
+        }
+
+        public Boolean isActive() {
+            return isActive;
+        }
+
+        public int getTimer() {
+            return timer;
+        }
+
+        public void setLocation(Vector2 location) {
+            this.location = location;
+        }
+
+        public void setActive(Boolean active) {
+            isActive = active;
+        }
+
+        public void setTimer(int timer) {
+            this.timer = timer;
+        }
     }
 }

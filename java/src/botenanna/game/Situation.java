@@ -57,7 +57,8 @@ public class Situation {
     public Situation(GameData.GameTickPacket packet, TimeTracker timeTracker){
         this.packet = packet;
         this.timeTracker = timeTracker;
-        gameBoostPads = new Boostpads(packet);
+        this.gameBoostPads = new Boostpads();
+        this.gameBoostPads.updateBoostpadList(packet.getBoostPadsList());
 
 
         /* CARS */
@@ -93,6 +94,7 @@ public class Situation {
         this.enemyCar = enemyCar;
         this.ball = ball;
         this.gameBoostPads = pads;
+        this.gameBoostPads.updateBoostpadList(packet.getBoostPadsList());
 
 
         // Udregn
@@ -112,19 +114,22 @@ public class Situation {
         this.gamePlayerCount = 2;
     }
 
+    /** Used to get the best boostpad based on utility.
+     * @return a vector3 for the best boostpad. */
     public Vector3 getBestBoostPad(){
         double bestBoostUtility = 0;
-        Vector3 bestBoostPad = null;
-        int totalBoostPads = packet.getBoostPadsCount();
-        /*int[] bigBoostIndex = {7,8,9,10,11,12}; // Index of big boosts*/
+        Vector2 bestBoostPad = null;
+        int totalBoostPads = Boostpads.COUNT_TOTAL_PADS;
+        /*int[] bigBoostIndex = {7,8,9,10,11,12}; // Index of big boosts //TODO not true in new packet*/
 
         for (int i = 0; i < totalBoostPads; i++) {
-            GameData.BoostInfo boost = packet.getBoostPads(i);
-            Vector3 boostLocation = Vector3.convert(boost.getLocation());
 
-            if (boost.getIsActive()){
-                double angleToBoost = RLMath.carsAngleToPoint(new Vector2(myCar.getPosition()), myCar.getPosition().yaw, boostLocation.asVector2());
-                double distance = myCar.getPosition().getDistanceTo(boostLocation);
+            Boostpads.Boostpad boostpad = gameBoostPads.getBoostpad(i);
+            Vector2 boostLocation = boostpad.getLocation();
+
+            if (boostpad.isActive()){
+                double angleToBoost = RLMath.carsAngleToPoint(new Vector2(myCar.getPosition()), myCar.getPosition().yaw, boostLocation);
+                double distance = myCar.getPosition().getDistanceTo(boostLocation.asVector3());
                 double distFunc = ((ARENA_LENGTH - distance) / ARENA_LENGTH); // Map width
                 double newBoostUtility = (Math.cos(angleToBoost) * distFunc); // Utility formula
 
@@ -135,7 +140,7 @@ public class Situation {
             }
         }
 
-        return bestBoostPad; // Return the boostPad with highest utility
+        return bestBoostPad.asVector3(); // Return the boostPad with highest utility
     }
 
     /* Method that returns true if myCar has ball possession by comparing using utility
