@@ -93,10 +93,11 @@ public class BallPhysics {
                 return path;
             } else if (nextWallHit < nextGroundHit) {
                 // Simulate until ball it hits wall
+                boolean isSideWall = SimplePhysics.willHitSideWallNext(ball, RADIUS);
                 extendPathWithNoCollision(path, ball, true, timeSpent, nextWallHit, stepsize);
                 timeSpent += nextWallHit;
                 Vector3 vel = ball.getVelocity();
-                if (SimplePhysics.willHitSideWallNext(ball, RADIUS)) {
+                if (isSideWall) {
                     ball.setVelocity(new Vector3(vel.x * BALL_WALL_BOUNCINESS, vel.y, vel.z));
                 } else {
                     ball.setVelocity(new Vector3(vel.x, vel.y * BALL_WALL_BOUNCINESS, vel.z));

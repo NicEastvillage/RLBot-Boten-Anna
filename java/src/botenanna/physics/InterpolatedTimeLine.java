@@ -4,6 +4,7 @@ import botenanna.math.LerpFunction;
 import botenanna.math.RLMath;
 import botenanna.math.Vector3;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class InterpolatedTimeLine<T> implements TimeLine<T> {
@@ -85,5 +86,9 @@ public class InterpolatedTimeLine<T> implements TimeLine<T> {
 
     void analyze() {
         steps.analyze();
+    }
+
+    LinkedList<SteppedTimeLine<T>.TimeStep> getTimeStep() {
+        return steps.getTimeSteps();
     }
 }

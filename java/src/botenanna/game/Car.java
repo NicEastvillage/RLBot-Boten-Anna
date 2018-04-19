@@ -11,7 +11,7 @@ public class Car extends Rigidbody {
     // Global Variables
     public final static double ACCELERATION_BOOST = 650;
     public final static double ACCELERATION = 400;
-    public final static double TURN_RATE = Math.toRadians(5); // TODO Turn rate is a function of current speed
+    public final static double TURN_RATE = Math.toRadians(90); // TODO Turn rate is a function of current speed
     public final static double MAX_VELOCITY = 1410;
     public final static double MAX_VELOCITY_BOOST = 2300;
     public final static double TURN_ACCELERATION_DECREASE = 0.85;

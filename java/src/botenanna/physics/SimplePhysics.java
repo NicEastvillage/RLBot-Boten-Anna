@@ -164,9 +164,11 @@ public class SimplePhysics {
         double wallIndex = -1;
         double earliestTimeOfArrival = Double.NaN;
         for (int i = 0; i < arrivalTimes.length; i++) {
-            if (!Double.isNaN(arrivalTimes[i]) && arrivalTimes[i] < earliestTimeOfArrival) {
-                earliestTimeOfArrival = arrivalTimes[i];
-                wallIndex = i;
+            if (!Double.isNaN(arrivalTimes[i])) {
+                if (Double.isNaN(earliestTimeOfArrival) || arrivalTimes[i] < earliestTimeOfArrival) {
+                    earliestTimeOfArrival = arrivalTimes[i];
+                    wallIndex = i;
+                }
             }
         }
         if (wallIndex == 0 || wallIndex == 1)
@@ -179,60 +181,60 @@ public class SimplePhysics {
     /** @param offset the offset from the wall. Relevant for any objects with a radius.
      * @return the time until arrival at wall at x positive. */
     public static double predictArrivalAtWallXPositive(Rigidbody body, double offset) {
-        double distance = Situation.ARENA_LENGTH / 2 - offset;
-        if (body.getPosition().x < distance) {
-            if (body.getVelocity().x > 0) {
+        double distance = Situation.ARENA_WIDTH / 2 - offset;
+        if (body.getVelocity().x > 0) {
+            if (body.getPosition().x < distance) {
                 return (distance - body.getPosition().x) / body.getVelocity().x;
             } else {
-                return Double.NaN;
+                // We assume that if the RigidBody is outside of the field, it will be pushed in immediately
+                return 0;
             }
         }
-        // We assume that if the RigidBody is outside of the field, it will be pushed in immediately
-        return 0;
+        return Double.NaN;
     }
 
     /** @param offset the offset from the wall. Relevant for any objects with a radius.
      * @return the time until arrival at wall at x negative. */
     public static double predictArrivalAtWallXNegative(Rigidbody body, double offset) {
-        double distance = Situation.ARENA_LENGTH / 2 - offset;
-        if (body.getPosition().x > -distance) {
-            if (body.getVelocity().x < 0) {
+        double distance = Situation.ARENA_WIDTH / 2 - offset;
+        if (body.getVelocity().x < 0) {
+            if (body.getPosition().x > -distance) {
                 return (-distance - body.getPosition().x) / body.getVelocity().x;
             } else {
-                return Double.NaN;
+                // We assume that if the RigidBody is outside of the field, it will be pushed in immediately
+                return 0;
             }
         }
-        // We assume that if the RigidBody is outside of the field, it will be pushed in immediately
-        return 0;
+        return Double.NaN;
     }
 
     /** @param offset the offset from the wall. Relevant for any objects with a radius.
      * @return the time until arrival at wall at y positive. */
     public static double predictArrivalAtWallYPositive(Rigidbody body, double offset) {
         double distance = Situation.ARENA_LENGTH / 2 - offset;
-        if (body.getPosition().y < distance) {
-            if (body.getVelocity().y > 0) {
+        if (body.getVelocity().y > 0) {
+            if (body.getPosition().y < distance) {
                 return (distance - body.getPosition().y) / body.getVelocity().y;
             } else {
-                return Double.NaN;
+                // We assume that if the RigidBody is outside of the field, it will be pushed in immediately
+                return 0;
             }
         }
-        // We assume that if the RigidBody is outside of the field, it will be pushed in immediately
-        return 0;
+        return Double.NaN;
     }
 
     /** @param offset the offset from the wall. Relevant for any objects with a radius.
      * @return the time until arrival at wall at y negative. */
     public static double predictArrivalAtWallYNegative(Rigidbody body, double offset) {
         double distance = Situation.ARENA_LENGTH / 2 - offset;
-        if (body.getPosition().y > -distance) {
-            if (body.getVelocity().y < 0) {
+        if (body.getVelocity().y < 0) {
+            if (body.getPosition().y > -distance) {
                 return (-distance - body.getPosition().y) / body.getVelocity().y;
             } else {
-                return Double.NaN;
+                // We assume that if the RigidBody is outside of the field, it will be pushed in immediately
+                return 0;
             }
         }
-        // We assume that if the RigidBody is outside of the field, it will be pushed in immediately
-        return 0;
+        return Double.NaN;
     }
 }

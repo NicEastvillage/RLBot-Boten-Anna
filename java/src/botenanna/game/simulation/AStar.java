@@ -33,6 +33,7 @@ public class AStar {
         TimeNode startNode = new TimeNode(startSituation, new ActionSet(), null, 0);
 
         TreeSet<TimeNode> openSet = new TreeSet<>((n1, n2) -> {
+            if (n1 == n2) return 0; // Must be consistent with equals
             double fit = fitness.calculateFitness(n1.situation, n1.timeSpent) - fitness.calculateFitness(n2.situation, n2.timeSpent);
             // Even if the situations have the same fitness, they are not the same
             if (fit < 0) return -1;
@@ -45,14 +46,14 @@ public class AStar {
             TimeNode current = openSet.last();
 
             // Is this situation a fulfilling destination?
-            if (fitness.isDeviationFulfilled(current.situation, current.timeSpent)) {
-                List<ActionSet> sequence = reconstructSequence(current);
-                return toTimeLine(sequence, stepsize);
+            if (current.actionTaken != null) {
+                if (current.timeSpent >= 0.1 || fitness.isDeviationFulfilled(current.situation, current.timeSpent)) {
+                    List<ActionSet> sequence = reconstructSequence(current);
+                    return toTimeLine(sequence, stepsize);
+                }
             }
 
             openSet.remove(current);
-            System.out.println(current.situation.myCar.getAcceleration());
-            //System.out.println(fitness.calculateFitness(current.situation, current.timeSpent));
 
             // Try all sensible actions and simulate what situations they create
             List<ActionSet> followingActions = getFollowingActionSets(current.situation, current.actionTaken);
@@ -106,7 +107,7 @@ public class AStar {
 
         List<ActionSet> following = new LinkedList<>();
 
-        double[] newThrottles = getFollowingDirections(current == null ? 0 : current.getThrottle());
+        double[] newThrottles = new double[]{1}; // getFollowingDirections(current == null ? 0 : current.getThrottle());
         double[] newSteerings = getFollowingDirections(current == null ? 0 : current.getSteer());
         // pitch and roll is 0, if car is grounded
         double[] newPitches = situation.myCar.isMidAir() ? getFollowingDirections(current == null ? 0 : current.getPitch()) : new double[]{0};

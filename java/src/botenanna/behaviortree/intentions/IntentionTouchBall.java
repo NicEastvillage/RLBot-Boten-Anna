@@ -20,7 +20,7 @@ public class IntentionTouchBall extends Intention {
 
     @Override
     protected FitnessInterface getFitnessFunction(Situation input) {
-        return new FitnessDriveOverPointWithAngle(BallPhysics.getPath(input.ball, 50, STEPSIZE), new Path(Situation.getGoalBox(input.myPlayerIndex)), 0.7, 20, false);
+        return new FitnessDriveOverPointWithAngle(BallPhysics.getPath(input.ball, 50, STEPSIZE), new Path(Situation.getGoalBox(input.enemyPlayerIndex)), 0.7, 20, false);
     }
 
     @Override

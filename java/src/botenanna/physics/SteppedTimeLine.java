@@ -197,4 +197,8 @@ public class SteppedTimeLine<T> implements TimeLine<T> {
             System.out.println("t: " + timeStep.time + ", i: " + timeStep.item);
         }
     }
+
+    LinkedList<TimeStep> getTimeSteps() {
+        return timeSteps;
+    }
 }

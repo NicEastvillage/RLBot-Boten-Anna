@@ -61,8 +61,8 @@ public class Simulation {
         Vector3 pos = newCar.getPosition();
         if (pos.z < Car.GROUND_OFFSET) {
             //Hit ground
-            newCar.setPosition(new Vector3(pos.x, pos.y, Car.GROUND_OFFSET));
-            newCar.setVelocity(newCar.getVelocity().asVector2().asVector3());
+            newCar.setPosition(pos.withZ(Car.GROUND_OFFSET));
+            newCar.setVelocity(newCar.getVelocity().withZ(0));
             newCar.setIsMidAir(false);
         }
         return newCar;
@@ -81,7 +81,8 @@ public class Simulation {
 
         } else {
             // We are on the ground
-            double newYaw = TURN_RATE * action.getSteer() * delta;
+            double newYaw = car.getRotation().yaw + TURN_RATE * action.getSteer() * delta;
+            newYaw %= Math.PI; // Set to remainder, when modulo PI. [PI, -PI]
             car.setRotation(car.getRotation().withYaw(newYaw));
 
             Vector3 acceleration = new Vector3();
@@ -96,7 +97,7 @@ public class Simulation {
             }
 
             if (action.getSteer() != 0) {
-                acceleration.scale(TURN_ACCELERATION_DECREASE);
+                acceleration = acceleration.scale(TURN_ACCELERATION_DECREASE);
             }
 
             car.setAcceleration(acceleration);
