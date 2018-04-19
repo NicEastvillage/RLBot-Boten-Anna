@@ -90,7 +90,7 @@ public class Simulation {
             if (boosting) {
                 acceleration = acceleration.plus(car.getFrontVector().scale(ACCELERATION_BOOST));
             } else if (action.getThrottle() != 0) {
-                acceleration = acceleration.plus(car.getFrontVector().scale(ACCELERATION * action.getThrottle()));
+                acceleration = acceleration.plus(car.getFrontVector().scale(getAccelerationStrength(car, (int)action.getThrottle(), false)));
             } else {
                 // we assume our velocity is never sideways
                 acceleration = acceleration.plus(car.getVelocity().getNormalized().scale(DECELERATION));
@@ -138,5 +138,19 @@ public class Simulation {
         car = steppedCar(car, delta);
 
         return car;
+    }
+
+    /** @param dir Direction of acceleration. 1 for forwards, -1 for backwards. */
+    public static double getAccelerationStrength(Car car, int dir, boolean boosting) {
+        Vector3 vel = car.getVelocity();
+        Vector3 front = car.getFrontVector();
+
+        double velProjFrontSize = vel.dot(front) / front.dot(front);
+        double velDir = (velProjFrontSize >= 0) ? 1 : -1;
+        Vector3 velParallelFront = front.scale(velProjFrontSize);
+        double velLength = velParallelFront.getMagnitude();
+
+        return MAX_VELOCITY_BOOST * dir - velLength * velDir;
+        // TODO Add boosting
     }
 }
