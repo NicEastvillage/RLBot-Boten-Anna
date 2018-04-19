@@ -30,6 +30,19 @@ public class ArgumentTranslator {
 
             case "enemy_goal": return (Situation a) -> a.getEnemyBoxArea(a.myPlayerIndex);     // Box
 
+            case "ORANGE_GOAL_BOX_AREA": return (Situation a) ->  a.ORANGE_GOAL_BOX_AREA;     // Vector3
+            case "Midfield": return (Situation a) ->  a.Midfield;     // Vector3
+            case "Upper_Right_Cornor": return (Situation a) ->  a.Upper_Right_Cornor;     // Vector3
+            case "Upper_Left_Cornor": return (Situation a) ->  a.Upper_Left_Cornor;     // Vector3
+            case "Lover_Right_Cornor": return (Situation a) ->  a.Lover_Right_Cornor;     // Vector3
+            case "Lover_Left_Cornor": return (Situation a) ->  a.Lover_Left_Cornor ;     // Vector3
+            case "Orange_Goal_Box": return (Situation a) ->  a.Orange_Goal_Box;     // Vector3
+            case "Blue_Goal_Box": return (Situation a) ->  a.Blue_Goal_Box;     // Vector3
+
+
+
+
+
             case "ball_land_time": return (Situation a) -> a.ballLandingTime;       // time (double)
             case "ball_land_pos": return (Situation a) -> a.ballLandingPosition;    // Vector3
 
