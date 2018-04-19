@@ -4,7 +4,12 @@ import botenanna.Ball;
 import botenanna.game.*;
 import botenanna.math.RLMath;
 import botenanna.math.Vector3;
+import botenanna.physics.BallPhysics;
 import botenanna.physics.Rigidbody;
+import botenanna.physics.SimplePhysics;
+import javafx.util.Pair;
+import java.util.ArrayList;
+import static botenanna.game.Boostpads.*;
 import static botenanna.game.Car.*;
 
 public class Simulation {
@@ -16,14 +21,16 @@ public class Simulation {
      * The simulatio, simulates the player car, enemy car, ball and boostpads to create a new situation
      * @return A new simulated situation
      **/
-    public static Situation simulate(Situation situation, double step, ActionSet action){
-        if (step < 0){
-            throw new IllegalArgumentException("Step size must be more than zero. Current Step size is: "+step);
-        }
-        Ball simulatedBall = simulateBall(situation.ball, step);
+    public static Situation  simulate(Situation situation, double step, ActionSet action){
+        if (step < 0) throw new IllegalArgumentException("Step size must be more than zero. Current Step size is: "+step);
+
+        Rigidbody simulatedBall = simulateBall(situation.ball, step);
         Car simulatedMyCar = simulateCarActions(situation.myCar, action,  simulatedBall, step);
-        Car simulatedEnemyCar = steppedCar(situation.enemyCar,  step);
+        Car simulatedEnemyCar = steppedCar(situation.enemyCar, step);
         Boostpads simulatedBoostpads = simulateBoostpads(situation.gameBoostPads, simulatedEnemyCar, simulatedMyCar, step);
+
+        simulatedMyCar.setBallDependentVariables(simulatedBall.getPosition());
+        simulatedEnemyCar.setBallDependentVariables(simulatedBall.getPosition());
 
         return new Situation(simulatedMyCar, simulatedEnemyCar, simulatedBall , simulatedBoostpads);
     }
@@ -31,7 +38,6 @@ public class Simulation {
     /** Simulates  the boostpads, if any of the cars can pick up boost and they are stepped close to a pad deactivate them
      * @return an array of boostpads after simulation. */
     private static Boostpads simulateBoostpads(Boostpads currentGamePads, Car enemy, Car myCar, double step) {
-
 
         Boostpads simulatedBoostpads = new Boostpads();
         simulatedBoostpads.setBoostpadList(currentGamePads.getBoostpadList());
@@ -46,97 +52,75 @@ public class Simulation {
         return simulatedBoostpads;
     }
 
-    /**
-     * @return a new ball who has been stepped forward its path, if the ball is in the air the velocity will slow.
-     * //TODO Add velocity loss on the ground
-     */
-    public static Ball simulateBall(Ball ball, double step)    {
-        Vector3 pathPosition = ball.getPath(step,100).getLastItem();
-        if (ball.getPosition().z>0 && pathPosition.z>0){
-            return new Ball(pathPosition, ball.getVelocity().scale(0.97*step), ball.getRotation());
-        }
-        return new Ball(pathPosition,ball.getVelocity(),ball.getRotation());
+    /** @return a new ball which has been moved forwards. */
+    public static Rigidbody simulateBall(Rigidbody ball, double step)    {
+        return BallPhysics.step(ball.clone(), step);
     }
 
-    /** Steppes the cars rigidbody forward 1 step
-     * @param car is the car with no output
-     * @return a simulated car                                    */
+    /** @return a new car which has been moved forwards. */
     private static Car steppedCar(Car car, double step) {
-        Rigidbody placeholder = car.stepped(1*step);
-        car.setPosition(placeholder.getPosition());
-        car.setRotation(placeholder.getRotation());
-        car.setVelocity(placeholder.getVelocity());
-        car.setAcceleration(placeholder.getAcceleration());
-        return car;
+        Car newCar = SimplePhysics.step(car, step, car.isMidAir());
+        Vector3 pos = newCar.getPosition();
+        if (pos.z < Car.GROUND_OFFSET) {
+            //Hit ground
+            newCar.setPosition(pos.withZ(Car.GROUND_OFFSET));
+            newCar.setVelocity(newCar.getVelocity().withZ(0));
+            newCar.setIsMidAir(false);
+        }
+        return newCar;
     }
 
     /** Simulates a car with actions **
      * @param action the current actions from the Agent
      * @return a Car simulated forward in  the new situation     */
-    private static Car simulateCarActions(Car inputCar , ActionSet action, Ball ball, double step){
+    private static Car simulateCarActions(Car inputCar , ActionSet action, Rigidbody ball, double delta){
 
-        //Cars and starting direction
-        Car simulatedCar = inputCar;
-        Vector3 direction = RLMath.carFrontVector(simulatedCar.getRotation());
-        double accelerationRate = (action.isBoostDepressed() && inputCar.getBoost()!=0) ? ACCELERATION_BOOST*step : ACCELERATION*step;
-        double acceleration = accelerationRate*action.getThrottle();
-        Vector3 rotation = simulatedCar.getRotation();
+        Car car = new Car(inputCar);
 
-        boosting = (action.isBoostDepressed() && simulatedCar.getBoost()!=0);
-        maxVel = boosting ? MAX_VELOCITY_BOOST : MAX_VELOCITY;
+        boosting = (action.isBoostDepressed() && car.getBoost() != 0);
 
-        // Car steer simulation also set car yaw //  TODO add steer speed
-        if (action.getSteer()!=0 && (action.getThrottle()!=0 || simulatedCar.getVelocity().getMagnitude()!=0 || simulatedCar.isMidAir)){
-            //If the car can and is turning, change the direction of the car and the simulated cars rotation
-            direction = direction.asVector2().turn((action.getSteer()*TURN_RATE)*step).asVector3(); // FIXME Only rotates around z-axis
-            rotation.yaw += (action.getSteer()*TURN_RATE*step); //TODO Make yaw final
+        if (car.isMidAir()) {
+
+        } else {
+            // We are on the ground
+            double newYaw = car.getRotation().yaw + TURN_RATE * action.getSteer() * delta;
+            newYaw %= Math.PI; // Set to remainder, when modulo PI. [PI, -PI]
+            car.setRotation(car.getRotation().withYaw(newYaw));
+
+            Vector3 acceleration = new Vector3();
+
+            if (boosting) {
+                acceleration = acceleration.plus(car.getFrontVector().scale(ACCELERATION_BOOST));
+            } else if (action.getThrottle() != 0) {
+                acceleration = acceleration.plus(car.getFrontVector().scale(getAccelerationStrength(car, (int)action.getThrottle(), false)));
+            } else {
+                // we assume our velocity is never sideways
+                acceleration = acceleration.plus(car.getVelocity().getNormalized().scale(DECELERATION));
+            }
+
+            if (action.getSteer() != 0) {
+                acceleration = acceleration.scale(TURN_ACCELERATION_DECREASE);
+            }
+
+            car.setAcceleration(acceleration);
         }
 
-        // Car Pitch & Roll simulation SIMPLE VERSION  //TODO add roll and pitch speeds, roll acceleration? Better not worry as the car can correct itself
-        if (simulatedCar.isMidAir)rotation = simulateRaP(simulatedCar.getRotation(),  action,  step);
+        car = steppedCar(car, delta);
 
-        //Add simulated changes to rotation
-        simulatedCar.setRotation(rotation);
-
-        //After having changed the car according to its input, step it once.
-        simulatedCar = steppedCar(simulatedCar, step);
-
-        return new Car(simulatedCar,ball);
+        return car;
     }
 
-    /** Simulates the car's rotation roll and pitch based on the actionSet given
-     * @return the simulated car but with a new rotation                     */
-    private static Vector3 simulateRaP(Vector3 rotation,  ActionSet action, double step){
-        if (action.getRoll() != 0) {
-            rotation.roll += action.getRoll()*step;
-        }
-        if (action.getPitch() != 0) {
-            rotation.pitch += action.getPitch()*step;
-        }
-        return rotation;
-    }
+    /** @param dir Direction of acceleration. 1 for forwards, -1 for backwards. */
+    public static double getAccelerationStrength(Car car, int dir, boolean boosting) {
+        Vector3 vel = car.getVelocity();
+        Vector3 front = car.getFrontVector();
 
-    /** Simulates the cars velocity based on the actions and current acceleration
-     * @return a velocity vector
-     */
-    private static Vector3 simulateVel(Vector3 velocity, double acceleration, Vector3 originalDirection, Vector3 direction, ActionSet action, double step){
-        //Add acceleration to the current velocity
-        if ((boosting || acceleration!=0) && velocity.asVector2().getMagnitude()<maxVel){
-            // If the car is sliding the car will keep moving in the direction of its original front vector
-            if (action.isSlideDepressed()){
-               velocity = (velocity.plus(originalDirection.scale(acceleration*step)));
-            }
-            else velocity = velocity.plus(direction.scale(acceleration*step));
-        }
-        else if (!boosting){
-            if (acceleration<0){
-                velocity =  velocity.plus(direction.scale(acceleration*step));
-            }
-            if (acceleration==0 ){
-                velocity = velocity.scale(DECELERATION*step);
-            }
-        }
-        return velocity;
-    }
+        double velProjFrontSize = vel.dot(front) / front.dot(front);
+        double velDir = (velProjFrontSize >= 0) ? 1 : -1;
+        Vector3 velParallelFront = front.scale(velProjFrontSize);
+        double velLength = velParallelFront.getMagnitude();
 
+        return MAX_VELOCITY_BOOST * dir - velLength * velDir;
+        // TODO Add boosting
+    }
 }

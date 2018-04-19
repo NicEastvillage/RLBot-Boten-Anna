@@ -7,8 +7,9 @@ import botenanna.physics.Path;
 /** This class is used when you want a fitness value for "Drive over a point with a specific angle". */
 public class FitnessDriveOverPointWithAngle implements FitnessInterface {
 
-    private final int DIST_SCALE = 450;
+    private final double DIST_SCALE = 1 / 450d;
     private final double ANGLE_SCALE = 5.09299;
+    private final double VEL_SCALE = 1 / 600d;
 
     private double angleDeviation;
     private double distDeviation;
@@ -37,7 +38,7 @@ public class FitnessDriveOverPointWithAngle implements FitnessInterface {
      *  @return a fitness value for the given situation. */
     @Override
     public double calculateFitness(Situation situation, double timeSpent){
-        return calculateFitnessValue(situation.myCar.getPosition(), situation.myCar.frontVector, timeSpent, situation.myCar.getVelocity());
+        return calculateFitnessValue(situation.myCar.getPosition(), situation.myCar.getFrontVector(), timeSpent, situation.myCar.getVelocity());
     }
 
     /**	Takes the needed information and calculates the fitness value.
@@ -56,12 +57,17 @@ public class FitnessDriveOverPointWithAngle implements FitnessInterface {
         double velocity = carVelocity.getMagnitude();
 
         if(stopOnPoint){
-            return (velocity == 0) ? Double.MIN_VALUE : ( -(timeSpent + Math.abs(angleDifference * ANGLE_SCALE) + (distanceToPoint / DIST_SCALE)))
-                    * -(2300/ (Math.abs(velocity)));
+            return (velocity == 0) ? Double.MIN_VALUE :
+                            // - timeSpent
+                            // - Math.abs(angleDifference) * ANGLE_SCALE
+                            - distanceToPoint * DIST_SCALE;
+                            // + Math.abs(velocity) * VEL_SCALE;
         }else{
-
-            return (velocity == 0) ? Double.MIN_VALUE : ( -(timeSpent + Math.abs(angleDifference * ANGLE_SCALE) + (distanceToPoint / DIST_SCALE)))
-                    * (2300/ (Math.abs(velocity)));
+            return (velocity == 0) ? Double.MIN_VALUE :
+                            // - timeSpent
+                            // - Math.abs(angleDifference) * ANGLE_SCALE
+                            - distanceToPoint * DIST_SCALE;
+                            // - Math.abs(velocity) * VEL_SCALE;
         }
     }
 

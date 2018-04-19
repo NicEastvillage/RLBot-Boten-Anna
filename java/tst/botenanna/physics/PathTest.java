@@ -19,19 +19,40 @@ public class PathTest {
         assertEquals(0, path.evaluate(1.5).getDistanceTo(new Vector3(15, 20, 15)), 1E-10);
     }
 
-    /*@Test
+    @Test
     public void path02() {
-        Ball ball = new Ball();
-        ball.setPosition(new Vector3(0, 0, 500));
-        ball.setVelocity(new Vector3(100, 0, 1000));
+        Rigidbody ball = new Rigidbody();
+        ball.setPosition(new Vector3(2400, 1000, 500));
+        ball.setVelocity(new Vector3(900, -400, 1000));
 
-        Path path = ball.getPath(10, 1);
+        Path path = BallPhysics.getPath(ball, 10, 1);
 
-        path.analyze();
-    }*/
+        for (SteppedTimeLine.TimeStep timeStep : path.getTimeStep()) {
+            Vector3 pos = (Vector3)timeStep.item;
+            assertFalse(Double.isNaN(pos.x));
+            assertFalse(Double.isNaN(pos.y));
+            assertFalse(Double.isNaN(pos.z));
+        }
+    }
 
     @Test
     public void path03() {
+        Rigidbody ball = new Rigidbody();
+        ball.setPosition(new Vector3(-100, 490, 1200));
+        ball.setVelocity(new Vector3(800, 800, 1000));
+
+        Path path = BallPhysics.getPath(ball, 50, 1);
+
+        for (SteppedTimeLine.TimeStep timeStep : path.getTimeStep()) {
+            Vector3 pos = (Vector3)timeStep.item;
+            assertFalse(Double.isNaN(pos.x));
+            assertFalse(Double.isNaN(pos.y));
+            assertFalse(Double.isNaN(pos.z));
+        }
+    }
+
+    @Test
+    public void path04() {
         Vector3 point = new Vector3(50, 50, 50);
         Path path = new Path(point);
 

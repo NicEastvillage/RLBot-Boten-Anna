@@ -35,9 +35,9 @@ public class GuardHasGoalOpportunity extends Leaf {
 
         Vector2 myPosition = input.myCar.getPosition().asVector2();
         Vector3 myRotation = input.myCar.getRotation();
-        double angToBall = input.myCar.angleToBall;
+        double angToBall = input.myCar.getAngleToBall();
 
-        if(input.myCar.team == 1) {
+        if(input.myCar.getTeam() == 1) {
             double rightGoalPost = RLMath.carsAngleToPoint(myPosition, myRotation.yaw, Situation.BLUE_GOALPOST_RIGHT);
             double leftGoalPost = RLMath.carsAngleToPoint(myPosition, myRotation.yaw, Situation.BLUE_GOALPOST_LEFT);
             if (myPosition.x <= 900 && myPosition.x >= -900 && input.ball.getPosition().x <= 900 && input.ball.getPosition().x >= -900 && myPosition.y >= input.ball.getPosition().y)
@@ -46,7 +46,7 @@ public class GuardHasGoalOpportunity extends Leaf {
                 return NodeStatus.DEFAULT_SUCCESS;
         }
 
-        if(input.myCar.team == 0) {
+        if(input.myCar.getTeam() == 0) {
             double rightGoalPost = RLMath.carsAngleToPoint(myPosition, myRotation.yaw, Situation.RED_GOALPOST_RIGHT);
             double leftGoalPost = RLMath.carsAngleToPoint(myPosition, myRotation.yaw, Situation.RED_GOALPOST_LEFT);
             if (myPosition.x <= 900 && myPosition.x >= -900 && input.ball.getPosition().x <= 900 && input.ball.getPosition().x >= -900 && myPosition.y <= input.ball.getPosition().y)

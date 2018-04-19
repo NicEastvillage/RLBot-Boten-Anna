@@ -27,17 +27,20 @@ public class BehaviorTree implements Node {
             newNodeStatus = topNode.run(input);
         }
 
+        boolean newNodeHasValidAction = newNodeStatus != null && newNodeStatus.status == Status.RUNNING;
+
         // If newNodeStatus's creator is not the same as the lastNodeStatus's creator, then
         // lastNodeStatus's creator and all dependencies will be reset.
-        if (lastNodeStatus != null && (newNodeStatus == null || newNodeStatus.creator != lastNodeStatus.creator)) {
+        if (lastNodeStatus != null && (!newNodeHasValidAction || newNodeStatus.creator != lastNodeStatus.creator)) {
             lastNodeStatus.creator.reset();
+            /* FIXME Apparently lastNodeStatus is null here?
             for (Node dependencies : lastNodeStatus.getDependencies()) {
                 dependencies.reset();
-            }
+            }*/
         }
 
         // Set lastNodeStatus to newNodeStatus
-        if (newNodeStatus == null) {
+        if (!newNodeHasValidAction) {
             // If newNodeStatus is null, something went wrong, so we just create one now.
             lastNodeStatus = new NodeStatus(Status.RUNNING, new ActionSet(), this);
         } else {

@@ -7,110 +7,170 @@ import botenanna.physics.Rigidbody;
 import rlbot.api.GameData;
 
 public class Car extends Rigidbody {
-    //GLobal Variables
+
+    // Global Variables
     public final static double ACCELERATION_BOOST = 650;
     public final static double ACCELERATION = 400;
-    //TURNRATE IS A FUNCTION OF THE CURRENT SPEED
-    public final static double TURN_RATE = Math.toRadians(5);
+    public final static double TURN_RATE = Math.toRadians(85); // TODO Turn rate is a function of current speed
     public final static double MAX_VELOCITY = 1410;
     public final static double MAX_VELOCITY_BOOST = 2300;
-    public final static double DECELERATION = 18;
+    public final static double TURN_ACCELERATION_DECREASE = 0.94;
+    public final static double MAX_VELOCITY_WHILE_TURNING = MAX_VELOCITY * TURN_ACCELERATION_DECREASE;
+    public final static double MAX_VELOCITY_WHILE_TURNING_BOOST = MAX_VELOCITY_BOOST * TURN_ACCELERATION_DECREASE;
+    public final static double SUPERSONIC_SPEED_REQUIRED = MAX_VELOCITY_BOOST * 0.95;
+    public final static double DECELERATION = -18;
+    public final static double GROUND_OFFSET = 17.03;
 
-    public double acceleration;
-    public final int playerIndex;
-    public final int team;
-    public final Vector3 angularVelocity;
-    public final Vector3 upVector;
-    public final Vector3 frontVector;
-    public final Vector3 sideVector;
-    public int boost;
-    public final boolean hasJumped;
-    public final boolean hasDoubleJumped;
-    public final boolean isDemolished;
-    public final boolean isSupersonic;
-    public final boolean isCarOnGround;
-    public final boolean isMidAir;
-    public final boolean isCarUpsideDown;
-    public final boolean isOnWall;
-    public final double distanceToBall;
-    public final double angleToBall;
+    private final int team;
+    private final int playerIndex;
 
+    // Modifiable
+    private int boost;
+    private boolean hasJumped;
+    private boolean hasDoubleJumped;
+    private boolean isDemolished;
 
+    // Dependent
+    private Vector3 upVector;
+    private Vector3 frontVector;
+    private Vector3 sideVector;
+    private boolean isSupersonic;
+    private boolean isCarOnGround;
+    private boolean isMidAir; // TODO Undefined when creating custom car
+    private boolean isCarUpsideDown;
+    private boolean isOnWall; // TODO Use upcoming zones to determine this
+    private double distanceToBall;
+    private double angleToBall;
 
     public Car(int index, GameData.GameTickPacket packet) {
 
-        //Extends RigidBody
-        setPosition(Vector3.convert(packet.getPlayers(index).getLocation()));
-        setVelocity(Vector3.convert(packet.getPlayers(index).getVelocity()));
-        setRotation(Vector3.convert(packet.getPlayers(index).getRotation()));
-        setAcceleration(Vector3.convert(packet.getBall().getAcceleration()));
-        setAffectedByGravity(true);
-
-        //Car Specific details
         playerIndex = index;
         GameData.PlayerInfo info = packet.getPlayers(index);
         team = info.getTeam();
-        angularVelocity = Vector3.convert(packet.getPlayers(index).getAngularVelocity());
-        upVector = RLMath.carUpVector(Vector3.convert(packet.getPlayers(index).getRotation()));
-        frontVector = RLMath.carFrontVector(Vector3.convert(packet.getPlayers(index).getRotation()));
-        sideVector = RLMath.carSideVector(Vector3.convert(packet.getPlayers(index).getRotation()));
+
+        setPosition(Vector3.convert(info.getLocation()));
+        setVelocity(Vector3.convert(info.getVelocity()));
+        setRotation(Vector3.convert(info.getRotation()));
+        setAngularVelocity(Vector3.convert(info.getAngularVelocity()));
+
         boost = packet.getPlayers(index).getBoost();
         hasJumped = packet.getPlayers(index).getJumped();
         hasDoubleJumped = packet.getPlayers(index).getDoubleJumped();
         isDemolished = packet.getPlayers(index).getIsDemolished();
         isSupersonic = packet.getPlayers(index).getIsSupersonic();
-        isCarOnGround = packet.getPlayers(index).getLocation().getZ() < 20;
         isMidAir = packet.getPlayers(index).getIsMidair();
-        isCarUpsideDown = RLMath.carUpVector(Vector3.convert(packet.getPlayers(index).getRotation())).z < 0;
-        distanceToBall = Vector3.convert(packet.getPlayers(index).getLocation()).getDistanceTo(Vector3.convert(packet.getBall().getLocation()));
-        angleToBall = RLMath.carsAngleToPoint(getPosition().asVector2(), getRotation().yaw, Vector3.convert(packet.getBall().getLocation()).asVector2());
+        setBallDependentVariables(Vector3.convert(packet.getBall().getLocation()));
+
         isOnWall = getPosition().y==Situation.ARENA_LENGTH || getPosition().x == Situation.ARENA_WIDTH || getPosition().x == -Situation.ARENA_WIDTH || getPosition().y == -Situation.ARENA_LENGTH;
-        acceleration = 0.0388*getVelocity().asVector2().getMagnitude()+57.791;
     }
 
-    // Constructor for new car based on an old instance of car
-    public Car(Car oldCar, Ball ball) {
-    //Team Indicators
+    /** Constructor for new car based on an old instance of car */
+    public Car(Car oldCar) {
+
         team = oldCar.team;
         playerIndex = oldCar.playerIndex;
-        //RigidBody
+
         setPosition(oldCar.getPosition());
         setVelocity(oldCar.getVelocity());
         setRotation(oldCar.getRotation());
+        setAngularVelocity(oldCar.getAngularVelocity());
 
-        //Is calculated as change in angle over time, set as default, but can be calculated as angle change after simulation
-        angularVelocity = oldCar.angularVelocity;
-        acceleration = 0.0388*getVelocity().asVector2().getMagnitude()+57.791;
-        upVector = RLMath.carUpVector(getRotation());
-        frontVector = RLMath.carFrontVector(getRotation());
-        sideVector = RLMath.carSideVector(getRotation());
-        //Opdater naar boost er en ting
         boost = oldCar.boost;
         hasJumped = oldCar.hasJumped;
         hasDoubleJumped = oldCar.hasDoubleJumped;
         isDemolished = oldCar.isDemolished;
         isSupersonic = oldCar.isSupersonic;
-        isCarOnGround = getPosition().z < 20;
         isMidAir = oldCar.isMidAir;
-        isCarUpsideDown = getRotation().z < 0;
-        distanceToBall = getPosition().getDistanceTo(ball.getPosition());
-        angleToBall = RLMath.carsAngleToPoint(getPosition().asVector2(), getRotation().yaw, ball.getPosition().asVector2());
-        //TODO NEEDS TWEAKING
+        distanceToBall = oldCar.distanceToBall;
+        angleToBall = oldCar.angleToBall;
+
         isOnWall = getPosition().y==Situation.ARENA_LENGTH || getPosition().x == Situation.ARENA_WIDTH || getPosition().x == -Situation.ARENA_WIDTH || getPosition().y == -Situation.ARENA_LENGTH;
-        acceleration = 0.0388*getVelocity().asVector2().getMagnitude()+57.791;
-        setAffectedByGravity(isMidAir());
     }
 
+    @Override
+    public Car clone() {
+        return new Car(this);
+    }
 
+    public int getTeam() {
+        return team;
+    }
 
+    public int getPlayerIndex() {
+        return playerIndex;
+    }
 
-    // GENERATED GETTERS
+    public int getBoost() {
+        return boost;
+    }
+
+    @Override
+    public void setPosition(Vector3 position) {
+        super.setPosition(position);
+        isCarOnGround = position.z < 20;
+    }
+
+    @Override
+    public void setVelocity(Vector3 velocity) {
+        super.setVelocity(velocity);
+        isSupersonic = velocity.getMagnitude() >= SUPERSONIC_SPEED_REQUIRED;
+    }
+
+    @Override
+    public void setAcceleration(Vector3 acceleration) {
+        super.setAcceleration(acceleration);
+    }
+
+    @Override
+    public void setRotation(Vector3 rotation) {
+        super.setRotation(rotation);
+        upVector = RLMath.carUpVector(rotation);
+        frontVector = RLMath.carFrontVector(rotation);
+        sideVector = RLMath.carSideVector(rotation);
+        isCarUpsideDown = upVector.z < 0;
+    }
+
+    @Override
+    public void setAngularVelocity(Vector3 angularVelocity) {
+        super.setAngularVelocity(angularVelocity);
+    }
+
+    public void setBallDependentVariables(Vector3 ballPosition) {
+        angleToBall = RLMath.carsAngleToPoint(getPosition().asVector2(),  getRotation().yaw, ballPosition.asVector2());
+        distanceToBall = getPosition().getDistanceTo(ballPosition);
+    }
+
+    public void setBoost(int amount) {
+        this.boost = Math.min(Math.max(0, amount), 100);
+    }
+
+    public void addBoost(int amount) {
+        this.boost = Math.min(Math.max(0, this.boost + amount), 100);
+    }
+
     public boolean isHasJumped() {
         return hasJumped;
     }
 
-    public Vector3 getAngularVelocity() {
-        return angularVelocity;
+    public void setHasJumped(boolean hasJumped) {
+        this.hasJumped = hasJumped;
+    }
+
+    public boolean isHasDoubleJumped() {
+        return hasDoubleJumped;
+    }
+
+    public void setHasDoubleJumped(boolean hasDoubleJumped) {
+        if (hasDoubleJumped) hasJumped = true;
+        this.hasDoubleJumped = hasDoubleJumped;
+    }
+
+    public boolean isDemolished() {
+        return isDemolished;
+    }
+
+    public void setDemolished(boolean demolished) {
+        isDemolished = demolished;
     }
 
     public Vector3 getUpVector() {
@@ -123,25 +183,6 @@ public class Car extends Rigidbody {
 
     public Vector3 getSideVector() {
         return sideVector;
-    }
-
-    public int getBoost() {
-        return boost;
-    }
-    //Sets the boost but it cannot be higher than 100
-    public void setBoost(int i){
-        if (boost+i>100){
-            i=100;
-        }
-       this.boost =  i;
-    }
-
-    public boolean isHasDoubleJumped() {
-        return hasDoubleJumped;
-    }
-
-    public boolean isDemolished() {
-        return isDemolished;
     }
 
     public boolean isSupersonic() {
@@ -172,4 +213,7 @@ public class Car extends Rigidbody {
         return angleToBall;
     }
 
+    public void setIsMidAir(boolean midAir) {
+        isMidAir = midAir;
+    }
 }

@@ -5,6 +5,8 @@ import botenanna.math.RLMath;
 import botenanna.math.Vector2;
 import botenanna.math.Vector3;
 import botenanna.math.zone.Box;
+import botenanna.physics.Rigidbody;
+import botenanna.physics.SimplePhysics;
 import botenanna.physics.TimeTracker;
 import rlbot.api.GameData;
 
@@ -46,7 +48,7 @@ public class Situation {
     public final Car enemyCar;
 
     /* BALL */
-    public final Ball ball;
+    public final Rigidbody ball;
     public final double ballLandingTime;
     public final Vector3 ballLandingPosition;
 
@@ -76,14 +78,14 @@ public class Situation {
 
         /* BALL */
         // this.ballHasAcceleration = packet.getBall().hasAcceleration(); // What is this?
-        this.ball = new Ball(packet.getBall());
-        double landingTime = ball.predictArrivalAtHeight(Ball.RADIUS);
+        this.ball = Ball.get(packet.getBall());
+        double landingTime = SimplePhysics.predictArrivalAtHeight(ball, Ball.RADIUS, true);
         if (Double.isNaN(landingTime)) {
             this.ballLandingTime = 0;
             this.ballLandingPosition = ball.getPosition();
         } else {
             this.ballLandingTime = landingTime;
-            this.ballLandingPosition = ball.stepped(ballLandingTime).getPosition();
+            this.ballLandingPosition = SimplePhysics.step(ball.clone(), ballLandingTime, true).getPosition();
         }
 
         /* GAME */
@@ -94,25 +96,25 @@ public class Situation {
         this.gamePlayerCount = packet.getPlayersCount();
     }
     // Constructor  for simulation
-    public Situation(Car car, Car enemyCar, Ball ball, Boostpads pads) {
-        this.myPlayerIndex = car.playerIndex;
-        this.enemyPlayerIndex = enemyCar.playerIndex;
+    public Situation(Car car, Car enemyCar, Rigidbody ball, Boostpads pads) {
+        this.myPlayerIndex = car.getPlayerIndex();
+        this.enemyPlayerIndex = enemyCar.getPlayerIndex();
         this.myCar = car;
         this.enemyCar = enemyCar;
         this.ball = ball;
         this.gameBoostPads = pads;
-        this.gameBoostPads.updateBoostpadList(packet.getBoostPadsList());
+        this.gameBoostPads.updateBoostpadList(pads.getBoostpadList());
 
-
-        // Udregn
-        double landingTime = ball.predictArrivalAtHeight(Ball.RADIUS);
+        // Ball landing
+        double landingTime = SimplePhysics.predictArrivalAtHeight(ball, Ball.RADIUS, true);
         if (Double.isNaN(landingTime)) {
             this.ballLandingTime = 0;
             this.ballLandingPosition = ball.getPosition();
         } else {
             this.ballLandingTime = landingTime;
-            this.ballLandingPosition = ball.stepped(ballLandingTime).getPosition();
+            this.ballLandingPosition = SimplePhysics.step(ball.clone(), ballLandingTime, true).getPosition();
         }
+
         // TODO Hardcode Specific situations in simulation
         this.gameIsKickOffPause = false;
         this.gameIsMatchEnded = false;
@@ -163,7 +165,7 @@ public class Situation {
     * Currently weighed equally and therefore can be considered inaccurate. Requires more testing. */
     private double possessionUtility (Car car){
         double distanceUtility = 1-car.getPosition().getDistanceTo(ball.getPosition())/ARENA_LENGTH;
-        double angleUtility = Math.cos(car.angleToBall);
+        double angleUtility = Math.cos(car.getAngleToBall());
         double velocityUtility = car.getVelocity().getMagnitude()/MAX_VELOCITY_NO_BOOST;
 
         // Returns the total utility points.
@@ -175,7 +177,7 @@ public class Situation {
         Vector3 vectorToPoint = pointVector.minus(myCar.getPosition());
 
         // Find angle to the given point
-        return myCar.frontVector.getAngleTo(vectorToPoint);
+        return myCar.getFrontVector().getAngleTo(vectorToPoint);
     }
 
     public Box getEnemyBoxArea(int playerIndex) {
@@ -243,7 +245,7 @@ public class Situation {
                 velocity = 800;
             } else velocity = myCar.getVelocity().getMagnitude();
 
-            if (-25 < expectedBall.minus(myCar.getPosition().plus(myCar.frontVector.scale(70))).getMagnitude() - velocity * predict && expectedBall.minus(myCar.getPosition().plus(myCar.frontVector.scale(70))).getMagnitude() - velocity * predict < 25) {
+            if (-25 < expectedBall.minus(myCar.getPosition().plus(myCar.getFrontVector().scale(70))).getMagnitude() - velocity * predict && expectedBall.minus(myCar.getPosition().plus(myCar.getFrontVector().scale(70))).getMagnitude() - velocity * predict < 25) {
                 predictSeconds = predict;
             }
 

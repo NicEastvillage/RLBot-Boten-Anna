@@ -14,7 +14,7 @@ import botenanna.physics.TimeTracker;
  * steps left in the sequence, they will return RUNNING with the evaluated ActionSet. */
 public abstract class Intention extends Leaf {
 
-    public static final double STEPSIZE = 0.1;
+    public static final double STEPSIZE = 0.05;
 
     private boolean isRunning = false;
     private FitnessInterface fitness;

@@ -12,6 +12,8 @@ import java.util.TreeSet;
 
 public class AStar {
 
+    private static final double FORCED_STOP_SECONDS = 0.2f;
+
     private static class TimeNode {
         public final Situation situation;
         public final ActionSet actionTaken;
@@ -33,6 +35,7 @@ public class AStar {
         TimeNode startNode = new TimeNode(startSituation, new ActionSet(), null, 0);
 
         TreeSet<TimeNode> openSet = new TreeSet<>((n1, n2) -> {
+            if (n1 == n2) return 0; // Must be consistent with equals
             double fit = fitness.calculateFitness(n1.situation, n1.timeSpent) - fitness.calculateFitness(n2.situation, n2.timeSpent);
             // Even if the situations have the same fitness, they are not the same
             if (fit < 0) return -1;
@@ -45,13 +48,14 @@ public class AStar {
             TimeNode current = openSet.last();
 
             // Is this situation a fulfilling destination?
-            if (fitness.isDeviationFulfilled(current.situation, current.timeSpent)) {
-                List<ActionSet> sequence = reconstructSequence(current);
-                return toTimeLine(sequence, stepsize);
+            if (current.actionTaken != null) {
+                if (current.timeSpent >= FORCED_STOP_SECONDS || fitness.isDeviationFulfilled(current.situation, current.timeSpent)) {
+                    List<ActionSet> sequence = reconstructSequence(current);
+                    return toTimeLine(sequence, stepsize);
+                }
             }
 
             openSet.remove(current);
-            System.out.println(fitness.calculateFitness(current.situation, current.timeSpent));
 
             // Try all sensible actions and simulate what situations they create
             List<ActionSet> followingActions = getFollowingActionSets(current.situation, current.actionTaken);
@@ -104,17 +108,16 @@ public class AStar {
         */
 
         List<ActionSet> following = new LinkedList<>();
-        following.add(current);
 
-        double[] newThrottles = getFollowingDirections(current == null ? 0 : current.getThrottle());
+        double[] newThrottles = new double[]{1,-1}; // getFollowingDirections(current == null ? 0 : current.getThrottle());
         double[] newSteerings = getFollowingDirections(current == null ? 0 : current.getSteer());
         // pitch and roll is 0, if car is grounded
-        double[] newPitches = situation.myCar.isMidAir ? getFollowingDirections(current == null ? 0 : current.getPitch()) : new double[]{0};
-        double[] newRolls = situation.myCar.isMidAir ? getFollowingDirections(current == null ? 0 : current.getRoll()) : new double[]{0};
+        double[] newPitches = situation.myCar.isMidAir() ? getFollowingDirections(current == null ? 0 : current.getPitch()) : new double[]{0};
+        double[] newRolls = situation.myCar.isMidAir() ? getFollowingDirections(current == null ? 0 : current.getRoll()) : new double[]{0};
         // jump is false, if jumping has no effect // FIXME With current implementation, second jump will always be one step long
-        boolean[] newJumps = !situation.myCar.hasDoubleJumped ? new boolean[]{true, false} : new boolean[]{false};
+        boolean[] newJumps = !situation.myCar.isHasDoubleJumped() ? new boolean[]{true, false} : new boolean[]{false};
         // boost is false, if car has no boost
-        boolean[] newBoosts = situation.myCar.boost > 0 ? new boolean[]{true, false} : new boolean[]{false};
+        boolean[] newBoosts = situation.myCar.getBoost() > 0 ? new boolean[]{true, false} : new boolean[]{false};
         boolean[] newSlides = new boolean[]{true, false};
 
         for (double throttle : newThrottles) {

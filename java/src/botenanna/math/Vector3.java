@@ -20,11 +20,11 @@ public class Vector3 {
 
     // Vector3 are also used to represent rotations, but these variables are the same as x, y, z
     /** Angle of counterclockwise rotation around the x-axis */
-    public double pitch;
+    public final double pitch;
     /** Angle of counterclockwise rotation around the y-axis */
-    public double roll;
+    public final double roll;
     /** Angle of counterclockwise rotation around the z-axis */
-    public double yaw;
+    public final double yaw;
 
 
     public Vector3() {
@@ -48,6 +48,36 @@ public class Vector3 {
     /** Convert to Vector2 */
     public Vector2 asVector2() {
         return new Vector2(this);
+    }
+
+    /** @return a NEW vector where the x is changed. */
+    public Vector3 withX(double x) {
+        return new Vector3(x, y, z);
+    }
+
+    /** @return a NEW vector where the y is changed. */
+    public Vector3 withY(double y) {
+        return new Vector3(x, y, z);
+    }
+
+    /** @return a NEW vector where the z is changed. */
+    public Vector3 withZ(double z) {
+        return new Vector3(x, y, z);
+    }
+
+    /** @return a NEW vector where the roll is changed. */
+    public Vector3 withRoll(double roll) {
+        return new Vector3(roll, pitch, yaw);
+    }
+
+    /** @return a NEW vector where the pitch is changed. */
+    public Vector3 withPitch(double pitch) {
+        return new Vector3(roll, pitch, yaw);
+    }
+
+    /** @return a NEW vector where the yaw is changed. */
+    public Vector3 withYaw(double yaw) {
+        return new Vector3(roll, pitch, yaw);
     }
 
     /** @return this vector plus the other vector */

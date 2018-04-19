@@ -123,7 +123,7 @@ public class TaskHitTowardsPoint extends Leaf{
     private Vector2 searchAngle(Situation input, Vector2 target){
         Vector2 ballPos = input.ballLandingPosition.asVector2();
         Vector2 ballV = input.ball.getVelocity().asVector2();
-        return ballPos.plus(ballV.plus(target).getNormalized().scale(-1 * ((input.myCar.distanceToBall * 400) / (input.ball.getVelocity().getMagnitude() + 1)) * input.getGoalDirection(input.myPlayerIndex)));
+        return ballPos.plus(ballV.plus(target).getNormalized().scale(-1 * ((input.myCar.getDistanceToBall() * 400) / (input.ball.getVelocity().getMagnitude() + 1)) * input.getGoalDirection(input.myPlayerIndex)));
     }
 
     /** Finds a vector2 point on the ball*

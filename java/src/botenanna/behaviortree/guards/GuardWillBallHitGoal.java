@@ -12,7 +12,9 @@ import botenanna.game.Situation;
 import botenanna.math.Vector2;
 import botenanna.math.Vector3;
 import botenanna.math.zone.Box;
+import botenanna.physics.BallPhysics;
 import botenanna.physics.Path;
+import botenanna.physics.SimplePhysics;
 
 import java.util.function.Function;
 
@@ -40,16 +42,15 @@ public class GuardWillBallHitGoal extends Leaf {
     public NodeStatus run(Situation situation) throws MissingNodeException {
 
         // Determine time it will take for ball to hit next Y-positive wall
-        double time = situation.ball.predictArrivalAtWallYPositive(Ball.RADIUS);
+        double time = SimplePhysics.predictArrivalAtWallYPositive(situation.ball, Ball.RADIUS);
 
-        // Find path of ball
-        Path path = situation.ball.getPath(time, 10);
-        Vector3 finalDestination = path.getLastItem();
+        // Find position when hitting wall
+        Vector3 destination = BallPhysics.step(situation.ball, time).getPosition();
 
         // Determine area
         Box boxArea = (Box) areaFunc.apply(situation);
 
-        if (boxArea.isPointInBoxArea(finalDestination)) {
+        if (boxArea.isPointInBoxArea(destination)) {
             return NodeStatus.DEFAULT_SUCCESS;
         } else {
             return NodeStatus.DEFAULT_FAILURE;

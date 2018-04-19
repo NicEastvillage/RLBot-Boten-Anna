@@ -38,18 +38,23 @@ public class Boostpads {
     public void updateBoostpadList(List<GameData.BoostInfo> boostInfo){
 
         ArrayList<Boostpad> inputArray = createListOfBoostpads(boostInfo);
+        updateBoostpadList(inputArray);
+    }
 
+    /** Updates or initializes the boostpad list.
+     *  @param boostList the object boostInfo from the game packet. */
+    public void updateBoostpadList(ArrayList<Boostpad> boostList) {
         if(!isInitialized){
-            boostpadList = inputArray;
+            boostpadList = boostList;
             isInitialized = true;
         }else{
-            if(boostInfo.size() != inputArray.size())
+            if(boostList.size() != boostList.size())
                 System.out.println("SOMETHING WENT WRONG! Boostpad2 class. Contact -> MIKKEL!"); //TODO keep? Should never get here!
 
-            for(int i = 0; i < boostInfo.size(); i++){
-                boostpadList.get(i).setLocation(inputArray.get(i).getLocation());
-                boostpadList.get(i).setActive(inputArray.get(i).isActive());
-                boostpadList.get(i).setTimer(inputArray.get(i).getTimer());
+            for(int i = 0; i < boostList.size(); i++){
+                boostpadList.get(i).setLocation(boostList.get(i).getLocation());
+                boostpadList.get(i).setActive(boostList.get(i).isActive());
+                boostpadList.get(i).setTimer(boostList.get(i).getTimer());
             }
         }
     }
@@ -82,10 +87,9 @@ public class Boostpads {
     /** Replaces the current boostpadList with a given one.
      *  @param boostpadList the boostpadList to be copyed. */
     public void setBoostpadList(ArrayList<Boostpad> boostpadList){
-        this.boostpadList = new ArrayList<>();
+        this.boostpadList = new ArrayList<>(boostpadList);
 
-        for(int i = 0; i < boostpadList.size(); i++)
-            this.boostpadList.add(boostpadList.get(i));
+        isInitialized = true;
     }
 
     /** The boostpad as a object. */
