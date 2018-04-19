@@ -23,7 +23,7 @@ public class GuardWillBallHitGoal extends Leaf {
     public GuardWillBallHitGoal(String[] arguments) throws IllegalArgumentException {
         super(arguments);
 
-        if (arguments.length != 1){
+        if (arguments.length != 1) {
             throw new IllegalArgumentException();
         }
 
