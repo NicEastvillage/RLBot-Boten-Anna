@@ -12,6 +12,8 @@ import java.util.TreeSet;
 
 public class AStar {
 
+    private static final double FORCED_STOP_SECONDS = 0.2f;
+
     private static class TimeNode {
         public final Situation situation;
         public final ActionSet actionTaken;
@@ -47,7 +49,7 @@ public class AStar {
 
             // Is this situation a fulfilling destination?
             if (current.actionTaken != null) {
-                if (current.timeSpent >= 0.1 || fitness.isDeviationFulfilled(current.situation, current.timeSpent)) {
+                if (current.timeSpent >= FORCED_STOP_SECONDS || fitness.isDeviationFulfilled(current.situation, current.timeSpent)) {
                     List<ActionSet> sequence = reconstructSequence(current);
                     return toTimeLine(sequence, stepsize);
                 }
@@ -107,7 +109,7 @@ public class AStar {
 
         List<ActionSet> following = new LinkedList<>();
 
-        double[] newThrottles = new double[]{1}; // getFollowingDirections(current == null ? 0 : current.getThrottle());
+        double[] newThrottles = new double[]{1,-1}; // getFollowingDirections(current == null ? 0 : current.getThrottle());
         double[] newSteerings = getFollowingDirections(current == null ? 0 : current.getSteer());
         // pitch and roll is 0, if car is grounded
         double[] newPitches = situation.myCar.isMidAir() ? getFollowingDirections(current == null ? 0 : current.getPitch()) : new double[]{0};

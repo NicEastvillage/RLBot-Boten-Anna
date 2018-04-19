@@ -60,14 +60,14 @@ public class FitnessDriveOverPointWithAngle implements FitnessInterface {
             return (velocity == 0) ? Double.MIN_VALUE :
                             // - timeSpent
                             // - Math.abs(angleDifference) * ANGLE_SCALE
-                            - distanceToPoint * DIST_SCALE
-                            + Math.abs(velocity) * VEL_SCALE;
+                            - distanceToPoint * DIST_SCALE;
+                            // + Math.abs(velocity) * VEL_SCALE;
         }else{
             return (velocity == 0) ? Double.MIN_VALUE :
                             // - timeSpent
                             // - Math.abs(angleDifference) * ANGLE_SCALE
-                            - distanceToPoint * DIST_SCALE
-                            - Math.abs(velocity) * VEL_SCALE;
+                            - distanceToPoint * DIST_SCALE;
+                            // - Math.abs(velocity) * VEL_SCALE;
         }
     }
 
