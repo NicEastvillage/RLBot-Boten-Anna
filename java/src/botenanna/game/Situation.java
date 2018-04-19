@@ -21,6 +21,13 @@ public class Situation {
     public static final Vector3 ORANGE_GOAL_BOX = Vector3.FORWARD.scale(5000);
     public static final Box ORANGE_GOAL_BOX_AREA = new Box(new Vector3(-720 , 5200 , 0), new Vector3(720 , 4000 , 1000));
     public static final Box BLUE_GOAL_BOX_AREA = new Box(new Vector3(-720 , -5200 , 0), new Vector3(720 , -4000 , 1000));
+    public static final Box Midfield = new Box(new Vector3(-4080, -2080, 4060), new Vector3(4080, 2080, 0));
+    public static final Box Upper_Right_Cornor = new Box(new Vector3(-4080, -5080, 4060), new Vector3(0, 0, 0));
+    public static final Box Upper_Left_Cornor = new Box(new Vector3(-4080, 5080, 4060), new Vector3(0, 0, 0));
+    public static final Box Lover_Right_Cornor = new Box(new Vector3(4080, 5080, 4060), new Vector3(0, 0, 0));
+    public static final Box Lover_Left_Cornor = new Box(new Vector3(4080, -5080, 4060), new Vector3(0, 0, 0));
+    public static final Box Orange_Goal_Box = new Box(new Vector3(-720, 5200, 0), new Vector3(720, 7000, 1000));
+    public static final Box Blue_Goal_Box = new Box(new Vector3(-720, -5200, 0), new Vector3(720, -7000, 1000));
     public static final Vector2 BLUE_GOALPOST_LEFT = new Vector2(-720, -5200);
     public static final Vector2 BLUE_GOALPOST_RIGHT = new Vector2(720, -5200);
     public static final Vector2 RED_GOALPOST_LEFT = new Vector2(-720, 5200);
