@@ -97,6 +97,6 @@ public class BotenAnna extends Application {
             botInfoDisplayRoot.getChildren().add(display);
             botInfoDisplays.put(bot, display);
         }
-        botInfoDisplays.get(bot).update(bot);
+        botInfoDisplays.get(bot).update();
     }
 }

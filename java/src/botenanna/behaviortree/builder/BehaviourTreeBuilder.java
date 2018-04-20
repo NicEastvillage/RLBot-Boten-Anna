@@ -108,9 +108,10 @@ public class BehaviourTreeBuilder {
         return build(defaultFile);
     }
 
-    /** Build a BehaviourTree from a filepath. */
-    public BehaviorTree buildUsingDefault(String path) throws FileNotFoundException, IOException {
-        File file = new File(path);
+    /** Build a BehaviourTree from a file chosen with a file chooser */
+    public BehaviorTree buildFromFileChooser() throws FileNotFoundException, IOException {
+        File file = getFileWithFileChooser();
+        if (file == null) return null;
         return build(file);
     }
 
