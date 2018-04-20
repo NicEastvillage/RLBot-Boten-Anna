@@ -27,6 +27,7 @@ public class Bot {
      * @return an ActionSet of what the agent want to do
      */
     public ActionSet process(Situation packet) {
+        if (behaviorTree == null) throw new RuntimeException("Behaviour Tree is null for bot #" + playerIndex);
         return behaviorTree.evaluate(packet);
     }
 
@@ -38,10 +39,12 @@ public class Bot {
         return team;
     }
 
-    /** Getter for the behavior tree
-     * @return the behaviorTree    */
     public BehaviorTree getBehaviorTree() {
         return behaviorTree;
+    }
+
+    public void setBehaviorTree(BehaviorTree tree) {
+        behaviorTree = tree;
     }
 
     public Situation getLastInputReceived() {
