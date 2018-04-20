@@ -11,20 +11,17 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 /** Abstract InfoDisplay that ensures consistent layout. */
-public abstract class InfoDisplay<T> extends VBox {
+public abstract class InfoDisplay extends VBox {
 
-    public static final Color DEFAULT_HEADER_COLOR = new Color(0.7, 0.7, 0.7, 1);
+    public static final Color DEFAULT_HEADER_COLOR = new Color(0.82, 0.82, 0.82, 1);
 
-    protected T target;
     protected HBox header;
     protected Label headerLabel;
     protected Label infoLabel;
 
     /** Setup the components for a InfoDisplay. If no color is provided a default gray is chosen. */
-    protected InfoDisplay(T target, String headerLabel, Color color) {
+    protected InfoDisplay(String headerLabel, Color color) {
         super();
-
-        this.target = target;
 
         buildHeader(headerLabel, color);
 

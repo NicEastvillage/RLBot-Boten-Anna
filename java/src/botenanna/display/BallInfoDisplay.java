@@ -8,28 +8,16 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
-public class BallInfoDisplay extends VBox {
+/** A display for the ball info. */
+public class BallInfoDisplay extends InfoDisplay {
 
     public static final Color HEADER_COLOR = new Color(0.7, 0.7, 0.7, 1);
 
-    private Label infoLabel;
-
     public BallInfoDisplay() {
-        super();
-        HBox header = new HBox();
-        getChildren().add(header);
-        header.setPadding(new Insets(3, 5, 3, 5));
-        header.setBackground(new Background(new BackgroundFill(HEADER_COLOR, null, null)));
-
-        Label headerLabel = new Label("Ball");
-        header.getChildren().add(headerLabel);
-
-        infoLabel = new Label("No data");
-        infoLabel.setPadding(new Insets(2, 3, 4, 10));
-        infoLabel.setFont(new Font("Courier New", 14));
-        getChildren().add(infoLabel);
+        super("Ball", HEADER_COLOR);
     }
 
+    /** Update info display. A new situation must be provided. */
     public void update(Situation input) {
         if (input == null)
             return;

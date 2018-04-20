@@ -6,47 +6,28 @@ import botenanna.game.Situation;
 import botenanna.Bot;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 import java.io.IOException;
 
-public class BotInfoDisplay extends VBox {
+/** Display for bot info */
+public class BotInfoDisplay extends InfoDisplay {
 
     public static final Color BLUE = new Color(.34, .42, 1, 1);
     public static final Color ORANGE = new Color(1, 0.7, 0.3, 1);
 
     private Bot bot;
-    private Label infoLabel;
 
     public BotInfoDisplay(Bot bot) {
-        super();
+        super("Car #" + bot.getPlayerIndex(), bot.getPlayerIndex() == 0 ? BLUE : ORANGE);
         this.bot = bot;
 
-        buildHeader(bot);
-
-        infoLabel = new Label("No data");
-        infoLabel.setPadding(new Insets(3, 3, 4, 10));
-        infoLabel.setFont(new Font("Courier New", 12));
-        getChildren().add(infoLabel);
+        addChangeBtButton();
     }
 
-    public void buildHeader(Bot bot) {
-        HBox header = new HBox();
-        getChildren().add(header);
-        header.setPadding(new Insets(3, 5, 3, 5));
-        Color color = bot.getTeam() == Bot.Team.BLUE ? BLUE : ORANGE;
-        header.setBackground(new Background(new BackgroundFill(color, null, null)));
-
-        Label headerLabel = new Label("Car #" + bot.getPlayerIndex());
-        header.getChildren().add(headerLabel);
-
-        Pane fillPane = new Pane();
-        header.getChildren().add(fillPane);
-        HBox.setHgrow(fillPane, Priority.ALWAYS);
-
+    /** Add button to header that allow changing of behaviour tree. */
+    public void addChangeBtButton() {
         Button changeBt = new Button("Tree");
         changeBt.setFont(new Font(10));
         changeBt.setPadding(new Insets(1, 4, 1, 4));
@@ -55,6 +36,7 @@ public class BotInfoDisplay extends VBox {
         header.getChildren().add(changeBt);
     }
 
+    /** Update info displayed. */
     public void update() {
         Situation input = bot.getLastInputReceived();
         if (input == null || input.myCar.getPosition() == null)
