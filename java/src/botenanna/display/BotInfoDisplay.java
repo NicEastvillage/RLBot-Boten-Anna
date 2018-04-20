@@ -25,6 +25,15 @@ public class BotInfoDisplay extends VBox {
         super();
         this.bot = bot;
 
+        buildHeader(bot);
+
+        infoLabel = new Label("No data");
+        infoLabel.setPadding(new Insets(3, 3, 4, 10));
+        infoLabel.setFont(new Font("Courier New", 12));
+        getChildren().add(infoLabel);
+    }
+
+    public void buildHeader(Bot bot) {
         HBox header = new HBox();
         getChildren().add(header);
         header.setPadding(new Insets(3, 5, 3, 5));
@@ -44,11 +53,6 @@ public class BotInfoDisplay extends VBox {
         changeBt.setPrefHeight(16);
         changeBt.setOnAction(e -> changeBehaviourTree());
         header.getChildren().add(changeBt);
-
-        infoLabel = new Label("No data");
-        infoLabel.setPadding(new Insets(2, 3, 4, 10));
-        infoLabel.setFont(new Font("Courier New", 14));
-        getChildren().add(infoLabel);
     }
 
     public void update() {
