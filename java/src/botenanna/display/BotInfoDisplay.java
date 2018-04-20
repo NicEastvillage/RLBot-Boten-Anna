@@ -1,8 +1,9 @@
-package botenanna.overlayWindow;
+package botenanna.display;
 
 import botenanna.game.Situation;
 import botenanna.Bot;
 import javafx.geometry.Insets;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -25,6 +26,16 @@ public class BotInfoDisplay extends VBox {
 
         Label headerLabel = new Label("Car #" + bot.getPlayerIndex());
         header.getChildren().add(headerLabel);
+
+        Pane fillPane = new Pane();
+        header.getChildren().add(fillPane);
+        HBox.setHgrow(fillPane, Priority.ALWAYS);
+
+        Button changeBt = new Button("Tree");
+        changeBt.setFont(new Font(10));
+        changeBt.setPadding(new Insets(1, 4, 1, 4));
+        changeBt.setPrefHeight(16);
+        header.getChildren().add(changeBt);
 
         infoLabel = new Label("No data");
         infoLabel.setPadding(new Insets(2, 3, 4, 10));

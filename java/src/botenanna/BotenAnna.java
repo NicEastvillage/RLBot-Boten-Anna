@@ -1,8 +1,8 @@
 package botenanna;
 
 import botenanna.behaviortree.builder.BehaviourTreeBuilder;
-import botenanna.overlayWindow.BallInfoDisplay;
-import botenanna.overlayWindow.BotInfoDisplay;
+import botenanna.display.BallInfoDisplay;
+import botenanna.display.BotInfoDisplay;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.beans.property.LongProperty;
@@ -45,7 +45,7 @@ public class BotenAnna extends Application {
         ballInfoDisplay = new BallInfoDisplay();
         root.getChildren().add(ballInfoDisplay);
 
-        Scene scene = new Scene(root, 440, 340);
+        Scene scene = new Scene(root, 420, 370);
         stage.setScene(scene);
         stage.setTitle("Boten Anna - Debug");
         stage.setAlwaysOnTop(true);

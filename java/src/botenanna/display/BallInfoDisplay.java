@@ -1,7 +1,6 @@
-package botenanna.overlayWindow;
+package botenanna.display;
 
 import botenanna.game.Situation;
-import botenanna.Ball;
 import botenanna.physics.Rigidbody;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
