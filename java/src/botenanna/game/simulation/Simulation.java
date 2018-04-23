@@ -83,7 +83,7 @@ public class Simulation {
 
         } else {
             // We are on the ground
-            double newYaw = car.getRotation().yaw + TURN_RATE * action.getSteer() * delta;
+            double newYaw = car.getRotation().yaw + getTurnRate(car) * action.getSteer() * delta;
             newYaw %= Math.PI; // Set to remainder, when modulo PI. [PI, -PI]
             car.setRotation(car.getRotation().withYaw(newYaw));
 
@@ -122,5 +122,15 @@ public class Simulation {
 
         return MAX_VELOCITY_BOOST * dir - velLength * velDir;
         // TODO Add boosting
+    }
+
+    /** The turn rate at a given velocity. */
+    public static double getTurnRate(Car car) {
+
+        // TODO We're currently assuming our velocity is parallel with out front vector
+        double vel = car.getVelocity().getMagnitude();
+
+        // See documentation "turnrate linear function.png" for math.
+        return 1.325680896 + 0.0002869694124 * vel;
     }
 }
