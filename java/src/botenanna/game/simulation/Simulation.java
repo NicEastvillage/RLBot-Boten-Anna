@@ -20,7 +20,7 @@ public class Simulation {
         Rigidbody simulatedBall = simulateBall(situation.ball, stepsize);
         Car simulatedMyCar = simulateCarActions(situation.myCar, action,  simulatedBall, stepsize);
         Car simulatedEnemyCar = steppedCar(situation.enemyCar, stepsize);
-        Boostpads simulatedBoostpads = simulateBoostpads(situation.gameBoostPads, simulatedEnemyCar, simulatedMyCar, stepsize);
+        Boostpad[] simulatedBoostpads = simulateBoostpads(situation.boostpads, simulatedEnemyCar, simulatedMyCar, stepsize);
 
         simulatedMyCar.setBallDependentVariables(simulatedBall.getPosition());
         simulatedEnemyCar.setBallDependentVariables(simulatedBall.getPosition());
@@ -30,19 +30,29 @@ public class Simulation {
 
     /** Simulates the boostpads, if any of the cars can pick up boost and they are stepped close to a pad deactivate them
      * @return an array of boostpads after simulation. */
-    private static Boostpads simulateBoostpads(Boostpads currentGamePads, Car enemy, Car myCar, double stepsize) {
+    private static Boostpad[] simulateBoostpads(Boostpad[] oldBoostpads, Car enemyCar, Car myCar, double stepsize) {
 
-        Boostpads simulatedBoostpads = new Boostpads();
-        simulatedBoostpads.setBoostpadList(currentGamePads.getBoostpadList());
+        Boostpad[] simulatedBoostpads = new Boostpad[oldBoostpads.length];
+        for (int i = 0; i < oldBoostpads.length; i++) {
+            Boostpad pad = new Boostpad(oldBoostpads[i]);
 
-        boolean isActive;
-        //Checks all the boost pads and if a car who an take boost is at the point it will be deactive;
-        for (int i = 0; i > simulatedBoostpads.getBoostpadList().size(); i++) {
-            isActive = (!(currentGamePads.getBoostpad(i).getPosition().asVector3().getDistanceTo(myCar.getPosition()) < 20) || myCar.getBoost() >= 100) &&
-                    (!(currentGamePads.getBoostpad(i).getPosition().asVector3().getDistanceTo(enemy.getPosition()) < 20) || myCar.getBoost() >= 100);
-            simulatedBoostpads.getBoostpadList().get(i).setActive(isActive);
+            simulatePickupBoostpad(pad, myCar);
+            simulatePickupBoostpad(pad, enemyCar);
+
+            pad.reduceRespawnTimeLeft(stepsize);
+
+            simulatedBoostpads[i] = pad;
         }
+
         return simulatedBoostpads;
+    }
+
+    /** Checks if car is touching pad. If they do, give the car boost and refresh boostpads respawn timer. */
+    private static void simulatePickupBoostpad(Boostpad pad, Car car) {
+        if (pad.getPosition().getDistanceTo(car.getPosition()) < Boostpad.PAD_RADIUS) {
+            pad.refreshRespawnTimer();
+            car.addBoost(pad.getBoostAmount());
+        }
     }
 
     /** @return a new ball which has been moved forwards. */

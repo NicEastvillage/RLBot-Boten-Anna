@@ -2,7 +2,7 @@ package botenanna.behaviortree.intentions;
 
 import botenanna.fitness.FitnessDriveOverPointWithAngle;
 import botenanna.fitness.FitnessInterface;
-import botenanna.game.Boostpads;
+import botenanna.game.Boostpad;
 import botenanna.game.Situation;
 import botenanna.physics.BallPhysics;
 import botenanna.physics.Path;
@@ -19,7 +19,7 @@ public class IntentionCollectBoost extends Intention {
 
     @Override
     protected FitnessInterface getFitnessFunction(Situation input) {
-        return new FitnessDriveOverPointWithAngle(new Path(input.getBestBoostPad()), BallPhysics.getPath(input.ball, 50, STEPSIZE), 0.45, Boostpads.PAD_RADIUS, false);
+        return new FitnessDriveOverPointWithAngle(new Path(input.getBestBoostPad().getPosition()), BallPhysics.getPath(input.ball, 50, STEPSIZE), 0.45, Boostpad.PAD_RADIUS, false);
     }
 
     @Override

@@ -10,6 +10,8 @@ import botenanna.physics.SimplePhysics;
 import botenanna.physics.TimeTracker;
 import rlbot.api.GameData;
 
+import java.util.List;
+
 //TODO: add isUpsideDown, myGoal (2dVEC), myGoalLine (2dVEC)
 
 /** This manages the input (packet).
@@ -34,7 +36,6 @@ public class Situation {
     public static final Vector2 BLUE_GOALPOST_RIGHT = new Vector2(720, -5200);
     public static final Vector2 RED_GOALPOST_LEFT = new Vector2(-720, 5200);
     public static final Vector2 RED_GOALPOST_RIGHT = new Vector2(720, 5200);
-    public static final Vector3[] BIG_BOOST_PADS = {new Vector3(-3070, 4100), new Vector3(3070,-4100), new Vector3(-3070,-4100),new Vector3(-3580,0), new Vector3(3580,0), new Vector3(3070, 4100)};
 
     private double WALL_X = ARENA_WIDTH/2, WALL_Y = ARENA_LENGTH/2;
 
@@ -58,7 +59,7 @@ public class Situation {
     public final boolean gameIsOvertime;
     public final boolean gameIsRoundActive;
     public final int gamePlayerCount;
-    public Boostpads gameBoostPads;
+    public final Boostpad[] boostpads;
 
     /** The constructor.
      * @param packet the GameTickPacket.
@@ -66,9 +67,7 @@ public class Situation {
     public Situation(GameData.GameTickPacket packet, TimeTracker timeTracker){
         this.packet = packet;
         this.timeTracker = timeTracker;
-        this.gameBoostPads = new Boostpads();
-        this.gameBoostPads.updateBoostpadList(packet.getBoostPadsList());
-
+        this.boostpads = constructBoostpadArray(packet.getBoostPadsList());
 
         /* CARS */
         myPlayerIndex = packet.getPlayerIndex();
@@ -95,15 +94,15 @@ public class Situation {
         this.gameIsRoundActive = packet.getGameInfo().getIsRoundActive();
         this.gamePlayerCount = packet.getPlayersCount();
     }
-    // Constructor  for simulation
-    public Situation(Car car, Car enemyCar, Rigidbody ball, Boostpads pads) {
+
+    // Constructor used by simulation
+    public Situation(Car car, Car enemyCar, Rigidbody ball, Boostpad[] boostpads) {
         this.myPlayerIndex = car.getPlayerIndex();
         this.enemyPlayerIndex = enemyCar.getPlayerIndex();
         this.myCar = car;
         this.enemyCar = enemyCar;
         this.ball = ball;
-        this.gameBoostPads = pads;
-        this.gameBoostPads.updateBoostpadList(pads.getBoostpadList());
+        this.boostpads = boostpads;
 
         // Ball landing
         double landingTime = SimplePhysics.predictArrivalAtHeight(ball, Ball.RADIUS, true);
@@ -123,33 +122,47 @@ public class Situation {
         this.gamePlayerCount = 2;
     }
 
+    /** Construct an array of boost pads from the packet's list of BoostpadInfo. */
+    private Boostpad[] constructBoostpadArray(List<GameData.BoostInfo> boostInfoList) {
+        Boostpad[] boostpads = new Boostpad[Boostpad.COUNT_TOTAL_PADS];
+
+        int j = 0;
+        for (int i = 0; i < boostInfoList.size(); i++) {
+            if (i != 6) { // Boostpad 6 is not actually in the game.
+                GameData.BoostInfo info = boostInfoList.get(i);
+                boostpads[j] = new Boostpad(info.getLocation().getX(), info.getLocation().getY(), info.getTimer());
+                j++;
+            }
+        }
+
+        return boostpads;
+    }
+
     /** Used to get the best boostpad based on utility.
-     * @return a vector3 for the best boostpad. */
-    public Vector3 getBestBoostPad(){
+     * @return the best boostpad for myCar. */
+    public Boostpad getBestBoostPad() {
         double bestBoostUtility = 0;
-        Vector2 bestBoostPad = null;
-        int totalBoostPads = Boostpads.COUNT_TOTAL_PADS;
-        /*int[] bigBoostIndex = {7,8,9,10,11,12}; // Index of big boosts //TODO not true in new packet*/
+        Boostpad bestBoostpad = null;
 
-        for (int i = 0; i < totalBoostPads; i++) {
+        for (int i = 0; i < Boostpad.COUNT_TOTAL_PADS; i++) {
 
-            Boostpads.Boostpad boostpad = gameBoostPads.getBoostpad(i);
-            Vector2 boostLocation = boostpad.getPosition();
+            Boostpad pad = boostpads[i];
+            Vector3 position = pad.getPosition();
 
-            if (boostpad.isActive()){
-                double angleToBoost = RLMath.carsAngleToPoint(new Vector2(myCar.getPosition()), myCar.getPosition().yaw, boostLocation);
-                double distance = myCar.getPosition().getDistanceTo(boostLocation.asVector3());
+            if (pad.isActive()){
+                double angleToBoost = RLMath.carsAngleToPoint(new Vector2(myCar.getPosition()), myCar.getPosition().yaw, position.asVector2());
+                double distance = myCar.getPosition().getDistanceTo(position);
                 double distFunc = ((ARENA_LENGTH - distance) / ARENA_LENGTH); // Map width
                 double newBoostUtility = (Math.cos(angleToBoost) * distFunc); // Utility formula
 
                 if (newBoostUtility > bestBoostUtility){
                     bestBoostUtility = newBoostUtility;
-                    bestBoostPad = boostLocation;
+                    bestBoostpad = pad;
                 }
             }
         }
 
-        return bestBoostPad.asVector3(); // Return the boostPad with highest utility
+        return bestBoostpad; // Return the boostPad with highest utility
     }
 
     /* Method that returns true if myCar has ball possession by comparing using utility
