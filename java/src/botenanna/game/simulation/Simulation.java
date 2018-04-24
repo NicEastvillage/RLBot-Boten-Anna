@@ -1,33 +1,26 @@
 package botenanna.game.simulation;
 
-import botenanna.Ball;
 import botenanna.game.*;
-import botenanna.math.RLMath;
 import botenanna.math.Vector3;
 import botenanna.physics.BallPhysics;
 import botenanna.physics.Rigidbody;
 import botenanna.physics.SimplePhysics;
-import javafx.util.Pair;
-import java.util.ArrayList;
-import static botenanna.game.Boostpads.*;
+
 import static botenanna.game.Car.*;
 
 public class Simulation {
-    private static double maxVel;
-    private static boolean boosting;
 
-
-    /** Simulates the situation forward a step measured in seconds.
+    /** Simulates the situation forward a stepsize measured in seconds.
      * The simulatio, simulates the player car, enemy car, ball and boostpads to create a new situation
      * @return A new simulated situation
      **/
-    public static Situation  simulate(Situation situation, double step, ActionSet action){
-        if (step < 0) throw new IllegalArgumentException("Step size must be more than zero. Current Step size is: "+step);
+    public static Situation  simulate(Situation situation, double stepsize, ActionSet action){
+        if (stepsize < 0) throw new IllegalArgumentException("Step size must be more than zero. Current Step size is: "+stepsize);
 
-        Rigidbody simulatedBall = simulateBall(situation.ball, step);
-        Car simulatedMyCar = simulateCarActions(situation.myCar, action,  simulatedBall, step);
-        Car simulatedEnemyCar = steppedCar(situation.enemyCar, step);
-        Boostpads simulatedBoostpads = simulateBoostpads(situation.gameBoostPads, simulatedEnemyCar, simulatedMyCar, step);
+        Rigidbody simulatedBall = simulateBall(situation.ball, stepsize);
+        Car simulatedMyCar = simulateCarActions(situation.myCar, action,  simulatedBall, stepsize);
+        Car simulatedEnemyCar = steppedCar(situation.enemyCar, stepsize);
+        Boostpads simulatedBoostpads = simulateBoostpads(situation.gameBoostPads, simulatedEnemyCar, simulatedMyCar, stepsize);
 
         simulatedMyCar.setBallDependentVariables(simulatedBall.getPosition());
         simulatedEnemyCar.setBallDependentVariables(simulatedBall.getPosition());
@@ -35,18 +28,18 @@ public class Simulation {
         return new Situation(simulatedMyCar, simulatedEnemyCar, simulatedBall , simulatedBoostpads);
     }
 
-    /** Simulates  the boostpads, if any of the cars can pick up boost and they are stepped close to a pad deactivate them
+    /** Simulates the boostpads, if any of the cars can pick up boost and they are stepped close to a pad deactivate them
      * @return an array of boostpads after simulation. */
-    private static Boostpads simulateBoostpads(Boostpads currentGamePads, Car enemy, Car myCar, double step) {
+    private static Boostpads simulateBoostpads(Boostpads currentGamePads, Car enemy, Car myCar, double stepsize) {
 
         Boostpads simulatedBoostpads = new Boostpads();
         simulatedBoostpads.setBoostpadList(currentGamePads.getBoostpadList());
 
         boolean isActive;
         //Checks all the boost pads and if a car who an take boost is at the point it will be deactive;
-        for (int i = 0; i > simulatedBoostpads.getBoostpadList().size(); i++){
-            isActive = (!(currentGamePads.getBoostpad(i).getLocation().asVector3().getDistanceTo(myCar.getPosition()) < 20) || myCar.getBoost() >= 100) &&
-                    (!(currentGamePads.getBoostpad(i).getLocation().asVector3().getDistanceTo(enemy.getPosition()) < 20) || myCar.getBoost() >= 100);
+        for (int i = 0; i > simulatedBoostpads.getBoostpadList().size(); i++) {
+            isActive = (!(currentGamePads.getBoostpad(i).getPosition().asVector3().getDistanceTo(myCar.getPosition()) < 20) || myCar.getBoost() >= 100) &&
+                    (!(currentGamePads.getBoostpad(i).getPosition().asVector3().getDistanceTo(enemy.getPosition()) < 20) || myCar.getBoost() >= 100);
             simulatedBoostpads.getBoostpadList().get(i).setActive(isActive);
         }
         return simulatedBoostpads;
@@ -77,14 +70,14 @@ public class Simulation {
 
         Car car = new Car(inputCar);
 
-        boosting = (action.isBoostDepressed() && car.getBoost() != 0);
+        boolean boosting = (action.isBoostDepressed() && car.getBoost() != 0);
 
         if (car.isMidAir()) {
 
         } else {
             // We are on the ground
             double newYaw = car.getRotation().yaw + getTurnRate(car) * action.getSteer() * delta;
-            newYaw %= Math.PI; // Set to remainder, when modulo PI. [PI, -PI]
+            newYaw %= Math.PI; // Clamp to be between -PI and PI
             car.setRotation(car.getRotation().withYaw(newYaw));
 
             Vector3 acceleration = new Vector3();
@@ -124,9 +117,8 @@ public class Simulation {
         // TODO Add boosting
     }
 
-    /** The turn rate at a given velocity. */
+    /** @returns the turn rate of the car. */
     public static double getTurnRate(Car car) {
-
         // TODO We're currently assuming our velocity is parallel with out front vector
         double vel = car.getVelocity().getMagnitude();
 

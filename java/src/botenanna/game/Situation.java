@@ -134,7 +134,7 @@ public class Situation {
         for (int i = 0; i < totalBoostPads; i++) {
 
             Boostpads.Boostpad boostpad = gameBoostPads.getBoostpad(i);
-            Vector2 boostLocation = boostpad.getLocation();
+            Vector2 boostLocation = boostpad.getPosition();
 
             if (boostpad.isActive()){
                 double angleToBoost = RLMath.carsAngleToPoint(new Vector2(myCar.getPosition()), myCar.getPosition().yaw, boostLocation);

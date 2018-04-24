@@ -52,7 +52,7 @@ public class Boostpads {
                 System.out.println("SOMETHING WENT WRONG! Boostpad2 class. Contact -> MIKKEL!"); //TODO keep? Should never get here!
 
             for(int i = 0; i < boostList.size(); i++){
-                boostpadList.get(i).setLocation(boostList.get(i).getLocation());
+                boostpadList.get(i).setPosition(boostList.get(i).getPosition());
                 boostpadList.get(i).setActive(boostList.get(i).isActive());
                 boostpadList.get(i).setTimer(boostList.get(i).getTimer());
             }
@@ -95,24 +95,24 @@ public class Boostpads {
     /** The boostpad as a object. */
     public class Boostpad{
 
-        private Vector2 location;
+        private Vector2 position;
         private Boolean isActive;
         private int timer;
 
         public Boostpad(float x, float y, Boolean isActive, int timer) {
-            this.location = new Vector2(x, y);
+            this.position = new Vector2(x, y);
             this.isActive = isActive;
             this.timer = timer;
         }
 
         @Override
         public String toString() {
-            return "x: " + location.x + ". y: " + location.y +
+            return "x: " + position.x + ". y: " + position.y +
                     ". active: " + isActive + ". timer: " + timer;
         }
 
-        public Vector2 getLocation() {
-            return location;
+        public Vector2 getPosition() {
+            return position;
         }
 
         public Boolean isActive() {
@@ -123,8 +123,8 @@ public class Boostpads {
             return timer;
         }
 
-        public void setLocation(Vector2 location) {
-            this.location = location;
+        public void setPosition(Vector2 position) {
+            this.position = position;
         }
 
         public void setActive(Boolean active) {
