@@ -165,7 +165,7 @@ public class Situation {
         return bestBoostpad; // Return the boostPad with highest utility
     }
 
-    /* Method that returns true if myCar has ball possession by comparing using utility
+    /** Method that returns true if myCar has ball possession by comparing using utility
     * The car with the highest utility is the car with possession. */
     public boolean whoHasPossession(){
         double myUtility = possessionUtility(myCar);
@@ -174,7 +174,7 @@ public class Situation {
         return (myUtility >= enemyUtility);
     }
 
-    /* Help function to calculate and return the possession utility of a given car
+    /** Help function to calculate and return the possession utility of a given car
     * Currently weighed equally and therefore can be considered inaccurate. Requires more testing. */
     private double possessionUtility (Car car){
         double distanceUtility = 1-car.getPosition().getDistanceTo(ball.getPosition())/ARENA_LENGTH;
@@ -185,12 +185,16 @@ public class Situation {
         return distanceUtility + angleUtility + velocityUtility;
     }
 
-    public double whichSideOfPlane(Vector3 pointVector){
-        // Determine vector to the given point from front vector
-        Vector3 vectorToPoint = pointVector.minus(myCar.getPosition());
+    public boolean isPointBehindCar(int playerIndex, Vector3 pointVector){
+        Car car = getCar(playerIndex);
+
+        // Determine vector to the given point from car pos
+        Vector3 vectorToPoint = pointVector.minus(car.getPosition());
 
         // Find angle to the given point
-        return myCar.getFrontVector().getAngleTo(vectorToPoint);
+        double ang = car.getFrontVector().getAngleTo(vectorToPoint);
+
+        return ang < (Math.PI/2);
     }
 
     public Box getEnemyBoxArea(int playerIndex) {

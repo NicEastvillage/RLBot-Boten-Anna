@@ -52,7 +52,7 @@ public class Boostpad {
     @Override
     public String toString() {
         return "Boostpad(x: " + position.x + ", y: " + position.y +
-                ". t: " + respawnTimeLeft;
+                ". t: " + respawnTimeLeft + ", big: " + isBigBoostPad + ")";
     }
 
     public Vector3 getPosition() {
@@ -71,7 +71,7 @@ public class Boostpad {
         this.respawnTimeLeft = Math.max(0, respawnTimeLeft);
     }
 
-    /** @return whether the Boostpad is active now. */
+    /** @return whether the Boostpad is active after the reduction. */
     public boolean reduceRespawnTimeLeft(double amount) {
         setRespawnTimeLeft(respawnTimeLeft - amount);
         return isActive();

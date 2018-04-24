@@ -35,6 +35,6 @@ public class GuardIsPointBehind extends Leaf {
         // Convert given input to a Vector
         Vector3 givenPoint = (Vector3) point.apply(input);
 
-        return (input.whichSideOfPlane(givenPoint) < (Math.PI/2)) ? NodeStatus.DEFAULT_SUCCESS : NodeStatus.DEFAULT_FAILURE;
+        return input.isPointBehindCar(input.myPlayerIndex, givenPoint) ? NodeStatus.DEFAULT_SUCCESS : NodeStatus.DEFAULT_FAILURE;
     }
 }
