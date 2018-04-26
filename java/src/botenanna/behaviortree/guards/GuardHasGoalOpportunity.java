@@ -33,28 +33,82 @@ public class GuardHasGoalOpportunity extends Leaf {
     @Override
     public NodeStatus run(Situation input) throws MissingNodeException {
 
-        Vector2 myPosition = input.myCar.getPosition().asVector2();
-        Vector3 myRotation = input.myCar.getRotation();
-        double angToBall = input.myCar.getAngleToBall();
+        double predict = 0;
+        double predictSeconds = 0;
+        Vector3 expectedBall;
+        int variation = 500;
+        Vector2 goalOpportunityLocation;
 
-        if(input.myCar.getTeam() == 1) {
-            double rightGoalPost = RLMath.carsAngleToPoint(myPosition, myRotation.yaw, Situation.BLUE_GOALPOST_RIGHT);
-            double leftGoalPost = RLMath.carsAngleToPoint(myPosition, myRotation.yaw, Situation.BLUE_GOALPOST_LEFT);
-            if (myPosition.x <= 900 && myPosition.x >= -900 && input.ball.getPosition().x <= 900 && input.ball.getPosition().x >= -900 && myPosition.y >= input.ball.getPosition().y)
-                return NodeStatus.DEFAULT_SUCCESS;
-            if (angToBall < 0.5 && angToBall > -0.5 && rightGoalPost < 0.5 && leftGoalPost > -0.5)
-                return NodeStatus.DEFAULT_SUCCESS;
+        if (input.myCar.getTeam() == 1) {
+            goalOpportunityLocation = new Vector2(0,-5200);
+            goalOpportunityLocation = goalOpportunityLocation.minus(input.ball.getPosition().asVector2());
+            goalOpportunityLocation = goalOpportunityLocation.getNormalized();
+            goalOpportunityLocation = goalOpportunityLocation.scale(-80);
+            //goalOpportunityLocation = goalOpportunityLocation.plus(expectedBallLocation.asVector2());
+            //if (input.myLocation.x <= 900 && input.myLocation.x >= -900 && input.ballLocation.x <= 900 && input.ballLocation.x >= -900 && input.myLocation.y >= input.ballLocation.y)
+            //    return NodeStatus.DEFAULT_SUCCESS;
+            //if (input.angleToBall < 0.5 && input.angleToBall > -0.5 && RightGoalPost < 0.5 && LeftGoalPost > -0.5) {
+            //    if (input.ballVelocity.getMagnitude() < 500 && input.myDistanceToBall < 2000) {
+            //        return NodeStatus.DEFAULT_SUCCESS;
+            //    }
+            //
+            double velocity;
+            while (predict <= 7 && predictSeconds < 0.1) {
+                expectedBall = input.ball.getPosition().plus(input.ball.getVelocity().scale(predict));
+                if(input.myCar.getVelocity().getMagnitude() < 800){
+                    velocity = 800;
+                }
+                else {
+                    velocity = input.myCar.getVelocity().getMagnitude();
+                }
+                if (-variation < expectedBall.minus(input.myCar.getPosition().plus(input.myCar.getFrontVector().scale(70))).getMagnitude() - velocity * predict && expectedBall.minus(input.myCar.getPosition().plus(input.myCar.getFrontVector().scale(70))).getMagnitude() - velocity * predict < variation) {
+
+                    expectedBall = input.ball.getPosition().plus(input.ball.getVelocity().scale(predict));
+                    double angleToExpectedBall = RLMath.carsAngleToPoint(input.myCar.getPosition().asVector2(), input.myCar.getRotation().yaw, expectedBall.asVector2());
+
+                    if (predictSeconds >= 0.1 && angleToExpectedBall < 1 && angleToExpectedBall > -1) {
+                        return NodeStatus.DEFAULT_SUCCESS;
+                    }
+
+                    if (input.myCar.getPosition().x <= 900 && input.myCar.getPosition().x >= -900 && expectedBall.x <= 900 && expectedBall.x >= -900 && input.myCar.getPosition().y >= input.ball.getPosition().y) {
+                        return NodeStatus.DEFAULT_SUCCESS;
+                    }
+                    predictSeconds = predict;
+                }
+                predict += 0.1;
+            }
         }
 
-        if(input.myCar.getTeam() == 0) {
-            double rightGoalPost = RLMath.carsAngleToPoint(myPosition, myRotation.yaw, Situation.RED_GOALPOST_RIGHT);
-            double leftGoalPost = RLMath.carsAngleToPoint(myPosition, myRotation.yaw, Situation.RED_GOALPOST_LEFT);
-            if (myPosition.x <= 900 && myPosition.x >= -900 && input.ball.getPosition().x <= 900 && input.ball.getPosition().x >= -900 && myPosition.y <= input.ball.getPosition().y)
-                return NodeStatus.DEFAULT_SUCCESS;
-            if (angToBall < 0.5 && angToBall > -0.5 && rightGoalPost < 0.5 && leftGoalPost > -0.5)
-                return NodeStatus.DEFAULT_SUCCESS;
-        }
+        if (input.myCar.getTeam() == 0) {
+            //if (input.myLocation.x <= 900 && input.myLocation.x >= -900 && input.ballLocation.x <= 900 && input.ballLocation.x >= -900 && input.myLocation.y <= input.ballLocation.y)
+            //    return NodeStatus.DEFAULT_SUCCESS;
+            //if (input.angleToBall < 0.5 && input.angleToBall > -0.5 && RightGoalPost < 0.5 && LeftGoalPost > -0.5)
+            //    return NodeStatus.DEFAULT_SUCCESS;
 
+            double velocity;
+            while (predict <= 7 && predictSeconds < 0.1) {
+                expectedBall = input.ball.getPosition().plus(input.ball.getVelocity().scale(predict));
+                if(input.myCar.getVelocity().getMagnitude() < 800){
+                    velocity = 800;
+                }
+                else velocity = input.myCar.getVelocity().getMagnitude();
+
+                if (-variation < expectedBall.minus(input.myCar.getPosition().plus(input.myCar.getFrontVector().scale(70))).getMagnitude() - velocity * predict && expectedBall.minus(input.myCar.getPosition().plus(input.myCar.getFrontVector().scale(70))).getMagnitude() - velocity * predict < variation) {
+                    expectedBall = input.ball.getPosition().plus(input.ball.getVelocity().scale(predict));
+                    double angleToExpectedBall = RLMath.carsAngleToPoint(input.myCar.getPosition().asVector2(), input.myCar.getRotation().yaw, expectedBall.asVector2());
+
+                    if (predictSeconds >= 0.1 && angleToExpectedBall < 1 && angleToExpectedBall > -1) {
+                        return NodeStatus.DEFAULT_SUCCESS;
+                    }
+
+                    if (predictSeconds >= 0.1 && input.myCar.getPosition().x <= 900 && input.myCar.getPosition().x >= -900 && expectedBall.x <= 900 && expectedBall.x >= -900 && input.myCar.getPosition().y <= input.ball.getPosition().y) {
+                        return NodeStatus.DEFAULT_SUCCESS;
+                    }
+                    predictSeconds = predict;
+                }
+                predict += 0.1;
+            }
+        }
         return NodeStatus.DEFAULT_FAILURE;
     }
-}
+    }
