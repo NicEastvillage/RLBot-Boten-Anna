@@ -15,7 +15,7 @@ public class NodeLibrary {
                 case "TaskGoTowardsPoint": return new TaskGoTowardsPoint(arguments);
                 case "TaskDashForward": return new TaskDashForward(arguments);
                 case "TaskAdjustAirRotation": return new TaskAdjustAirRotation(arguments);
-                case "TaskBallTowardsGoal": return new TaskBallTowardsGoal(arguments);
+                case "TaskShootAtGoal": return new TaskShootAtGoal(arguments);
             }
         } else if (nodeName.length() >= 5 && nodeName.substring(0, 5).equals("Guard")) {
             // Guards
