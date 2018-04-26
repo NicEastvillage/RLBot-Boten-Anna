@@ -1,7 +1,7 @@
 package botenanna.behaviortree.tasks;
 
-import botenanna.AgentInput;
-import botenanna.AgentOutput;
+import botenanna.game.Situation;
+import botenanna.game.ActionSet;
 import botenanna.ArgumentTranslator;
 import botenanna.behaviortree.Leaf;
 import botenanna.behaviortree.MissingNodeException;
@@ -19,7 +19,7 @@ public class TaskAdjustAirRotation extends Leaf {
     private static final double ACCEPTABLE_ANGLE = 0.3;
 
     private boolean shouldFace = false;
-    private Function<AgentInput, Object> faceFunc;
+    private Function<Situation, Object> faceFunc;
 
     /** <p>The TaskAdjustAirRotation will make the agent rotate so it lands on its wheels. It assumes the car is in the air.
      * The task can optionally be given a point, which it will try to adjust towards so the car lands facing that point.
@@ -44,24 +44,26 @@ public class TaskAdjustAirRotation extends Leaf {
     }
 
     @Override
-    public NodeStatus run(AgentInput input) throws MissingNodeException {
-        AgentOutput out = new AgentOutput();
+    public NodeStatus run(Situation input) throws MissingNodeException {
+        ActionSet out = new ActionSet();
 
-        double smoothPitch = RLMath.steeringSmooth(-input.myRotation.pitch * ROTATION_STRENGTH);
+        Vector3 myRot = input.myCar.getRotation();
+
+        double smoothPitch = RLMath.steeringSmooth(-myRot.pitch * ROTATION_STRENGTH);
         out.withPitch(smoothPitch);
 
         // It is not possible to adjust both roll and yaw at the same time
         // If we just want to land on the wheels, we only need to adjust roll
         // We adjust yaw and facing last, because we prioritize landing on the wheels
 
-        if (shouldFace && -ACCEPTABLE_ANGLE < input.myRotation.roll && input.myRotation.roll < ACCEPTABLE_ANGLE) {
+        if (shouldFace && -ACCEPTABLE_ANGLE < myRot.roll && myRot.roll < ACCEPTABLE_ANGLE) {
             Vector2 target = ((Vector3) faceFunc.apply(input)).asVector2();
-            double angleToPoint = RLMath.carsAngleToPoint(input.myLocation.asVector2(), input.myRotation.yaw, target);
+            double angleToPoint = RLMath.carsAngleToPoint(myRot.asVector2(), myRot.yaw, target);
             double smoothYaw = RLMath.steeringSmooth(angleToPoint * ROTATION_STRENGTH);
             // Adjust yaw by steering
             out.withSteer(smoothYaw);
         } else {
-            double smoothRoll = RLMath.steeringSmooth(-input.myRotation.roll * ROTATION_STRENGTH);
+            double smoothRoll = RLMath.steeringSmooth(-myRot.roll * ROTATION_STRENGTH);
             out.withRoll(smoothRoll);
         }
 

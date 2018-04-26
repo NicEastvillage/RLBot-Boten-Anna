@@ -1,6 +1,6 @@
 package botenanna.behaviortree.guards;
 
-import botenanna.AgentInput;
+import botenanna.game.Situation;
 import botenanna.behaviortree.Leaf;
 import botenanna.behaviortree.MissingNodeException;
 import botenanna.behaviortree.NodeStatus;
@@ -32,9 +32,9 @@ public class GuardHasBoost extends Leaf {
     }
 
     @Override
-    public NodeStatus run(AgentInput input) throws MissingNodeException {
+    public NodeStatus run(Situation input) throws MissingNodeException {
 
-        if (amount <= input.myBoost) {
+        if (amount <= input.myCar.getBoost()) {
             // Return success
             return NodeStatus.DEFAULT_SUCCESS;
         }

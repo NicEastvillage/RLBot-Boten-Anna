@@ -1,14 +1,11 @@
 package botenanna.behaviortree.tasks;
 
-import botenanna.AgentInput;
-import botenanna.AgentOutput;
-import botenanna.ArgumentTranslator;
+import botenanna.game.Situation;
+import botenanna.game.ActionSet;
 import botenanna.behaviortree.*;
 import botenanna.math.RLMath;
 import botenanna.math.Vector2;
 import botenanna.math.Vector3;
-
-import java.util.function.Function;
 
 public class TaskShootAtGoal extends Leaf {
 
@@ -34,7 +31,7 @@ public class TaskShootAtGoal extends Leaf {
     }
 
     @Override
-    public NodeStatus run(AgentInput input) throws MissingNodeException {
+    public NodeStatus run(Situation input) throws MissingNodeException {
 
         Vector3 expectedBall;
         double predictSeconds = 0;
@@ -44,7 +41,7 @@ public class TaskShootAtGoal extends Leaf {
         boolean isBallStill = false;
 
         //If the ball is really slow or still, skip the loop and don't predict.
-        if(10 > input.ballVelocity.getMagnitude()){
+        if(10 > input.ball.getVelocity().getMagnitude()){
             isBallStill = true;
         }
 
@@ -52,15 +49,15 @@ public class TaskShootAtGoal extends Leaf {
         //That way the agent should always be able to choose the right amount of prediction seconds, although this will probably change a little bit every tick as
         //the carvelocity changes.
         while(predictSeconds < 0.02 && counter <= 5 && !isBallStill){
-            expectedBall = input.ballLocation.plus(input.ballVelocity.scale(predict));
+            expectedBall = input.ball.getPosition().plus(input.ball.getVelocity().scale(predict));
 
             // If the car is not really driving, it should overextend its prediction to the future.
-            if (input.myVelocity.getMagnitude() < 800){
+            if (input.myCar.getVelocity().getMagnitude() < 800){
                 velocity = 800;
             }
-            else velocity = input.myVelocity.getMagnitude();
+            else velocity = input.myCar.getVelocity().getMagnitude();
 
-            if (-25 < expectedBall.minus(input.myLocation.plus(input.myFrontVector.scale(70))).getMagnitude() - velocity*predict && expectedBall.minus(input.myLocation.plus(input.myFrontVector.scale(70))).getMagnitude() - velocity*predict < 25) {
+            if (-25 < expectedBall.minus(input.myCar.getPosition().plus(input.myCar.getFrontVector().scale(70))).getMagnitude() - velocity*predict && expectedBall.minus(input.myCar.getPosition().plus(input.myCar.getFrontVector().scale(70))).getMagnitude() - velocity*predict < 25) {
                 predictSeconds = predict;
             }
 
@@ -78,12 +75,13 @@ public class TaskShootAtGoal extends Leaf {
             predictSeconds = 0;
         }
 
-        Vector3 expectedBallLocation = input.ballLocation.plus(input.ballVelocity.scale(predictSeconds));
+        //double predictSeconds = input.getCollisionTime();
+        Vector3 expectedBallLocation = input.ball.getPosition().plus(input.ball.getVelocity().scale(predictSeconds));
 
         Vector2 middleOfGoal;
 
         // Chooses opponents goal
-        if (input.myTeam == 1) {
+        if (input.myCar.getTeam() == 1) {
             middleOfGoal = new Vector2(0,-5200);
         }
         else {
@@ -99,8 +97,8 @@ public class TaskShootAtGoal extends Leaf {
 
 
         // Get the needed positions and rotations
-        Vector3 myPos = input.myLocation.plus(input.myFrontVector.scale(70));
-        Vector3 myRotation = input.myRotation;
+        Vector3 myPos = input.myCar.getPosition().plus(input.myCar.getFrontVector().scale(70));
+        Vector3 myRotation = input.myCar.getPosition();
 
         double ang = 0;
 
@@ -114,10 +112,10 @@ public class TaskShootAtGoal extends Leaf {
         //When the agent should boost
         boolean boost = false;
 
-        if(input.myBoost > 30 && 1400 > expectedBallLocation.asVector2().minus(myPos.asVector2()).getMagnitude() && 1.5 > input.angleToBall && input.angleToBall > -1.5) {
+        if(input.myCar.getBoost() > 30 && 1400 > expectedBallLocation.asVector2().minus(myPos.asVector2()).getMagnitude() && 1.5 > input.myCar.getAngleToBall() && input.myCar.getAngleToBall() > -1.5) {
             boost = true;
         }
 
-        return new NodeStatus(Status.RUNNING, new AgentOutput().withAcceleration(1).withSteer(steering).withBoost(boost), this);
+        return new NodeStatus(Status.RUNNING, new ActionSet().withThrottle(1).withSteer(steering).withBoost(boost), this);
     }
 }

@@ -49,6 +49,82 @@ public class Vector3Test {
     }
 
     @Test
+    public void getAngleTo01(){ //90 grader following axis
+        double angle = new Vector3(0,0,1).getAngleTo(new Vector3(1,0,0));
+        assertEquals(Math.PI/2, angle, 1E-100);
+    }
+
+    @Test
+    public void getAngleTo02(){//90 grader not follow axis
+        double angle = new Vector3(1,1,0).getAngleTo(new Vector3(1,-1,0));
+        assertEquals(Math.PI/2, angle, 1E-100);
+    }
+
+    @Test
+    public void getAngleTo03(){//0 degree angle
+        double angle = new Vector3(1,1,0).getAngleTo(new Vector3(2,2,0));
+        assertEquals(0, angle, 1E-5);
+    }
+
+    @Test
+    public void getAngleTo04(){ //Small angle, not following axis
+        double angle = new Vector3(5,1,0).getAngleTo(new Vector3(5,2,0));
+        assertEquals(0.18311081726248412793, angle, 1E-15);
+    }
+
+    @Test
+    public void getAngleTo05(){
+        double angle = new Vector3(1,0,0).getAngleTo(new Vector3(-1,0,0));
+        assertEquals(Math.PI, angle, 1E-20);
+    }
+
+    @Test
+    public void getAngleTo06(){
+        double angle = new Vector3(1,0,0).getAngleTo(new Vector3(-1,1,0));
+        assertEquals(Math.PI * (double) 3/4, angle, 1E-20);
+    }
+
+    @Test
+    public void getProjectionOnto01(){
+        Vector3 vectorA = new Vector3(5,0,0);
+        Vector3 vectorB = new Vector3(2,1,0);
+
+        Vector3 projectedVector = vectorB.getProjectionOnto(vectorA);
+
+        assertEquals(new Vector3(2,0,0), projectedVector);
+    }
+
+    @Test
+    public void getProjectionOnto02(){
+        Vector3 vectorA = new Vector3(-10,-20,-50);
+        Vector3 vectorB = new Vector3(14,20,-12);
+
+        Vector3 projectedVector = vectorB.getProjectionOnto(vectorA);
+
+        assertEquals(0, projectedVector.minus(new Vector3(-0.2,-0.4,-1)).getMagnitude(), 1E-6);
+    }
+
+    @Test
+    public void getProjectionOnto03(){
+        Vector3 vectorA = new Vector3(-10,-20,-50);
+        Vector3 vectorB = new Vector3(10,20,-10);
+
+        Vector3 projectedVector = vectorB.getProjectionOnto(vectorA);
+
+        assertEquals(0, projectedVector.minus(new Vector3(0,0,0)).getMagnitude(), 1E-6);
+    }
+
+    @Test
+    public void getProjectionOnto04(){
+        Vector3 vectorA = new Vector3(-10,-20,-50);
+        Vector3 vectorB = new Vector3(10,200,-10);
+
+        Vector3 projectedVector = vectorB.getProjectionOnto(vectorA);
+
+        assertEquals(0, projectedVector.minus(new Vector3(12,24,60)).getMagnitude(), 1E-6);
+    }
+
+    @Test
     public void getNormalized01() {
         Vector3 normal = new Vector3(100, 0, 0).getNormalized();
         assertTrue(normal.equals(new Vector3(1, 0, 0)));
@@ -81,5 +157,23 @@ public class Vector3Test {
     @Test
     public void equals03() {
         assertTrue(new Vector3(6, 0, 1).equals(new Vector3(6, 0, 1)));
+    }
+
+    @Test
+    public void lerp01() {
+        Vector3 res = Vector3.lerp(new Vector3(0, 0, 0), new Vector3(1, 2, 3), 1);
+        assertEquals(new Vector3(1, 2, 3), res);
+    }
+
+    @Test
+    public void lerp02() {
+        Vector3 res = Vector3.lerp(new Vector3(0, 1, 2), new Vector3(10, 10, 10), 0);
+        assertEquals(new Vector3(0, 1, 2), res);
+    }
+
+    @Test
+    public void lerp03() {
+        Vector3 res = Vector3.lerp(new Vector3(2, 0, -2), new Vector3(4, 4, 4), 0.5);
+        assertEquals(new Vector3(3, 2, 1), res);
     }
 }

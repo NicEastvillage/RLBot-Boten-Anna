@@ -50,6 +50,36 @@ public class Vector3 {
         return new Vector2(this);
     }
 
+    /** @return a NEW vector where the x is changed. */
+    public Vector3 withX(double x) {
+        return new Vector3(x, y, z);
+    }
+
+    /** @return a NEW vector where the y is changed. */
+    public Vector3 withY(double y) {
+        return new Vector3(x, y, z);
+    }
+
+    /** @return a NEW vector where the z is changed. */
+    public Vector3 withZ(double z) {
+        return new Vector3(x, y, z);
+    }
+
+    /** @return a NEW vector where the roll is changed. */
+    public Vector3 withRoll(double roll) {
+        return new Vector3(roll, pitch, yaw);
+    }
+
+    /** @return a NEW vector where the pitch is changed. */
+    public Vector3 withPitch(double pitch) {
+        return new Vector3(roll, pitch, yaw);
+    }
+
+    /** @return a NEW vector where the yaw is changed. */
+    public Vector3 withYaw(double yaw) {
+        return new Vector3(roll, pitch, yaw);
+    }
+
     /** @return this vector plus the other vector */
     public Vector3 plus(Vector3 other) {
         return new Vector3(this.x + other.x, this.y + other.y, this.z + other.z);
@@ -100,6 +130,16 @@ public class Vector3 {
         return this.minus(vector).getMagnitude();
     }
 
+    /** @return the angle to another vector */
+    public double getAngleTo(Vector3 other){
+        return Math.acos((this.dot(other)) / (this.getMagnitude() * other.getMagnitude()));
+    }
+
+    /** @return the projection vector. This projected onto other. */
+    public Vector3 getProjectionOnto(Vector3 other){
+        return other.scale(((other.dot(this)) / Math.pow(other.getMagnitude(), 2)));
+    }
+
     /** @return a vector with the same direction, but a length of one. If this is a zero vector, this returns a new zero vector. */
     public Vector3 getNormalized() {
         if (isZero()) return new Vector3();
@@ -109,6 +149,13 @@ public class Vector3 {
     /** @return whether this vector has a magnitude (length) of zero (all components are zero) */
     public boolean isZero() {
         return x == 0 && y == 0 && z == 0;
+    }
+
+    /** Linearly interpolate from {@code this} to {@code other} with time {@code t}, such that {@code t = 0} will return
+     * {@code this} and {@code t = 1} will return {@code other}.
+     * @return a Vector3 that is linearly interpolated from {@code this} to {@code other} with time {@code t}.*/
+    public Vector3 lerpTo(Vector3 other, double time) {
+        return lerp(this, other, time);
     }
 
     /** Compare two vectors.
@@ -135,6 +182,11 @@ public class Vector3 {
         return String.format("Vec3(" + x + ", " + y + ", " + z + ")");
     }
 
+    /** @return "(x, y, z)" where each number is formatted "% 7.2f"*/
+    public String toStringFixedSize() {
+        return String.format("(% 7.2f, % 7.2f, % 7.2f)", x, y, z);
+    }
+
     /** Convert from GameData to our Vector3. */
     public static Vector3 convert(GameData.Vector3 vec) {
         return new Vector3(vec.getX(), vec.getY(), vec.getZ());
@@ -143,6 +195,17 @@ public class Vector3 {
     /** Convert from a GameData Rotator */
     public static Vector3 convert(GameData.Rotator rot) {
         return new Vector3(rot.getRoll(), rot.getPitch(), rot.getYaw());
+    }
+
+    /** Linearly interpolate from {@code A} to {@code B} with time {@code t}, such that {@code t = 0} will return
+     * {@code A} and {@code t = 1} will return {@code B}.
+     * @return a Vector3 that is linearly interpolated from {@code A} to {@code B} with time {@code t}.*/
+    public static Vector3 lerp(Vector3 A, Vector3 B, double t) {
+        return new Vector3(
+                RLMath.lerp(A.x, B.x, t),
+                RLMath.lerp(A.y, B.y, t),
+                RLMath.lerp(A.z, B.z, t)
+        );
     }
 }
 
