@@ -95,21 +95,10 @@ public class AStar {
      * @param situation the Situation.
      * @param current the ActionSet prior to the ones generated. */
     public static List<ActionSet> getFollowingActionSets(Situation situation, ActionSet current) {
-        /* Variabler:
-        ///////// Optimizations taken
-        [-1, 1] variabler behøver ikke reale tal
-        [-1, 1] behøver kun være de nærmeste heltal
-        jump is false, if jumping has no effect
-        boost is false, if throttle is 0 or -1
-        boost is false, if car has no boost
-        pitch and roll is 0, if car is grounded
-        slide is false, when boost is true
-        slide is false, when steer is 0
-        */
 
         List<ActionSet> following = new LinkedList<>();
 
-        double[] newThrottles = new double[]{1,-1}; // getFollowingDirections(current == null ? 0 : current.getThrottle());
+        double[] newThrottles = getFollowingDirections(current == null ? 0 : current.getThrottle());
         double[] newSteerings = getFollowingDirections(current == null ? 0 : current.getSteer());
         // pitch and roll is 0, if car is grounded
         double[] newPitches = situation.myCar.isMidAir() ? getFollowingDirections(current == null ? 0 : current.getPitch()) : new double[]{0};
@@ -122,7 +111,6 @@ public class AStar {
 
         for (double throttle : newThrottles) {
             for (double steer : newSteerings) {
-                /* // TODO: Add Actions as they can be simulated
                 for (double pitch : newPitches) {
                     for (double roll : newRolls) {
                         for (boolean jump : newJumps) {
@@ -133,20 +121,20 @@ public class AStar {
                                 for (boolean slide : newSlides) {
                                     // slide is false, when boost is true, or when steer == 0
                                     if (slide && (boost || steer == 0)) continue;
-*/
+
                                     following.add(new ActionSet()
                                             .withThrottle(throttle)
-                                            .withSteer(steer)); /*
+                                            .withSteer(steer)
                                             .withPitch(pitch)
                                             .withRoll(roll)
                                             .withJump(jump)
                                             .withBoost(boost)
-                                            .withSlide(slide));*/
-                                /*}
+                                            .withSlide(slide));
+                                }
                             }
                         }
                     }
-                }*/
+                }
             }
         }
 
