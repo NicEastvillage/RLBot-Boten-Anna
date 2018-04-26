@@ -7,76 +7,49 @@ import botenanna.math.Vector3;
 import botenanna.math.zone.Box;
 import botenanna.physics.Rigidbody;
 import botenanna.physics.SimplePhysics;
-import botenanna.physics.TimeTracker;
+import com.sun.javafx.scene.control.behavior.OptionalBoolean;
 import rlbot.api.GameData;
 
 import java.util.List;
 
-//TODO: add isUpsideDown, myGoal (2dVEC), myGoalLine (2dVEC)
-
-/** This manages the input (packet).
- *  It handles calculations and other measures. */
+/** The Situation is a data class that represents a situation in the game, partly constructed from the
+ * GameTickPacket and our own calculations. */
 public class Situation {
 
-    public static final double ARENA_LENGTH = 10280;
-    public static final double MAX_VELOCITY_NO_BOOST = 1410.1;
-    public static final double ARENA_WIDTH = 8240;
-    public static final Vector3 BLUE_GOAL_BOX = Vector3.BACKWARDS.scale(5000);
-    public static final Vector3 ORANGE_GOAL_BOX = Vector3.FORWARD.scale(5000);
-    public static final Box ORANGE_GOAL_BOX_AREA = new Box(new Vector3(-720 , 5200 , 0), new Vector3(720 , 4000 , 1000));
-    public static final Box BLUE_GOAL_BOX_AREA = new Box(new Vector3(-720 , -5200 , 0), new Vector3(720 , -4000 , 1000));
-    public static final Box Midfield = new Box(new Vector3(-4080, -2080, 4060), new Vector3(4080, 2080, 0));
-    public static final Box Upper_Right_Cornor = new Box(new Vector3(-4080, -5080, 4060), new Vector3(0, 0, 0));
-    public static final Box Upper_Left_Cornor = new Box(new Vector3(-4080, 5080, 4060), new Vector3(0, 0, 0));
-    public static final Box Lover_Right_Cornor = new Box(new Vector3(4080, 5080, 4060), new Vector3(0, 0, 0));
-    public static final Box Lover_Left_Cornor = new Box(new Vector3(4080, -5080, 4060), new Vector3(0, 0, 0));
-    public static final Box Orange_Goal_Box = new Box(new Vector3(-720, 5200, 0), new Vector3(720, 7000, 1000));
-    public static final Box Blue_Goal_Box = new Box(new Vector3(-720, -5200, 0), new Vector3(720, -7000, 1000));
-    public static final Vector2 BLUE_GOALPOST_LEFT = new Vector2(-720, -5200);
-    public static final Vector2 BLUE_GOALPOST_RIGHT = new Vector2(720, -5200);
-    public static final Vector2 RED_GOALPOST_LEFT = new Vector2(-720, 5200);
-    public static final Vector2 RED_GOALPOST_RIGHT = new Vector2(720, 5200);
-
-    private double WALL_X = ARENA_WIDTH/2, WALL_Y = ARENA_LENGTH/2;
-
-    private GameData.GameTickPacket packet;
-    private TimeTracker timeTracker;
-
-    /* CARS */
     public final int myPlayerIndex;
     public final int enemyPlayerIndex;
-    public final Car myCar;
-    public final Car enemyCar;
 
-    /* BALL */
-    public final Rigidbody ball;
-    public final double ballLandingTime;
-    public final Vector3 ballLandingPosition;
+    private final Car myCar;
+    private final Car enemyCar;
 
-    /* GAME */
-    public final boolean gameIsKickOffPause;
-    public final boolean gameIsMatchEnded;
-    public final boolean gameIsOvertime;
-    public final boolean gameIsRoundActive;
-    public final int gamePlayerCount;
-    public final Boostpad[] boostpads;
+    private final Rigidbody ball;
+    private final double ballLandingTime;
+    private final Vector3 ballLandingPosition;
 
-    /** The constructor.
-     * @param packet the GameTickPacket.
-     * @param timeTracker the class that tracks and handles time. */
-    public Situation(GameData.GameTickPacket packet, TimeTracker timeTracker){
+    private final boolean isKickOffPause;
+    private final boolean isMatchOver;
+    private final boolean isOvertime;
+    private final boolean isRoundActive;
+    private final int gamePlayerCount;
+    private final Boostpad[] boostpads;
+
+    private GameData.GameTickPacket packet;
+
+    private Boostpad bestBoostpad = null;
+    private OptionalBoolean blueHasPossession = OptionalBoolean.ANY;
+
+    /** Create a Situation from GameTickPacket. */
+    public Situation(GameData.GameTickPacket packet) {
         this.packet = packet;
-        this.timeTracker = timeTracker;
         this.boostpads = constructBoostpadArray(packet.getBoostPadsList());
 
-        /* CARS */
+        // Cars
         myPlayerIndex = packet.getPlayerIndex();
         myCar = new Car(myPlayerIndex, packet);
         enemyPlayerIndex = this.myPlayerIndex == 1 ? 0 : 1;
         enemyCar = new Car(enemyPlayerIndex, packet);
 
-        /* BALL */
-        // this.ballHasAcceleration = packet.getBall().hasAcceleration(); // What is this?
+        // Ball
         this.ball = Ball.get(packet.getBall());
         double landingTime = SimplePhysics.predictArrivalAtHeight(ball, Ball.RADIUS, true);
         if (Double.isNaN(landingTime)) {
@@ -87,15 +60,15 @@ public class Situation {
             this.ballLandingPosition = SimplePhysics.step(ball.clone(), ballLandingTime, true).getPosition();
         }
 
-        /* GAME */
-        this.gameIsKickOffPause = packet.getGameInfo().getIsKickoffPause();
-        this.gameIsMatchEnded = packet.getGameInfo().getIsMatchEnded();
-        this.gameIsOvertime = packet.getGameInfo().getIsOvertime();
-        this.gameIsRoundActive = packet.getGameInfo().getIsRoundActive();
+        // Game
+        this.isKickOffPause = packet.getGameInfo().getIsKickoffPause();
+        this.isMatchOver = packet.getGameInfo().getIsMatchEnded();
+        this.isOvertime = packet.getGameInfo().getIsOvertime();
+        this.isRoundActive = packet.getGameInfo().getIsRoundActive();
         this.gamePlayerCount = packet.getPlayersCount();
     }
 
-    // Constructor used by simulation
+    /** Create Situation by providing the pieces. */
     public Situation(Car car, Car enemyCar, Rigidbody ball, Boostpad[] boostpads) {
         this.myPlayerIndex = car.getPlayerIndex();
         this.enemyPlayerIndex = enemyCar.getPlayerIndex();
@@ -114,11 +87,11 @@ public class Situation {
             this.ballLandingPosition = SimplePhysics.step(ball.clone(), ballLandingTime, true).getPosition();
         }
 
-        // TODO Hardcode Specific situations in simulation
-        this.gameIsKickOffPause = false;
-        this.gameIsMatchEnded = false;
-        this.gameIsOvertime = false;
-        this.gameIsRoundActive = true;
+        // TODO Currently no way to determine if we have entered a new phase
+        this.isKickOffPause = false;
+        this.isMatchOver = false;
+        this.isOvertime = false;
+        this.isRoundActive = true;
         this.gamePlayerCount = 2;
     }
 
@@ -141,8 +114,13 @@ public class Situation {
     /** Used to get the best boostpad based on utility.
      * @return the best boostpad for myCar. */
     public Boostpad getBestBoostPad() {
+        // Already calculated?
+        if (bestBoostpad != null) {
+            return bestBoostpad;
+        }
+
         double bestBoostUtility = 0;
-        Boostpad bestBoostpad = null;
+        Boostpad bestpad = null;
 
         for (int i = 0; i < Boostpad.COUNT_TOTAL_PADS; i++) {
 
@@ -152,90 +130,72 @@ public class Situation {
             if (pad.isActive()){
                 double angleToBoost = RLMath.carsAngleToPoint(new Vector2(myCar.getPosition()), myCar.getPosition().yaw, position.asVector2());
                 double distance = myCar.getPosition().getDistanceTo(position);
-                double distFunc = ((ARENA_LENGTH - distance) / ARENA_LENGTH); // Map width
-                double newBoostUtility = (Math.cos(angleToBoost) * distFunc); // Utility formula
+                double distFunc = ((Arena.LENGTH - distance) / Arena.LENGTH);
+                double newBoostUtility = (Math.cos(angleToBoost) * distFunc);
 
                 if (newBoostUtility > bestBoostUtility){
                     bestBoostUtility = newBoostUtility;
-                    bestBoostpad = pad;
+                    bestpad = pad;
                 }
             }
         }
 
-        return bestBoostpad; // Return the boostPad with highest utility
+        return bestBoostpad = bestpad;
     }
 
-    /** Method that returns true if myCar has ball possession by comparing using utility
-    * The car with the highest utility is the car with possession. */
-    public boolean whoHasPossession(){
-        double myUtility = possessionUtility(myCar);
-        double enemyUtility = possessionUtility(enemyCar);
+    /** Returns true if car of playerIndex has ball possession. */
+    public boolean hasPossession(int playerIndex){
+        // Already calculated?
+        if (blueHasPossession != OptionalBoolean.ANY) {
+            return blueHasPossession.equals(playerIndex == 0);
+        }
 
-        return (myUtility >= enemyUtility);
+        double blueUtility = possessionUtility(getCar(0));
+        double orangeUtility = possessionUtility(getCar(1));
+        boolean bluePossesses = blueUtility >= orangeUtility;
+
+        blueHasPossession = bluePossesses ? OptionalBoolean.TRUE : OptionalBoolean.FALSE;
+        return (bluePossesses && playerIndex == 0) || (!bluePossesses && playerIndex == 1);
     }
 
-    /** Help function to calculate and return the possession utility of a given car
+    /** Helper function to calculate and return the possession utility of a given car
     * Currently weighed equally and therefore can be considered inaccurate. Requires more testing. */
     private double possessionUtility (Car car){
-        double distanceUtility = 1-car.getPosition().getDistanceTo(ball.getPosition())/ARENA_LENGTH;
+        double distanceUtility = 1 - car.getPosition().getDistanceTo(ball.getPosition()) / Arena.LENGTH;
         double angleUtility = Math.cos(car.getAngleToBall());
-        double velocityUtility = car.getVelocity().getMagnitude()/MAX_VELOCITY_NO_BOOST;
+        double velocityUtility = car.getVelocity().getMagnitude() / Car.MAX_VELOCITY;
 
-        // Returns the total utility points.
+        // Returns the total utility
         return distanceUtility + angleUtility + velocityUtility;
     }
 
-    public boolean isPointBehindCar(int playerIndex, Vector3 pointVector){
+    /** @return true if point is behind car owned by playerIndex */
+    public boolean isPointBehindCar(int playerIndex, Vector3 point){
         Car car = getCar(playerIndex);
-
-        // Determine vector to the given point from car pos
-        Vector3 vectorToPoint = pointVector.minus(car.getPosition());
-
-        // Find angle to the given point
+        Vector3 vectorToPoint = point.minus(car.getPosition());
         double ang = car.getFrontVector().getAngleTo(vectorToPoint);
-
-        return ang < (Math.PI/2);
+        return ang > Math.PI/2;
     }
 
-    public Box getEnemyBoxArea(int playerIndex) {
-        return playerIndex == 0 ? ORANGE_GOAL_BOX_AREA : BLUE_GOAL_BOX_AREA;
-    }
-
-    /** Used to access GameTickPacket */
+    /** @return the GameTickPacket this was created from. Can be null. */
     public GameData.GameTickPacket getPacket() {
         return packet;
     }
 
-    /** Used to access TimeTracker. */
-    public TimeTracker getTimeTracker() {
-        return timeTracker;
-    }
-
     /** @return a players Car */
     public Car getCar(int index) {
-        return index == myPlayerIndex ? myCar : enemyCar;
+        return index == myPlayerIndex ? myCar.clone() : enemyCar.clone();
     }
 
-    /** @return either +1 or -1, depending on which end of the y-axis this player's goal is. */
-    public int getGoalDirection(int playerIndex) {
-        return playerIndex == 0 ? -1 : 1;
+    public Car getMyCar() {
+        return myCar.clone();
     }
 
-    public static Vector3 getGoalBox(int playerIndex) {
-        return playerIndex == 0 ? BLUE_GOAL_BOX : ORANGE_GOAL_BOX;
+    public Car getEnemyCar() {
+        return enemyCar.clone();
     }
 
-    /** @return the vector of the big boost in the quadrant requested */
-    public Vector3 getCorner(int x, int y){
-        return new Vector3(x * 3070, y * 4100);
-        }
-
-    /** @return a vector relative to the players team  */
-    public Vector3 getMyCorner(int x){
-        return new Vector3(x*3070, 4100*getGoalDirection(myPlayerIndex));
-    }
-
-        /** @return a double for the time to collision between ball and car  */
+    /** @return time in seconds to expected collision between ball and my car  */
     public double getCollisionTime() {
 
         // TODO CLEAN UP THE CODE AND IMPROVE PREDICTION
@@ -251,9 +211,9 @@ public class Situation {
             isBallStill = true;
         }
 
-        //The loop will find a spot where the distance of expected ball to car minus the carvelocity multiplied by predict is between -25 and 25.
+        //The loop will find a spot where the distance of expected ball to car minus the car velocity multiplied by predict is between -25 and 25.
         //That way the agent should always be able to choose the right amount of prediction seconds, although this will probably change a little bit every tick as
-        //the carvelocity changes.
+        //the car velocity changes.
         while (predictSeconds < 0.1 && counter <= 5 && !isBallStill) {
             expectedBall = ball.getVelocity().plus(ball.getVelocity().scale(predict));
 
@@ -280,13 +240,56 @@ public class Situation {
         return predictSeconds;
     }
 
-    /**checks if the ball is within the field*/
-    public boolean IsBallWithinField(Vector2 point) {
-        return (point.x >= WALL_X-Ball.RADIUS*3 && point.x <= -WALL_X+Ball.RADIUS*3 && point.y >= WALL_Y-Ball.RADIUS*3 && point.y <= -WALL_Y+Ball.RADIUS*3);
+    /** Returns true if the ball is near a wall */
+    public boolean isBallNearWall() {
+        Vector3 point = ball.getPosition();
+        Box field = Arena.getFieldWithWallOffset(Ball.RADIUS * 3);
+        return !field.isPointInBoxArea(point);
     }
 
-    /**Checks if the agent is on the wall*/
-    public boolean IsAgentWithinField(Vector2 point) {
-        return (point.x >= WALL_X-30&& point.x <= -WALL_X+30 && point.y >= WALL_Y-30 && point.y <= -WALL_Y+30);
+    /** Returns true if the car is near or on a wall
+     * @param playerIndex owner of the car */
+    public boolean isCarNearWall(int playerIndex) {
+        return getCar(playerIndex).isNearWall();
+    }
+
+    public Rigidbody getBall() {
+        return ball.clone();
+    }
+
+    public double getBallLandingTime() {
+        return ballLandingTime;
+    }
+
+    public Vector3 getBallLandingPosition() {
+        return new Vector3(ballLandingPosition);
+    }
+
+    public boolean isKickOffPause() {
+        return isKickOffPause;
+    }
+
+    public boolean isMatchOver() {
+        return isMatchOver;
+    }
+
+    public boolean isOvertime() {
+        return isOvertime;
+    }
+
+    public boolean isRoundActive() {
+        return isRoundActive;
+    }
+
+    public int getGamePlayerCount() {
+        return gamePlayerCount;
+    }
+
+    public Boostpad[] getBoostpads() {
+        Boostpad[] copies = new Boostpad[boostpads.length];
+        for (int i = 0; i < copies.length; i++) {
+            copies[i] = new Boostpad(boostpads[i]);
+        }
+        return copies;
     }
 }

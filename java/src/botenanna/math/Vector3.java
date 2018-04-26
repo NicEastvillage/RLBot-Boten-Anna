@@ -39,6 +39,10 @@ public class Vector3 {
         this(vec.x, vec.y, 0);
     }
 
+    public Vector3(Vector3 copy) {
+        this(copy.x, copy.y, copy.z);
+    }
+
     public Vector3(double x, double y, double z) {
         this.x = this.roll = x;
         this.y = this.pitch = y;

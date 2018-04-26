@@ -1,5 +1,6 @@
 package botenanna.physics;
 
+import botenanna.game.Arena;
 import botenanna.game.Situation;
 import botenanna.math.Vector3;
 
@@ -181,7 +182,7 @@ public class SimplePhysics {
     /** @param offset the offset from the wall. Relevant for any objects with a radius.
      * @return the time until arrival at wall at x positive. */
     public static double predictArrivalAtWallXPositive(Rigidbody body, double offset) {
-        double distance = Situation.ARENA_WIDTH / 2 - offset;
+        double distance = Arena.WIDTH / 2 - offset;
         if (body.getVelocity().x > 0) {
             if (body.getPosition().x < distance) {
                 return (distance - body.getPosition().x) / body.getVelocity().x;
@@ -196,7 +197,7 @@ public class SimplePhysics {
     /** @param offset the offset from the wall. Relevant for any objects with a radius.
      * @return the time until arrival at wall at x negative. */
     public static double predictArrivalAtWallXNegative(Rigidbody body, double offset) {
-        double distance = Situation.ARENA_WIDTH / 2 - offset;
+        double distance = Arena.WIDTH / 2 - offset;
         if (body.getVelocity().x < 0) {
             if (body.getPosition().x > -distance) {
                 return (-distance - body.getPosition().x) / body.getVelocity().x;
@@ -211,7 +212,7 @@ public class SimplePhysics {
     /** @param offset the offset from the wall. Relevant for any objects with a radius.
      * @return the time until arrival at wall at y positive. */
     public static double predictArrivalAtWallYPositive(Rigidbody body, double offset) {
-        double distance = Situation.ARENA_LENGTH / 2 - offset;
+        double distance = Arena.LENGTH / 2 - offset;
         if (body.getVelocity().y > 0) {
             if (body.getPosition().y < distance) {
                 return (distance - body.getPosition().y) / body.getVelocity().y;
@@ -226,7 +227,7 @@ public class SimplePhysics {
     /** @param offset the offset from the wall. Relevant for any objects with a radius.
      * @return the time until arrival at wall at y negative. */
     public static double predictArrivalAtWallYNegative(Rigidbody body, double offset) {
-        double distance = Situation.ARENA_LENGTH / 2 - offset;
+        double distance = Arena.LENGTH / 2 - offset;
         if (body.getVelocity().y < 0) {
             if (body.getPosition().y > -distance) {
                 return (-distance - body.getPosition().y) / body.getVelocity().y;

@@ -35,7 +35,7 @@ public class FitnessArriveAtPointAtTime implements FitnessInterface {
     @Override
     public double calculateFitness(Situation situation, double timeSpent) {
 
-        return calculateFitnessValue(situation.myCar.getPosition(), situation.myCar.getVelocity(), timeSpent);
+        return calculateFitnessValue(situation.getMyCar().getPosition(), situation.getMyCar().getVelocity(), timeSpent);
     }
 
     /** Takes the needed information and calculates the fitness value.
@@ -61,8 +61,8 @@ public class FitnessArriveAtPointAtTime implements FitnessInterface {
     public boolean isDeviationFulfilled(Situation situation, double timeSpent) {
 
         //Calculate function variables
-        double distToPoint = situation.myCar.getPosition().getDistanceTo(point.evaluate(timeSpent)); // Distance
-        double velocity = situation.myCar.getVelocity().getMagnitude(); // Velocity
+        double distToPoint = situation.getMyCar().getPosition().getDistanceTo(point.evaluate(timeSpent)); // Distance
+        double velocity = situation.getMyCar().getVelocity().getMagnitude(); // Velocity
 
         if(distToPoint <= distDeviation){
             if(velocity <= velDeviation)

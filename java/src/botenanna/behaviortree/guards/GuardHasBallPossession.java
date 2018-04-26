@@ -25,6 +25,6 @@ public class GuardHasBallPossession extends Leaf {
     @Override
     public NodeStatus run(Situation input) throws MissingNodeException {
 
-        return (input.whoHasPossession()) ? NodeStatus.DEFAULT_SUCCESS : NodeStatus.DEFAULT_FAILURE;
+        return (input.hasPossession(input.myPlayerIndex)) ? NodeStatus.DEFAULT_SUCCESS : NodeStatus.DEFAULT_FAILURE;
     }
 }

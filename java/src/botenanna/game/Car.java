@@ -1,6 +1,5 @@
 package botenanna.game;
 
-import botenanna.Ball;
 import botenanna.math.RLMath;
 import botenanna.math.Vector3;
 import botenanna.physics.Rigidbody;
@@ -37,7 +36,7 @@ public class Car extends Rigidbody {
     private boolean isCarOnGround;
     private boolean isMidAir; // TODO Undefined when creating custom car
     private boolean isCarUpsideDown;
-    private boolean isOnWall; // TODO Use upcoming zones to determine this
+    private boolean isNearWall; // TODO Use upcoming zones to determine this
     private double distanceToBall;
     private double angleToBall;
 
@@ -60,7 +59,7 @@ public class Car extends Rigidbody {
         isMidAir = packet.getPlayers(index).getIsMidair();
         setBallDependentVariables(Vector3.convert(packet.getBall().getLocation()));
 
-        isOnWall = getPosition().y==Situation.ARENA_LENGTH || getPosition().x == Situation.ARENA_WIDTH || getPosition().x == -Situation.ARENA_WIDTH || getPosition().y == -Situation.ARENA_LENGTH;
+        isNearWall = !Arena.getFieldWithWallOffset(28).isPointInBoxArea(getPosition());
     }
 
     /** Constructor for new car based on an old instance of car */
@@ -83,7 +82,7 @@ public class Car extends Rigidbody {
         distanceToBall = oldCar.distanceToBall;
         angleToBall = oldCar.angleToBall;
 
-        isOnWall = getPosition().y==Situation.ARENA_LENGTH || getPosition().x == Situation.ARENA_WIDTH || getPosition().x == -Situation.ARENA_WIDTH || getPosition().y == -Situation.ARENA_LENGTH;
+        isNearWall = !Arena.getFieldWithWallOffset(28).isPointInBoxArea(getPosition());
     }
 
     @Override
@@ -155,7 +154,7 @@ public class Car extends Rigidbody {
         this.hasJumped = hasJumped;
     }
 
-    public boolean isHasDoubleJumped() {
+    public boolean hasDoubleJumped() {
         return hasDoubleJumped;
     }
 
@@ -200,8 +199,8 @@ public class Car extends Rigidbody {
         return isCarUpsideDown;
     }
 
-    public boolean isOnWall() {
-        return isOnWall;
+    public boolean isNearWall() {
+        return isNearWall;
     }
 
     public double getDistanceToBall() {

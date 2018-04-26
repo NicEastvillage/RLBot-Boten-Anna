@@ -2,6 +2,7 @@ package botenanna.game.simulation;
 
 import botenanna.fitness.FitnessInterface;
 import botenanna.game.ActionSet;
+import botenanna.game.Car;
 import botenanna.game.Situation;
 import botenanna.physics.SteppedTimeLine;
 
@@ -98,15 +99,17 @@ public class AStar {
 
         List<ActionSet> following = new LinkedList<>();
 
+        Car myCar = situation.getMyCar();
+
         double[] newThrottles = getFollowingDirections(current == null ? 0 : current.getThrottle());
         double[] newSteerings = getFollowingDirections(current == null ? 0 : current.getSteer());
         // pitch and roll is 0, if car is grounded
-        double[] newPitches = situation.myCar.isMidAir() ? getFollowingDirections(current == null ? 0 : current.getPitch()) : new double[]{0};
-        double[] newRolls = situation.myCar.isMidAir() ? getFollowingDirections(current == null ? 0 : current.getRoll()) : new double[]{0};
+        double[] newPitches = myCar.isMidAir() ? getFollowingDirections(current == null ? 0 : current.getPitch()) : new double[]{0};
+        double[] newRolls = myCar.isMidAir() ? getFollowingDirections(current == null ? 0 : current.getRoll()) : new double[]{0};
         // jump is false, if jumping has no effect // FIXME With current implementation, second jump will always be one step long
-        boolean[] newJumps = !situation.myCar.isHasDoubleJumped() ? new boolean[]{true, false} : new boolean[]{false};
+        boolean[] newJumps = !myCar.hasDoubleJumped() ? new boolean[]{true, false} : new boolean[]{false};
         // boost is false, if car has no boost
-        boolean[] newBoosts = situation.myCar.getBoost() > 0 ? new boolean[]{true, false} : new boolean[]{false};
+        boolean[] newBoosts = myCar.getBoost() > 0 ? new boolean[]{true, false} : new boolean[]{false};
         boolean[] newSlides = new boolean[]{true, false};
 
         for (double throttle : newThrottles) {

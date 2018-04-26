@@ -42,10 +42,10 @@ public class GuardWillBallHitGoal extends Leaf {
     public NodeStatus run(Situation situation) throws MissingNodeException {
 
         // Determine time it will take for ball to hit next Y-positive wall
-        double time = SimplePhysics.predictArrivalAtWallYPositive(situation.ball, Ball.RADIUS);
+        double time = SimplePhysics.predictArrivalAtWallYPositive(situation.getBall(), Ball.RADIUS);
 
         // Find position when hitting wall
-        Vector3 destination = BallPhysics.step(situation.ball, time).getPosition();
+        Vector3 destination = BallPhysics.step(situation.getBall(), time).getPosition();
 
         // Determine area
         Box boxArea = (Box) areaFunc.apply(situation);

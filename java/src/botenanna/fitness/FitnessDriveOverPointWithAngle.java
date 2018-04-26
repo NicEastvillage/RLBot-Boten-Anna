@@ -1,5 +1,6 @@
 package botenanna.fitness;
 
+import botenanna.game.Car;
 import botenanna.game.Situation;
 import botenanna.math.Vector3;
 import botenanna.physics.Path;
@@ -38,7 +39,8 @@ public class FitnessDriveOverPointWithAngle implements FitnessInterface {
      *  @return a fitness value for the given situation. */
     @Override
     public double calculateFitness(Situation situation, double timeSpent){
-        return calculateFitnessValue(situation.myCar.getPosition(), situation.myCar.getFrontVector(), timeSpent, situation.myCar.getVelocity());
+        Car myCar = situation.getMyCar();
+        return calculateFitnessValue(myCar.getPosition(), myCar.getFrontVector(), timeSpent, myCar.getVelocity());
     }
 
     /**	Takes the needed information and calculates the fitness value.
@@ -79,8 +81,8 @@ public class FitnessDriveOverPointWithAngle implements FitnessInterface {
     public boolean isDeviationFulfilled(Situation situation, double timeSpent) {
 
         //Calculate function variables
-        double distToPoint = situation.myCar.getPosition().getDistanceTo(destinationPoint.evaluate(timeSpent)); // Distance
-        double angToPoint = situation.myCar.getPosition().getAngleTo(destinationPoint.evaluate(timeSpent)); // Angle
+        double distToPoint = situation.getMyCar().getPosition().getDistanceTo(destinationPoint.evaluate(timeSpent)); // Distance
+        double angToPoint = situation.getMyCar().getPosition().getAngleTo(destinationPoint.evaluate(timeSpent)); // Angle
 
         if(distToPoint <= distDeviation){
             if(angToPoint <= angleDeviation)

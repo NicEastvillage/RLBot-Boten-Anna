@@ -1,8 +1,8 @@
 package botenanna.behaviortree.intentions;
 
-import botenanna.fitness.FitnessDriveOverPointWithAngle;
 import botenanna.fitness.FitnessInterface;
 import botenanna.fitness.FitnessShootInDirection;
+import botenanna.game.Arena;
 import botenanna.game.Situation;
 import botenanna.physics.Path;
 
@@ -17,7 +17,7 @@ public class IntentionShootTowardsGoal extends Intention {
 
     @Override
     protected FitnessInterface getFitnessFunction(Situation input) {
-        return new FitnessShootInDirection(new Path(Situation.getGoalBox(input.enemyPlayerIndex)), 20, 20);
+        return new FitnessShootInDirection(new Path(Arena.getGoalPos(input.enemyPlayerIndex)), 20, 20);
     }
 
     @Override
