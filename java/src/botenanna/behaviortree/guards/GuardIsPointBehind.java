@@ -14,6 +14,12 @@ public class GuardIsPointBehind extends Leaf {
 
     private Function<Situation, Object> point;
 
+    /**
+     * The guard GuardIsPointBehind takes a Vector3 point and checks if the given point is behind the current car.
+     * If the point is behind it will return SUCCESS and if not, it will return FAILURE.
+     *
+     * Its signature is: {@code GuardIsPointBehind <givenPoint:Vector3>} */
+
     public GuardIsPointBehind(String[] arguments) throws IllegalArgumentException {
         super(arguments);
 
