@@ -138,7 +138,7 @@ public class Situation {
         return boostpads;
     }
 
-    /** Used to get the best boostpad based on utility.
+    /** Used to get the best boostpad based on utility theory.
      * @return the best boostpad for myCar. */
     public Boostpad getBestBoostPad() {
         double bestBoostUtility = 0;
@@ -162,10 +162,10 @@ public class Situation {
             }
         }
 
-        return bestBoostpad; // Return the boostPad with highest utility
+        return bestBoostpad; // Return boostPad with the highest utility
     }
 
-    /** Method that returns true if myCar has ball possession by comparing using utility
+    /** Method that returns true if myCar has ball possession by comparing using utility theory
     * The car with the highest utility is the car with possession. */
     public boolean whoHasPossession(){
         double myUtility = possessionUtility(myCar);
@@ -174,17 +174,19 @@ public class Situation {
         return (myUtility >= enemyUtility);
     }
 
-    /** Help function to calculate and return the possession utility of a given car
-    * Currently weighed equally and therefore can be considered inaccurate. Requires more testing. */
+    /** Help function to calculate and return the possession utility of a given car.
+     * Currently all utilities are weighed equally.
+     * @return Returns the total utility points for a given car. */
     private double possessionUtility (Car car){
         double distanceUtility = 1-car.getPosition().getDistanceTo(ball.getPosition())/ARENA_LENGTH;
         double angleUtility = Math.cos(car.getAngleToBall());
         double velocityUtility = car.getVelocity().getMagnitude()/MAX_VELOCITY_NO_BOOST;
 
-        // Returns the total utility points.
         return distanceUtility + angleUtility + velocityUtility;
     }
 
+    /** This help function determines if a given point is behind the car.
+    * @return: It returns TRUE if the point is behind and FALSE if it's not. */
     public boolean isPointBehindCar(int playerIndex, Vector3 pointVector){
         Car car = getCar(playerIndex);
 
@@ -194,6 +196,8 @@ public class Situation {
         // Find angle to the given point
         double ang = car.getFrontVector().getAngleTo(vectorToPoint);
 
+        // Only returns true if the angle to the point is less than ½ PI.
+        // Which indicates that the point is behind the cars front.
         return ang < (Math.PI/2);
     }
 
