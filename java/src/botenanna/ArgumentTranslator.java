@@ -1,7 +1,6 @@
 package botenanna;
 
 import botenanna.game.Situation;
-
 import java.util.function.Function;
 
 /** The ArgumentTranslators purpose is to translate the node arguments into Function objects, that allow quick

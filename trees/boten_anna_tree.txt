@@ -19,7 +19,7 @@ Selector
 		Inverter
 			Sequencer
 				GuardHasGoalOpportunity
-				TaskBallTowardsGoal
+				TaskShootAtGoal
 		Inverter
 			Sequencer
 				Inverter
