@@ -1,6 +1,6 @@
 package botenanna.game.simulation;
 
-import botenanna.fitness.FitnessInterface;
+import botenanna.fitness.FitnessFunction;
 import botenanna.game.ActionSet;
 import botenanna.game.Situation;
 import botenanna.physics.SteppedTimeLine;
@@ -30,7 +30,7 @@ public class AStar {
 
     /** Find a sequence of actions that steers the agent towards a desired intention defined by a fitness function.
      * The method uses a modified version of A*. */
-    public static SteppedTimeLine<ActionSet> findSequence(Situation startSituation, FitnessInterface fitness, double stepsize) {
+    public static SteppedTimeLine<ActionSet> findSequence(Situation startSituation, FitnessFunction fitness, double stepsize) {
 
         TimeNode startNode = new TimeNode(startSituation, new ActionSet(), null, 0);
 
@@ -79,7 +79,7 @@ public class AStar {
         return timeLine;
     }
 
-    /** Helper method for the {@link #findSequence(Situation, FitnessInterface, double)} to backtrack the actions taken
+    /** Helper method for the {@link #findSequence(Situation, FitnessFunction, double)} to backtrack the actions taken
      * and create the sequence. */
     private static List<ActionSet> reconstructSequence(TimeNode destination) {
         TimeNode current = destination;
