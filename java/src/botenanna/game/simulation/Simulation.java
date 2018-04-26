@@ -104,6 +104,7 @@ public class Simulation {
         }
 
         car = steppedCar(car, delta);
+        car.setBallDependentVariables(ball.getPosition());
 
         return car;
     }
@@ -119,14 +120,13 @@ public class Simulation {
         double velLength = velParallelFront.getMagnitude();
 
         return MAX_VELOCITY_BOOST * dir - velLength * velDir;
-        // TODO Add boosting
+
     }
 
     /** @returns the turn rate of the car. */
     public static double getTurnRate(Car car) {
-        // TODO We're currently assuming our velocity is parallel with out front vector
-        double vel = car.getVelocity().getMagnitude();
 
+        double vel = car.getVelocity().getMagnitude();
         // See documentation "turnrate linear function.png" for math.
         return 1.325680896 + 0.0002869694124 * vel;
     }

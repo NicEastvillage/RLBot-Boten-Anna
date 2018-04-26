@@ -6,7 +6,7 @@ import botenanna.math.Vector3;
 import botenanna.physics.Path;
 
 /** This class is used when you want a fitness value for "Shoot in direction". */
-public class FitnessShootInDirection implements FitnessInterface {
+public class FitnessShootInDirection implements FitnessFunction {
 
     private final double ANGLE_SCALE = 5.756462;
     private final int DIST_SCALE = 450;
@@ -56,7 +56,7 @@ public class FitnessShootInDirection implements FitnessInterface {
         double distanceToBall = ballLocation.getDistanceTo(carLocation);
         double angleDiffernce = desiredShotDirection.getAngleTo(currentShotDirection);
 
-        return -(timeSpent + (distanceToBall / DIST_SCALE) + angleDiffernce * ANGLE_SCALE);
+        return (Math.pow(Math.E, -(timeSpent + (distanceToBall / DIST_SCALE) + angleDiffernce * ANGLE_SCALE)));
     }
 
     /** Checks if the deviations are fulfilled.

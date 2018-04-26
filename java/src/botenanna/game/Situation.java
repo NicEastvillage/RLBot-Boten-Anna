@@ -111,7 +111,7 @@ public class Situation {
         return boostpads;
     }
 
-    /** Used to get the best boostpad based on utility.
+    /** Used to get the best boostpad based on utility theory.
      * @return the best boostpad for myCar. */
     public Boostpad getBestBoostPad() {
         // Already calculated?

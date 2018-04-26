@@ -1,7 +1,7 @@
 package botenanna.behaviortree.intentions;
 
 import botenanna.behaviortree.*;
-import botenanna.fitness.FitnessInterface;
+import botenanna.fitness.FitnessFunction;
 import botenanna.game.ActionSet;
 import botenanna.game.Situation;
 import botenanna.game.simulation.AStar;
@@ -17,7 +17,7 @@ public abstract class Intention extends Leaf {
     public static final double STEPSIZE = 0.05;
 
     private boolean isRunning = false;
-    private FitnessInterface fitness;
+    private FitnessFunction fitness;
     private TimeLine<ActionSet> sequence;
     private TimeTracker timeTracker = new TimeTracker();
 
@@ -59,6 +59,6 @@ public abstract class Intention extends Leaf {
         return new NodeStatus(Status.RUNNING, action, this);
     }
 
-    protected abstract FitnessInterface getFitnessFunction(Situation input);
+    protected abstract FitnessFunction getFitnessFunction(Situation input);
     protected abstract boolean shouldInterrupt(Situation input);
 }

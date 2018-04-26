@@ -6,8 +6,6 @@ import botenanna.fitness.*;
 import botenanna.math.Vector3;
 import botenanna.physics.Path;
 
-import java.util.List;
-
 /** The IntentionDefendGoal is the intention to go to the agents own goal and look towards the middle of the field.
  * Its signature is {@code "IntentionDefendGoal"}*/
 public class IntentionDefendGoal extends Intention {
@@ -19,7 +17,7 @@ public class IntentionDefendGoal extends Intention {
     }
 
     @Override
-    protected FitnessInterface getFitnessFunction(Situation input) {
+    protected FitnessFunction getFitnessFunction(Situation input) {
         return new FitnessDriveOverPointWithAngle(new Path(Arena.getGoalPos(input.myPlayerIndex)), new Path(new Vector3()), 0.30, 60, true);
     }
 

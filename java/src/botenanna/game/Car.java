@@ -2,6 +2,7 @@ package botenanna.game;
 
 import botenanna.math.RLMath;
 import botenanna.math.Vector3;
+import botenanna.math.zone.Box;
 import botenanna.physics.Rigidbody;
 import rlbot.api.GameData;
 
@@ -34,12 +35,14 @@ public class Car extends Rigidbody {
     private Vector3 sideVector;
     private boolean isSupersonic;
     private boolean isCarOnGround;
-    private boolean isMidAir; // TODO Undefined when creating custom car
+    private boolean isMidAir;
     private boolean isCarUpsideDown;
-    private boolean isNearWall; // TODO Use upcoming zones to determine this
+    private boolean isNearWall;
+
     private double distanceToBall;
     private double angleToBall;
 
+    /** Constructor for a car in rocket league with data from the game packet. */
     public Car(int index, GameData.GameTickPacket packet) {
 
         playerIndex = index;

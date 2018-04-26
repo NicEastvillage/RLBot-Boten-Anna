@@ -25,8 +25,8 @@ public class NodeLibrary {
                     return new TaskAdjustAirRotation(arguments);
                 case "TaskHitTowardsPoint":
                     return new TaskHitTowardsPoint(arguments);
-                case "TaskBallTowardsGoal":
-                    return new TaskBallTowardsGoal(arguments);
+                case "TaskShootAtGoal":
+                    return new TaskShootAtGoal(arguments);
             }
         } else if (nodeName.length() >= 9 && nodeName.substring(0, 9).equals("Intention")) {
             // Intentions
@@ -47,7 +47,6 @@ public class NodeLibrary {
                 case "GuardIsMidAir": return new GuardIsMidAir(arguments);
                 case "GuardIntercept": return new GuardIntercept(arguments);
                 case "GuardCloserThan": return  new GuardCloserThan(arguments);
-                case "GuardHasGoalOpportunity": return new GuardHasGoalOpportunity(arguments);
                 case "GuardIsPointBehind": return new GuardIsPointBehind(arguments);
                 case "GuardHasBallPossession": return new GuardHasBallPossession(arguments);
                 case "GuardIsDistanceLessThanDistance": return new GuardIsDistanceLessThanDistance(arguments);
