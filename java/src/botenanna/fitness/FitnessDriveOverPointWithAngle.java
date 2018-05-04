@@ -12,6 +12,7 @@ public class FitnessDriveOverPointWithAngle implements FitnessFunction {
 
     private final double DIST_SCALE = 1/450d;
     private final double ANGLE_SCALE = 5.09299;
+    private final double VEL_SCALE = 2300;
 
     private double angleDeviation;
     private double distDeviation;
@@ -66,9 +67,9 @@ public class FitnessDriveOverPointWithAngle implements FitnessFunction {
         double fitness = -(timeSpent + Math.abs(angleDifference*ANGLE_SCALE) + distanceToPoint*DIST_SCALE);
 
         if (stopOnPoint) {
-            return fitness * (-2300 / velocity);
+            return fitness * (VEL_SCALE / velocity);
         } else {
-            return fitness * 2300 / velocity;
+            return fitness * (-VEL_SCALE / velocity);
         }
     }
 

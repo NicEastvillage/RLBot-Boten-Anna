@@ -23,7 +23,7 @@ public class FitnessArriveAtPointAtTimeTest {
 
         double fitnessValue = fitness.calculateFitnessValue(point, myPosition, myVelocity,timeSpent);
 
-        assertEquals(0.020530494001221870335, fitnessValue, 1E-15);
+        assertEquals(-1.5963484026367722764, fitnessValue, 1E-15);
     }
 
     @Test
@@ -40,7 +40,7 @@ public class FitnessArriveAtPointAtTimeTest {
 
         double fitnessValue = fitness.calculateFitnessValue(point, myPosition, myVelocity, timeSpent);
 
-        assertEquals(0.00012860523176404759589, fitnessValue, 1E-15);
+        assertEquals(-3.2169889330626027708, fitnessValue, 1E-15);
     }
 
     @Test
@@ -57,7 +57,7 @@ public class FitnessArriveAtPointAtTimeTest {
 
         double fitnessValue = fitness.calculateFitnessValue(point, myPosition, myVelocity, timeSpent);
 
-        assertEquals(0.00006968211737342007798, fitnessValue, 1E-15);
+        assertEquals(-9.5715668387775137414, fitnessValue, 1E-15);
     }
 
     @Test

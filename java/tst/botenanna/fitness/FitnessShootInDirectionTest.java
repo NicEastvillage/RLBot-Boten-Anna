@@ -22,7 +22,7 @@ public class FitnessShootInDirectionTest {
 
         double fitnessValue = fitness.calculateFitnessValue(shootPoint, ballLocation, ballVelocity, carLocation, carVelocity, timeSpent);
 
-        assertEquals(0.00049202342040168509727, fitnessValue, 1E-18);
+        assertEquals(-7.6169842401624769146, fitnessValue, 1E-18);
     }
 
     @Test
@@ -38,7 +38,7 @@ public class FitnessShootInDirectionTest {
 
         double fitnessValue = fitness.calculateFitnessValue(shootPoint, ballLocation, ballVelocity, carLocation, carVelocity, timeSpent);
 
-        assertEquals(0.000026523439794358941165, fitnessValue, 1E-19);
+        assertEquals(-10.537481695388022083, fitnessValue, 1E-19);
     }
 
     @Test
@@ -54,7 +54,7 @@ public class FitnessShootInDirectionTest {
 
         double fitnessValue = fitness.calculateFitnessValue(shootPoint, ballLocation, ballVelocity, carLocation, carVelocity, timeSpent);
 
-        assertEquals(0.0000023145026193631957119, fitnessValue, 1E-19);
+        assertEquals(-12.976315744756912022, fitnessValue, 1E-19);
     }
 
     @Test
