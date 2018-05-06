@@ -27,12 +27,11 @@ public class GuardIsBallNearWall extends Leaf {
     @Override
     public NodeStatus run(Situation situation) throws MissingNodeException {
 
-        Box isPointInBox = new Box(new Vector3(-4080, -5080, 4060),new Vector3(4080,5080,0));
+        Box isPointInBox = new Box(new Vector3(-4080, -5080, 4060), new Vector3(4080, 5080, 0));
 
-        if(isPointInBox.isPointInBoxArea(situation.ball.getPosition())){
-
+        if (isPointInBox.isPointInBoxArea(situation.getBall().getPosition())) {
             return NodeStatus.DEFAULT_SUCCESS;
-            }
-        return NodeStatus.DEFAULT_FAILURE;
         }
+        return NodeStatus.DEFAULT_FAILURE;
     }
+}

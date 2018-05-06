@@ -26,7 +26,7 @@ public class GuardBallMidAir extends Leaf{
     @Override
     public NodeStatus run(Situation input) throws MissingNodeException {
 
-        if(input.ball.getPosition().z > 200){
+        if(input.getBall().getPosition().z > 200){
             return NodeStatus.DEFAULT_SUCCESS;
         } else {
             return NodeStatus.DEFAULT_FAILURE;

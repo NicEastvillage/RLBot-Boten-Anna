@@ -5,7 +5,7 @@ import botenanna.math.Vector3;
 import botenanna.physics.Path;
 
 /** This class is used when you want a fitness value for "Arrive at a point at a specific time. */
-public class FitnessArriveAtPointAtTime implements FitnessInterface {
+public class FitnessArriveAtPointAtTime implements FitnessFunction {
 
     private final int DIST_SCALE = 450;
     private final int VEL_SCALE = 200;
@@ -16,7 +16,7 @@ public class FitnessArriveAtPointAtTime implements FitnessInterface {
     private double arrivalTime;
 
     /** @param point the destination point.
-     *  @param arrivalTime the desired time of arrival. //TODO: Mikkel... might have to be reworked :)
+     *  @param arrivalTime the desired time of arrival.
      *  @param distDeviation the deviation in distance to desired point.
      *  @param velDeviation the deviation in velocity. */
     public FitnessArriveAtPointAtTime(Path point, double arrivalTime, double distDeviation, double velDeviation) {
@@ -35,7 +35,7 @@ public class FitnessArriveAtPointAtTime implements FitnessInterface {
     @Override
     public double calculateFitness(Situation situation, double timeSpent) {
 
-        return calculateFitnessValue(situation.myCar.getPosition(), situation.myCar.getVelocity(), timeSpent);
+        return calculateFitnessValue(situation.getMyCar().getPosition(), situation.getMyCar().getVelocity(), timeSpent);
     }
 
     /** Takes the needed information and calculates the fitness value.
@@ -48,9 +48,9 @@ public class FitnessArriveAtPointAtTime implements FitnessInterface {
         //Calculate function variables
         double distToPoint = myPosition.getDistanceTo(point.evaluate(timeSpent)); // Distance
         double velocity = myVelocity.getMagnitude(); // Velocity
-        double timeValue = (timeSpent < arrivalTime) ? timeSpent / arrivalTime : -(timeSpent/arrivalTime) + 2;
+        double timeValue = (arrivalTime <= timeSpent) ? -(timeSpent/arrivalTime) + 2 : timeSpent / arrivalTime;
 
-        return -((distToPoint / DIST_SCALE) + (velocity / VEL_SCALE)) * timeValue;
+        return Math.pow(Math.E, -((distToPoint / DIST_SCALE) + (velocity / VEL_SCALE))) * timeValue;
     }
 
     /** Checks if the deviations are fulfilled.
@@ -61,8 +61,8 @@ public class FitnessArriveAtPointAtTime implements FitnessInterface {
     public boolean isDeviationFulfilled(Situation situation, double timeSpent) {
 
         //Calculate function variables
-        double distToPoint = situation.myCar.getPosition().getDistanceTo(point.evaluate(timeSpent)); // Distance
-        double velocity = situation.myCar.getVelocity().getMagnitude(); // Velocity
+        double distToPoint = situation.getMyCar().getPosition().getDistanceTo(point.evaluate(timeSpent)); // Distance
+        double velocity = situation.getMyCar().getVelocity().getMagnitude(); // Velocity
 
         if(distToPoint <= distDeviation){
             if(velocity <= velDeviation)

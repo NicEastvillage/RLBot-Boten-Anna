@@ -17,10 +17,10 @@ public class Simulation {
     public static Situation  simulate(Situation situation, double stepsize, ActionSet action){
         if (stepsize < 0) throw new IllegalArgumentException("Step size must be more than zero. Current Step size is: "+stepsize);
 
-        Rigidbody simulatedBall = simulateBall(situation.ball, stepsize);
-        Car simulatedMyCar = simulateCarActions(situation.myCar, action,  simulatedBall, stepsize);
-        Car simulatedEnemyCar = steppedCar(situation.enemyCar, stepsize);
-        Boostpad[] simulatedBoostpads = simulateBoostpads(situation.boostpads, simulatedEnemyCar, simulatedMyCar, stepsize);
+        Rigidbody simulatedBall = simulateBall(situation.getBall(), stepsize);
+        Car simulatedMyCar = simulateCarActions(situation.getMyCar(), action,  simulatedBall, stepsize);
+        Car simulatedEnemyCar = steppedCar(situation.getEnemyCar(), stepsize);
+        Boostpad[] simulatedBoostpads = simulateBoostpads(situation.getBoostpads(), simulatedEnemyCar, simulatedMyCar, stepsize);
 
         simulatedMyCar.setBallDependentVariables(simulatedBall.getPosition());
         simulatedEnemyCar.setBallDependentVariables(simulatedBall.getPosition());
@@ -30,21 +30,18 @@ public class Simulation {
 
     /** Simulates the boostpads, if any of the cars can pick up boost and they are stepped close to a pad deactivate them
      * @return an array of boostpads after simulation. */
-    private static Boostpad[] simulateBoostpads(Boostpad[] oldBoostpads, Car enemyCar, Car myCar, double stepsize) {
+    private static Boostpad[] simulateBoostpads(Boostpad[] boostpads, Car enemyCar, Car myCar, double stepsize) {
 
-        Boostpad[] simulatedBoostpads = new Boostpad[oldBoostpads.length];
-        for (int i = 0; i < oldBoostpads.length; i++) {
-            Boostpad pad = new Boostpad(oldBoostpads[i]);
+        for (int i = 0; i < boostpads.length; i++) {
+            Boostpad pad = boostpads[i];
 
             simulatePickupBoostpad(pad, myCar);
             simulatePickupBoostpad(pad, enemyCar);
 
             pad.reduceRespawnTimeLeft(stepsize);
-
-            simulatedBoostpads[i] = pad;
         }
 
-        return simulatedBoostpads;
+        return boostpads;
     }
 
     /** Checks if car is touching pad. If they do, give the car boost and refresh boostpads respawn timer. */
@@ -57,7 +54,7 @@ public class Simulation {
 
     /** @return a new ball which has been moved forwards. */
     public static Rigidbody simulateBall(Rigidbody ball, double step)    {
-        return BallPhysics.step(ball.clone(), step);
+        return BallPhysics.step(ball, step);
     }
 
     /** @return a new car which has been moved forwards. */
@@ -76,9 +73,7 @@ public class Simulation {
     /** Simulates a car with actions **
      * @param action the current actions from the Agent
      * @return a Car simulated forward in  the new situation     */
-    private static Car simulateCarActions(Car inputCar , ActionSet action, Rigidbody ball, double delta){
-
-        Car car = new Car(inputCar);
+    private static Car simulateCarActions(Car car, ActionSet action, Rigidbody ball, double delta){
 
         boolean boosting = (action.isBoostDepressed() && car.getBoost() != 0);
 
@@ -109,6 +104,7 @@ public class Simulation {
         }
 
         car = steppedCar(car, delta);
+        car.setBallDependentVariables(ball.getPosition());
 
         return car;
     }
@@ -124,14 +120,13 @@ public class Simulation {
         double velLength = velParallelFront.getMagnitude();
 
         return MAX_VELOCITY_BOOST * dir - velLength * velDir;
-        // TODO Add boosting
+
     }
 
     /** @returns the turn rate of the car. */
     public static double getTurnRate(Car car) {
-        // TODO We're currently assuming our velocity is parallel with out front vector
-        double vel = car.getVelocity().getMagnitude();
 
+        double vel = car.getVelocity().getMagnitude();
         // See documentation "turnrate linear function.png" for math.
         return 1.325680896 + 0.0002869694124 * vel;
     }

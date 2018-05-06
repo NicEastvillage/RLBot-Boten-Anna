@@ -39,7 +39,7 @@ public class BotInfoDisplay extends InfoDisplay {
     /** Update info displayed. */
     public void update() {
         Situation input = bot.getLastInputReceived();
-        if (input == null || input.myCar.getPosition() == null)
+        if (input == null || input.getMyCar().getPosition() == null)
             return;
 
         infoLabel.setText(String.format(
@@ -48,11 +48,11 @@ public class BotInfoDisplay extends InfoDisplay {
                 "Rot: %s\n" +
                 "AngToBall: %f\n" +
                 "HasPossession: %b",
-                input.myCar.getPosition().toStringFixedSize(),
-                input.myCar.getVelocity().toStringFixedSize(),
-                input.myCar.getRotation().toStringFixedSize(),
-                input.myCar.getAngleToBall(),
-                input.whoHasPossession()));
+                input.getMyCar().getPosition().toStringFixedSize(),
+                input.getMyCar().getVelocity().toStringFixedSize(),
+                input.getMyCar().getRotation().toStringFixedSize(),
+                input.getMyCar().getAngleToBall(),
+                input.hasPossession(input.myPlayerIndex)));
     }
 
     /** Change the behaviour of the bot connected to this display. */

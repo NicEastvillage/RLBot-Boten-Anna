@@ -22,7 +22,7 @@ public class BallInfoDisplay extends InfoDisplay {
         if (input == null)
             return;
 
-        Rigidbody ball = input.ball;
+        Rigidbody ball = input.getBall();
         infoLabel.setText(String.format(
                 "Pos: %s\n" +
                 "Vel: %s\n" +
@@ -30,7 +30,7 @@ public class BallInfoDisplay extends InfoDisplay {
                 "LandsIn: %f sec",
                 ball.getPosition().toStringFixedSize(),
                 ball.getVelocity().toStringFixedSize(),
-                input.ballLandingPosition.toStringFixedSize(),
-                input.ballLandingTime));
+                input.getBallLandingPosition().toStringFixedSize(),
+                input.getBallLandingTime()));
     }
 }

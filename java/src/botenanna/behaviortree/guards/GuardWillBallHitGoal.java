@@ -22,6 +22,13 @@ public class GuardWillBallHitGoal extends Leaf {
 
     private Function<Situation, Object> areaFunc;
 
+    /**
+     * The guard GuardWillBallHitGoal checks if the path of the ball ends in the goal box using a simulation
+     * of where the ball is when it reaches the wall. The guard returns SUCCESS when the ball has a path that
+     * ends in the given box area. (Goal box) and returns FAILURE if it will not.
+     *
+     * Its signature is: {@code GuardWillBallHitGoal <boxArea:Box>}*/
+
     public GuardWillBallHitGoal(String[] arguments) throws IllegalArgumentException {
         super(arguments);
 
@@ -42,10 +49,10 @@ public class GuardWillBallHitGoal extends Leaf {
     public NodeStatus run(Situation situation) throws MissingNodeException {
 
         // Determine time it will take for ball to hit next Y-positive wall
-        double time = SimplePhysics.predictArrivalAtWallYPositive(situation.ball, Ball.RADIUS);
+        double time = SimplePhysics.predictArrivalAtWallYPositive(situation.getBall(), Ball.RADIUS);
 
         // Find position when hitting wall
-        Vector3 destination = BallPhysics.step(situation.ball, time).getPosition();
+        Vector3 destination = BallPhysics.step(situation.getBall(), time).getPosition();
 
         // Determine area
         Box boxArea = (Box) areaFunc.apply(situation);

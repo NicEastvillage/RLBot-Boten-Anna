@@ -1,6 +1,7 @@
 package botenanna.behaviortree.tasks;
 
 import botenanna.game.ActionSet;
+import botenanna.game.Arena;
 import botenanna.game.Situation;
 import botenanna.ArgumentTranslator;
 import botenanna.behaviortree.*;
@@ -57,13 +58,13 @@ public class TaskHitTowardsPoint extends Leaf{
         //TODO Version 2 add 3d and expand on circlePoint
         //Target point
         Vector3 target = (Vector3) pointFunc.apply(input);
-        target =  target.plus(input.ballLandingPosition);
+        target =  target.plus(input.getBallLandingPosition());
 
         //Ball
-        Vector2 ballPos = input.ballLandingPosition.plus(input.ball.getVelocity().scale(input.getCollisionTime())).asVector2();
-        Vector3 ballVelocity = input.ball.getVelocity();
+        Vector2 ballPos = input.getBallLandingPosition().plus(input.getBall().getVelocity().scale(input.getCollisionTime())).asVector2();
+        Vector3 ballVelocity = input.getBall().getVelocity();
         //Car
-        Vector3 myPos = input.myCar.getPosition();
+        Vector3 myPos = input.getMyCar().getPosition();
         //CirclePoint
         Vector2 point =  findCirclePoint(myPos,ballPos);
 
@@ -74,7 +75,7 @@ public class TaskHitTowardsPoint extends Leaf{
        }
 
         //Same as drive towards point, it will  turn toward the point and drive there.
-        double ang = RLMath.carsAngleToPoint(myPos.asVector2(), input.myCar.getRotation().yaw, point);
+        double ang = RLMath.carsAngleToPoint(myPos.asVector2(), input.getMyCar().getRotation().yaw, point);
         double steering = RLMath.steeringSmooth(ang);
         ActionSet output = new ActionSet().withThrottle(1).withSteer(steering);
         //Sharp turning with slide
@@ -82,8 +83,8 @@ public class TaskHitTowardsPoint extends Leaf{
                 output.withSlide();
             }
         //Speed boost towards hit
-        if (input.myCar.getVelocity().asVector2().getMagnitude()<carPotentialSpeed
-                && RLMath.carsAngleToPoint(ballPos, input.myCar.getRotation().yaw,input.ballLandingPosition.asVector2()) > 0.2
+        if (input.getMyCar().getVelocity().asVector2().getMagnitude()<carPotentialSpeed
+                && RLMath.carsAngleToPoint(ballPos, input.getMyCar().getRotation().yaw,input.getBallLandingPosition().asVector2()) > 0.2
                 && withBoost){
             output.withBoost();
         }
@@ -121,9 +122,9 @@ public class TaskHitTowardsPoint extends Leaf{
      * @return a vector2 on the far side of the target and velocity scaled based on the distance/velocity to the ball.
      */
     private Vector2 searchAngle(Situation input, Vector2 target){
-        Vector2 ballPos = input.ballLandingPosition.asVector2();
-        Vector2 ballV = input.ball.getVelocity().asVector2();
-        return ballPos.plus(ballV.plus(target).getNormalized().scale(-1 * ((input.myCar.getDistanceToBall() * 400) / (input.ball.getVelocity().getMagnitude() + 1)) * input.getGoalDirection(input.myPlayerIndex)));
+        Vector2 ballPos = input.getBallLandingPosition().asVector2();
+        Vector2 ballV = input.getBall().getVelocity().asVector2();
+        return ballPos.plus(ballV.plus(target).getNormalized().scale(-1 * ((input.getMyCar().getDistanceToBall() * 400) / (input.getBall().getVelocity().getMagnitude() + 1)) * Arena.getTeamGoalYDirection(input.myPlayerIndex)));
     }
 
     /** Finds a vector2 point on the ball*

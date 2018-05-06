@@ -19,6 +19,12 @@ public class GuardIsPointInsideBox extends Leaf {
     private Function<Situation, Object> givenPointFunc;
     private Function<Situation, Object> areaFunc;
 
+    /**
+     * The guard GuardIsPointInsideBox takes a Vector3 point and a Box area and then checks if the given point
+     * is inside the given box area. Returns SUCCESS when it is and FAILURE when it is not.
+     *
+     * Its signature is: {@code GuardIsPointInsideBox <givenPoint:Vector3> <boxArea:Box>} */
+
     public GuardIsPointInsideBox(String[] arguments) throws IllegalArgumentException {
         super(arguments);
 

@@ -8,6 +8,12 @@ import botenanna.game.Situation;
 
 public class GuardHasBallPossession extends Leaf {
 
+
+    /**
+     * The guard GuardHasBallPossession returns SUCCESS if the agent has ball possession and FAILURE if it does not.
+     * The possession is determined by utility theory introduced in Situation.
+     * */
+
     public GuardHasBallPossession(String[] arguments) throws IllegalArgumentException {
         super(arguments);
 
@@ -25,6 +31,6 @@ public class GuardHasBallPossession extends Leaf {
     @Override
     public NodeStatus run(Situation input) throws MissingNodeException {
 
-        return (input.whoHasPossession()) ? NodeStatus.DEFAULT_SUCCESS : NodeStatus.DEFAULT_FAILURE;
+        return (input.hasPossession(input.myPlayerIndex)) ? NodeStatus.DEFAULT_SUCCESS : NodeStatus.DEFAULT_FAILURE;
     }
 }

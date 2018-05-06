@@ -51,7 +51,7 @@ public class GrpcService extends BotGrpc.BotImplBase {
             request.getGameInfo().getGameTimeRemaining();
 
             // Rework the package
-            Situation input = new Situation(request, timeTracker);
+            Situation input = new Situation(request);
 
 
             // Create and register bot from this packet if necessary

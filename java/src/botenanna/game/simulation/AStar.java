@@ -1,7 +1,8 @@
 package botenanna.game.simulation;
 
-import botenanna.fitness.FitnessInterface;
+import botenanna.fitness.FitnessFunction;
 import botenanna.game.ActionSet;
+import botenanna.game.Car;
 import botenanna.game.Situation;
 import botenanna.physics.SteppedTimeLine;
 
@@ -30,7 +31,7 @@ public class AStar {
 
     /** Find a sequence of actions that steers the agent towards a desired intention defined by a fitness function.
      * The method uses a modified version of A*. */
-    public static SteppedTimeLine<ActionSet> findSequence(Situation startSituation, FitnessInterface fitness, double stepsize) {
+    public static SteppedTimeLine<ActionSet> findSequence(Situation startSituation, FitnessFunction fitness, double stepsize) {
 
         TimeNode startNode = new TimeNode(startSituation, new ActionSet(), null, 0);
 
@@ -79,7 +80,7 @@ public class AStar {
         return timeLine;
     }
 
-    /** Helper method for the {@link #findSequence(Situation, FitnessInterface, double)} to backtrack the actions taken
+    /** Helper method for the {@link #findSequence(Situation, FitnessFunction, double)} to backtrack the actions taken
      * and create the sequence. */
     private static List<ActionSet> reconstructSequence(TimeNode destination) {
         TimeNode current = destination;
@@ -98,15 +99,17 @@ public class AStar {
 
         List<ActionSet> following = new LinkedList<>();
 
+        Car myCar = situation.getMyCar();
+
         double[] newThrottles = getFollowingDirections(current == null ? 0 : current.getThrottle());
         double[] newSteerings = getFollowingDirections(current == null ? 0 : current.getSteer());
         // pitch and roll is 0, if car is grounded
-        double[] newPitches = situation.myCar.isMidAir() ? getFollowingDirections(current == null ? 0 : current.getPitch()) : new double[]{0};
-        double[] newRolls = situation.myCar.isMidAir() ? getFollowingDirections(current == null ? 0 : current.getRoll()) : new double[]{0};
+        double[] newPitches = myCar.isMidAir() ? getFollowingDirections(current == null ? 0 : current.getPitch()) : new double[]{0};
+        double[] newRolls = myCar.isMidAir() ? getFollowingDirections(current == null ? 0 : current.getRoll()) : new double[]{0};
         // jump is false, if jumping has no effect // FIXME With current implementation, second jump will always be one step long
-        boolean[] newJumps = !situation.myCar.isHasDoubleJumped() ? new boolean[]{true, false} : new boolean[]{false};
+        boolean[] newJumps = !myCar.hasDoubleJumped() ? new boolean[]{true, false} : new boolean[]{false};
         // boost is false, if car has no boost
-        boolean[] newBoosts = situation.myCar.getBoost() > 0 ? new boolean[]{true, false} : new boolean[]{false};
+        boolean[] newBoosts = myCar.getBoost() > 0 ? new boolean[]{true, false} : new boolean[]{false};
         boolean[] newSlides = new boolean[]{true, false};
 
         for (double throttle : newThrottles) {

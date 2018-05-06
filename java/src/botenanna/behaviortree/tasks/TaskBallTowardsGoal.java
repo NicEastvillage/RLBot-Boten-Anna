@@ -78,7 +78,7 @@ public class TaskBallTowardsGoal extends Leaf {
             predictSeconds = 0;
         }*/
         double predictSeconds = input.getCollisionTime();
-        Vector3 expectedBallLocation = input.ball.getPosition().plus(input.ball.getVelocity().scale(predictSeconds));
+        Vector3 expectedBallLocation = input.getBall().getPosition().plus(input.getBall().getVelocity().scale(predictSeconds));
 
         //Vector2 ballToRightGoalPostVector = new Vector2(0,0);
         //Vector2 ballToLeftGoalPostVector = new Vector2(0,0);
@@ -86,7 +86,7 @@ public class TaskBallTowardsGoal extends Leaf {
         //Vector2 leftGoalPost = new Vector2(0,0);
         Vector2 middleOfGoal;
 
-        if (input.myCar.getTeam() == 1) {
+        if (input.getMyCar().getTeam() == 1) {
             //ballToRightGoalPostVector = Situation.BLUE_GOALPOST_RIGHT.minus(expectedBallLocation.asVector2());
             //ballToLeftGoalPostVector = Situation.BLUE_GOALPOST_LEFT.minus(expectedBallLocation.asVector2());
             middleOfGoal = new Vector2(0,-5200);
@@ -119,8 +119,8 @@ public class TaskBallTowardsGoal extends Leaf {
 
 
         // Get the needed positions and rotations
-        Vector3 myPos = input.myCar.getPosition().plus(input.myCar.getFrontVector().scale(70));
-        Vector3 myRotation = input.myCar.getPosition();
+        Vector3 myPos = input.getMyCar().getPosition().plus(input.getMyCar().getFrontVector().scale(70));
+        Vector3 myRotation = input.getMyCar().getPosition();
 
         double ang = 0;
 
@@ -141,7 +141,7 @@ public class TaskBallTowardsGoal extends Leaf {
         //When the agent should boost
         boolean boost = false;
 
-        if(800 > expectedBallLocation.asVector2().minus(myPos.asVector2()).getMagnitude() && 1.5 > input.myCar.getAngleToBall() && input.myCar.getAngleToBall() > -1.5) {
+        if(800 > expectedBallLocation.asVector2().minus(myPos.asVector2()).getMagnitude() && 1.5 > input.getMyCar().getAngleToBall() && input.getMyCar().getAngleToBall() > -1.5) {
             boost = true;
         }
 
