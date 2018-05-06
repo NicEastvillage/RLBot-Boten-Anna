@@ -13,7 +13,7 @@ import java.util.TreeSet;
 
 public class AStar {
 
-    private static final double FORCED_STOP_SECONDS = 0.2f;
+    private static final double FORCED_STOP_STEPS = 4;
 
     private static class TimeNode {
         public final Situation situation;
@@ -38,7 +38,6 @@ public class AStar {
         TreeSet<TimeNode> openSet = new TreeSet<>((n1, n2) -> {
             if (n1 == n2) return 0; // Must be consistent with equals
             double fit = fitness.calculateFitness(n1.situation, n1.timeSpent) - fitness.calculateFitness(n2.situation, n2.timeSpent);
-            // Even if the situations have the same fitness, they are not the same
             if (fit < 0) return -1;
             else return 1;
         });
@@ -50,7 +49,7 @@ public class AStar {
 
             // Is this situation a fulfilling destination?
             if (current.actionTaken != null) {
-                if (current.timeSpent >= FORCED_STOP_SECONDS || fitness.isDeviationFulfilled(current.situation, current.timeSpent)) {
+                if (current.timeSpent >= stepsize * FORCED_STOP_STEPS || fitness.isDeviationFulfilled(current.situation, current.timeSpent)) {
                     List<ActionSet> sequence = reconstructSequence(current);
                     return toTimeLine(sequence, stepsize);
                 }
@@ -114,30 +113,14 @@ public class AStar {
 
         for (double throttle : newThrottles) {
             for (double steer : newSteerings) {
-                for (double pitch : newPitches) {
-                    for (double roll : newRolls) {
-                        for (boolean jump : newJumps) {
-                            for (boolean boost : newBoosts) {
-                                // boost is false, if throttle is 0 or -1
-                                if (boost && throttle != 1) continue;
-
-                                for (boolean slide : newSlides) {
-                                    // slide is false, when boost is true, or when steer == 0
-                                    if (slide && (boost || steer == 0)) continue;
-
-                                    following.add(new ActionSet()
-                                            .withThrottle(throttle)
-                                            .withSteer(steer)
-                                            .withPitch(pitch)
-                                            .withRoll(roll)
-                                            .withJump(jump)
-                                            .withBoost(boost)
-                                            .withSlide(slide));
-                                }
-                            }
-                        }
-                    }
-                }
+                following.add(new ActionSet()
+                        .withThrottle(throttle)
+                        .withSteer(steer)
+                        .withPitch(0)
+                        .withRoll(0)
+                        .withJump(false)
+                        .withBoost(false)
+                        .withSlide(false));
             }
         }
 
