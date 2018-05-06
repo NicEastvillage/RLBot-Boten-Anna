@@ -7,8 +7,8 @@ import botenanna.physics.Path;
 /** This class is used when you want a fitness value for "Arrive at a point at a specific time. */
 public class FitnessArriveAtPointAtTime implements FitnessFunction {
 
-    private final int DIST_SCALE = 450;
-    private final int VEL_SCALE = 200;
+    private final double DIST_SCALE = 1/450d;
+    private final double VEL_SCALE = 1/200d;
 
     private double distDeviation;
     private double velDeviation;
@@ -50,7 +50,7 @@ public class FitnessArriveAtPointAtTime implements FitnessFunction {
         double velocity = myVelocity.getMagnitude(); // Velocity
         double timeValue = (arrivalTime <= timeSpent) ? -(timeSpent/arrivalTime) + 2 : timeSpent / arrivalTime;
 
-        return Math.pow(Math.E, -((distToPoint / DIST_SCALE) + (velocity / VEL_SCALE))) * timeValue;
+        return Math.pow(Math.E, -((distToPoint * DIST_SCALE) + (velocity * VEL_SCALE))) * timeValue;
     }
 
     /** Checks if the deviations are fulfilled.

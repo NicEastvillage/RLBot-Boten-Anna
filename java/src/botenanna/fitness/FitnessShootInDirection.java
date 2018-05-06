@@ -9,7 +9,7 @@ import botenanna.physics.Path;
 public class FitnessShootInDirection implements FitnessFunction {
 
     private final double ANGLE_SCALE = 5.756462;
-    private final int DIST_SCALE = 450;
+    private final double DIST_SCALE = 1/450d;
 
     private Path shootTowardsPoint;
     private double angleDeviation;
@@ -56,7 +56,7 @@ public class FitnessShootInDirection implements FitnessFunction {
         double distanceToBall = ballLocation.getDistanceTo(carLocation);
         double angleDiffernce = desiredShotDirection.getAngleTo(currentShotDirection);
 
-        return (Math.pow(Math.E, -(timeSpent + (distanceToBall / DIST_SCALE) + angleDiffernce * ANGLE_SCALE)));
+        return (Math.pow(Math.E, -(timeSpent + (distanceToBall * DIST_SCALE) + angleDiffernce * ANGLE_SCALE)));
     }
 
     /** Checks if the deviations are fulfilled.
