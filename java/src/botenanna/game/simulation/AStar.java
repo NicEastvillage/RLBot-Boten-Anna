@@ -20,12 +20,22 @@ public class AStar {
         public final ActionSet actionTaken;
         public final TimeNode cameFrom;
         public final double timeSpent;
+        private boolean hasCalculatedFitness = false;
+        private double fitness;
 
         public TimeNode(Situation situation, ActionSet actionTaken, TimeNode cameFrom, double timeSpent) {
             this.cameFrom = cameFrom;
             this.situation = situation;
             this.actionTaken = actionTaken;
             this.timeSpent = timeSpent;
+        }
+
+        public double getFitness(FitnessFunction fitnessFunction) {
+            if (!hasCalculatedFitness) {
+                fitness = fitnessFunction.calculateFitness(situation, timeSpent);
+                hasCalculatedFitness = true;
+            }
+            return fitness;
         }
     }
 
@@ -37,7 +47,7 @@ public class AStar {
 
         TreeSet<TimeNode> openSet = new TreeSet<>((n1, n2) -> {
             if (n1 == n2) return 0; // Must be consistent with equals
-            double fit = fitness.calculateFitness(n1.situation, n1.timeSpent) - fitness.calculateFitness(n2.situation, n2.timeSpent);
+            double fit = n1.getFitness(fitness) - n2.getFitness(fitness);
             // Even if the situations have the same fitness, they are not the same
             if (fit < 0) return -1;
             else return 1;
