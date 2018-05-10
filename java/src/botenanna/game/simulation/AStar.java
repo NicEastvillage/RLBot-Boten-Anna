@@ -13,7 +13,7 @@ import java.util.TreeSet;
 
 public class AStar {
 
-    private static final double FORCED_STOP_SECONDS = 0.2f;
+    private static final int FORCED_STOP_ITERATIONS = 4;
 
     private static class TimeNode {
         public final Situation situation;
@@ -52,7 +52,7 @@ public class AStar {
 
             // Is this situation a fulfilling destination?
             if (current.actionTaken != null) {
-                if (current.timeSpent >= FORCED_STOP_SECONDS || fitness.isDeviationFulfilled(current.situation, current.timeSpent)) {
+                if (current.timeSpent >= stepsize * FORCED_STOP_ITERATIONS || fitness.isDeviationFulfilled(current.situation, current.timeSpent)) {
                     List<ActionSet> sequence = reconstructSequence(current);
                     return toTimeLine(sequence, stepsize);
                 }
