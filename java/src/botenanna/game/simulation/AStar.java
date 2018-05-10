@@ -20,22 +20,14 @@ public class AStar {
         public final ActionSet actionTaken;
         public final TimeNode cameFrom;
         public final double timeSpent;
-        private boolean hasCalculatedFitness = false;
-        private double fitness;
+        public final double fitness;
 
-        public TimeNode(Situation situation, ActionSet actionTaken, TimeNode cameFrom, double timeSpent) {
+        public TimeNode(Situation situation, ActionSet actionTaken, TimeNode cameFrom, double timeSpent, FitnessFunction fitnessFunction) {
             this.cameFrom = cameFrom;
             this.situation = situation;
             this.actionTaken = actionTaken;
             this.timeSpent = timeSpent;
-        }
-
-        public double getFitness(FitnessFunction fitnessFunction) {
-            if (!hasCalculatedFitness) {
-                fitness = fitnessFunction.calculateFitness(situation, timeSpent);
-                hasCalculatedFitness = true;
-            }
-            return fitness;
+            fitness = fitnessFunction.calculateFitness(situation, timeSpent);
         }
     }
 
@@ -43,11 +35,11 @@ public class AStar {
      * The method uses a modified version of A*. */
     public static SteppedTimeLine<ActionSet> findSequence(Situation startSituation, FitnessFunction fitness, double stepsize) {
 
-        TimeNode startNode = new TimeNode(startSituation, new ActionSet(), null, 0);
+        TimeNode startNode = new TimeNode(startSituation, new ActionSet(), null, 0, fitness);
 
         TreeSet<TimeNode> openSet = new TreeSet<>((n1, n2) -> {
             if (n1 == n2) return 0; // Must be consistent with equals
-            double fit = n1.getFitness(fitness) - n2.getFitness(fitness);
+            double fit = n1.fitness - n2.fitness;
             // Even if the situations have the same fitness, they are not the same
             if (fit < 0) return -1;
             else return 1;
@@ -72,7 +64,7 @@ public class AStar {
             List<ActionSet> followingActions = getFollowingActionSets(current.situation, current.actionTaken);
             for (ActionSet action : followingActions) {
                 Situation newSituation = Simulation.simulate(current.situation, stepsize, action);
-                TimeNode node = new TimeNode(newSituation, action, current, current.timeSpent + stepsize);
+                TimeNode node = new TimeNode(newSituation, action, current, current.timeSpent + stepsize, fitness);
                 openSet.add(node);
             }
         }
