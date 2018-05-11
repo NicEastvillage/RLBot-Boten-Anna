@@ -4,6 +4,7 @@ import botenanna.fitness.FitnessFunction;
 import botenanna.fitness.FitnessShootInDirection;
 import botenanna.game.Arena;
 import botenanna.game.Situation;
+import botenanna.math.Vector3;
 import botenanna.physics.Path;
 
 public class IntentionShootTowardsGoal extends Intention {
@@ -17,7 +18,8 @@ public class IntentionShootTowardsGoal extends Intention {
 
     @Override
     protected FitnessFunction getFitnessFunction(Situation input) {
-        return new FitnessShootInDirection(new Path(Arena.getGoalPos(input.enemyPlayerIndex)), 20, 20);
+        final Vector3 targetPoint = Arena.getGoalPos(input.enemyPlayerIndex);
+        return new FitnessShootInDirection(s -> targetPoint, 20, 20);
     }
 
     @Override

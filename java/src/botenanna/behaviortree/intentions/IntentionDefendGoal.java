@@ -18,7 +18,8 @@ public class IntentionDefendGoal extends Intention {
 
     @Override
     protected FitnessFunction getFitnessFunction(Situation input) {
-        return new FitnessDriveOverPointWithAngle(new Path(Arena.getGoalPos(input.myPlayerIndex)), new Path(new Vector3()), 0.30, 60, true);
+        final Vector3 goalPos = Arena.getGoalPos(input.myPlayerIndex);
+        return new FitnessDriveOverPointWithAngle(s -> goalPos, s -> new Vector3(), 0.30, 60, true);
     }
 
     @Override

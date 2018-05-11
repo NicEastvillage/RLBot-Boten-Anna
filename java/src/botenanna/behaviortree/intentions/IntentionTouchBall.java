@@ -4,6 +4,7 @@ import botenanna.fitness.FitnessDriveOverPointWithAngle;
 import botenanna.game.Arena;
 import botenanna.fitness.FitnessFunction;
 import botenanna.game.Situation;
+import botenanna.math.Vector3;
 import botenanna.physics.BallPhysics;
 import botenanna.physics.Path;
 
@@ -21,7 +22,8 @@ public class IntentionTouchBall extends Intention {
 
     @Override
     protected FitnessFunction getFitnessFunction(Situation input) {
-        return new FitnessDriveOverPointWithAngle(BallPhysics.getPath(input.getBall(), 50, STEPSIZE), new Path(Arena.getGoalPos(input.enemyPlayerIndex)), 0.7, 20, false);
+        final Vector3 enemyGoal = Arena.getGoalPos(input.enemyPlayerIndex);
+        return new FitnessDriveOverPointWithAngle(s -> s.getBall().getPosition(), s -> enemyGoal, 0.7, 20, false);
     }
 
     @Override

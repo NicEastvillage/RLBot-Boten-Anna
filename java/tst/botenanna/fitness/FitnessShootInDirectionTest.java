@@ -18,9 +18,9 @@ public class FitnessShootInDirectionTest {
         Vector3 shootPoint = new Vector3(500,250,0);
         int timeSpent = 4;
 
-        FitnessShootInDirection fitness = new FitnessShootInDirection(new Path(shootPoint), 0.2,0.2);
+        FitnessShootInDirection fitness = new FitnessShootInDirection(s -> shootPoint, 0.2,0.2);
 
-        double fitnessValue = fitness.calculateFitnessValue(ballLocation, ballVelocity, carLocation, carVelocity, timeSpent);
+        double fitnessValue = fitness.calculateFitnessValue(shootPoint, ballLocation, ballVelocity, carLocation, carVelocity, timeSpent);
 
         assertEquals(0.00049202342040168509727, fitnessValue, 1E-18);
     }
@@ -34,9 +34,9 @@ public class FitnessShootInDirectionTest {
         Vector3 shootPoint = new Vector3(500,-250,0);
         int timeSpent = 4;
 
-        FitnessShootInDirection fitness = new FitnessShootInDirection(new Path(shootPoint), 0.2,0.2);
+        FitnessShootInDirection fitness = new FitnessShootInDirection(s -> shootPoint, 0.2,0.2);
 
-        double fitnessValue = fitness.calculateFitnessValue(ballLocation, ballVelocity, carLocation, carVelocity, timeSpent);
+        double fitnessValue = fitness.calculateFitnessValue(shootPoint, ballLocation, ballVelocity, carLocation, carVelocity, timeSpent);
 
         assertEquals(0.000026523439794358941165, fitnessValue, 1E-19);
     }
@@ -50,9 +50,9 @@ public class FitnessShootInDirectionTest {
         Vector3 shootPoint = new Vector3(500,20,0);
         int timeSpent = 4;
 
-        FitnessShootInDirection fitness = new FitnessShootInDirection(new Path(shootPoint), 0.2,0.2);
+        FitnessShootInDirection fitness = new FitnessShootInDirection(s -> shootPoint, 0.2,0.2);
 
-        double fitnessValue = fitness.calculateFitnessValue(ballLocation, ballVelocity, carLocation, carVelocity, timeSpent);
+        double fitnessValue = fitness.calculateFitnessValue(shootPoint, ballLocation, ballVelocity, carLocation, carVelocity, timeSpent);
 
         assertEquals(0.0000023145026193631957119, fitnessValue, 1E-19);
     }
@@ -64,16 +64,16 @@ public class FitnessShootInDirectionTest {
         Vector3 carVelocity1 = new Vector3(50,-100,0);
         Vector3 ballLocation1 = new Vector3(550,200,0);
         Vector3 ballVelocity1 = new Vector3(-30,200,0);
-        Vector3 shootPoint1 = new Vector3(500,20,0);
+        Vector3 shootPoint = new Vector3(500,20,0);
         int timeSpent1 = 4;
 
-        FitnessShootInDirection fitness1 = new FitnessShootInDirection(new Path(shootPoint1), 0.2,0.2);
+        FitnessShootInDirection fitness1 = new FitnessShootInDirection(s -> shootPoint, 0.2,0.2);
 
-        double fitnessValue1 = fitness1.calculateFitnessValue(ballLocation1, ballVelocity1, carLocation1, carVelocity1, timeSpent1);
+        double fitnessValue1 = fitness1.calculateFitnessValue(shootPoint, ballLocation1, ballVelocity1, carLocation1, carVelocity1, timeSpent1);
 
         int timeSpent2 = 1;
 
-        double fitnessValue2 = fitness1.calculateFitnessValue(ballLocation1, ballVelocity1, carLocation1, carVelocity1, timeSpent2);
+        double fitnessValue2 = fitness1.calculateFitnessValue(shootPoint, ballLocation1, ballVelocity1, carLocation1, carVelocity1, timeSpent2);
 
         assertTrue(fitnessValue1 < fitnessValue2);
     }

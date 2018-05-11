@@ -5,21 +5,23 @@ import botenanna.game.Situation;
 import botenanna.math.Vector3;
 import botenanna.physics.Path;
 
+import java.util.function.Function;
+
 /** This class is used when you want a fitness value for "Shoot in direction". */
 public class FitnessShootInDirection implements FitnessFunction {
 
     private final double ANGLE_SCALE = 5.756462;
     private final double DIST_SCALE = 1/450d;
 
-    private Path shootTowardsPoint;
+    private Function<Situation, Vector3> targetPointFunc;
     private double angleDeviation;
     private double distDeviation;
 
-    /** @param shootTowardsPoint the points to shoot towards
+    /** @param targetPointFunc the point to shoot towards
      *  @param angleDeviation an value that the angle is allowed to deviate.
      *  @param distDeviation an value that the distance is allowed to deviate. */
-    public FitnessShootInDirection(Path shootTowardsPoint, double angleDeviation, double distDeviation){
-        this.shootTowardsPoint = shootTowardsPoint;
+    public FitnessShootInDirection(Function<Situation, Vector3> targetPointFunc, double angleDeviation, double distDeviation){
+        this.targetPointFunc = targetPointFunc;
         this.angleDeviation = angleDeviation;
         this.distDeviation = distDeviation;
     }
@@ -32,14 +34,9 @@ public class FitnessShootInDirection implements FitnessFunction {
      *  @return a fitness value for the given situation. */
     @Override
     public double calculateFitness(Situation situation, double timeSpent) {
-        return calculateFitnessValue(situation.getBall().getPosition(), situation.getBall().getVelocity(), situation.getMyCar().getPosition(), situation.getMyCar().getVelocity(), timeSpent);
+        return calculateFitnessValue(targetPointFunc.apply(situation), situation.getBall().getPosition(),
+                situation.getBall().getVelocity(), situation.getMyCar().getPosition(), situation.getMyCar().getVelocity(), timeSpent);
     }
-
-    /**	Takes the needed information and calculates the fitness value.
-     *  @param myPosition my cars position.
-     *  @param myDirection my cars direction.
-     *  @param timeSpent the seconds used since origin of the situation.
-     *  @return a fitness value for the given situation. */
 
     /** Takes the needed information and calculates the fitness value.
      *  @param ballLocation ball location
@@ -48,9 +45,9 @@ public class FitnessShootInDirection implements FitnessFunction {
      *  @param carVelocity the cars velocity.
      *  @param timeSpent the seconds used since origin of the situation.
      *  @return a fitness value for the given situation. */
-    double calculateFitnessValue(Vector3 ballLocation, Vector3 ballVelocity, Vector3 carLocation, Vector3 carVelocity, double timeSpent){
+    double calculateFitnessValue(Vector3 targetPoint, Vector3 ballLocation, Vector3 ballVelocity, Vector3 carLocation, Vector3 carVelocity, double timeSpent){
 
-        Vector3 desiredShotDirection = shootTowardsPoint.evaluate(timeSpent).minus(carLocation); //From car to desiredPoint
+        Vector3 desiredShotDirection = targetPoint.minus(carLocation); //From car to desiredPoint
         Vector3 currentShotDirection = ballVelocity.plus(carVelocity);
 
         double distanceToBall = ballLocation.getDistanceTo(carLocation);
@@ -66,11 +63,13 @@ public class FitnessShootInDirection implements FitnessFunction {
     @Override
     public boolean isDeviationFulfilled(Situation situation, double timeSpent) {
 
+        Vector3 targetPoint = targetPointFunc.apply(situation);
+
         //Calculate function variables
         Car car = situation.getMyCar();
-        double distToBall = car.getPosition().getDistanceTo(shootTowardsPoint.evaluate(timeSpent)); // Distance
+        double distToBall = car.getPosition().getDistanceTo(targetPoint); // Distance
 
-        Vector3 desiredShotDirection = shootTowardsPoint.evaluate(timeSpent).minus(car.getPosition()); //From car to desiredPoint
+        Vector3 desiredShotDirection = targetPoint.minus(car.getPosition()); //From car to desiredPoint
         Vector3 currentShotDirection = situation.getBall().getVelocity().plus(car.getVelocity());
         double angleDifference = desiredShotDirection.getAngleTo(currentShotDirection);
 

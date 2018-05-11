@@ -4,6 +4,8 @@ import botenanna.game.Situation;
 import botenanna.math.Vector3;
 import botenanna.physics.Path;
 
+import java.util.function.Function;
+
 /** This class is used when you want a fitness value for "Arrive at a point at a specific time. */
 public class FitnessArriveAtPointAtTime implements FitnessFunction {
 
@@ -12,17 +14,17 @@ public class FitnessArriveAtPointAtTime implements FitnessFunction {
 
     private double distDeviation;
     private double velDeviation;
-    private Path point;
+    private Function<Situation, Vector3> pointFunc;
     private double arrivalTime;
 
     /** @param point the destination point.
      *  @param arrivalTime the desired time of arrival.
      *  @param distDeviation the deviation in distance to desired point.
      *  @param velDeviation the deviation in velocity. */
-    public FitnessArriveAtPointAtTime(Path point, double arrivalTime, double distDeviation, double velDeviation) {
+    public FitnessArriveAtPointAtTime(Function<Situation, Vector3> pointFunc, double arrivalTime, double distDeviation, double velDeviation) {
         this.distDeviation = distDeviation;
         this.velDeviation = velDeviation;
-        this.point = point;
+        this.pointFunc = pointFunc;
         this.arrivalTime = arrivalTime;
     }
 
@@ -35,7 +37,7 @@ public class FitnessArriveAtPointAtTime implements FitnessFunction {
     @Override
     public double calculateFitness(Situation situation, double timeSpent) {
 
-        return calculateFitnessValue(situation.getMyCar().getPosition(), situation.getMyCar().getVelocity(), timeSpent);
+        return calculateFitnessValue(pointFunc.apply(situation), situation.getMyCar().getPosition(), situation.getMyCar().getVelocity(), timeSpent);
     }
 
     /** Takes the needed information and calculates the fitness value.
@@ -43,10 +45,10 @@ public class FitnessArriveAtPointAtTime implements FitnessFunction {
      * @param myVelocity my cars velocity.
      * @param timeSpent the seconds used since origin of the situation.
      * @return a fitness value for the given situation. */
-    double calculateFitnessValue(Vector3 myPosition, Vector3 myVelocity, double timeSpent){
+    double calculateFitnessValue(Vector3 point, Vector3 myPosition, Vector3 myVelocity, double timeSpent){
 
         //Calculate function variables
-        double distToPoint = myPosition.getDistanceTo(point.evaluate(timeSpent)); // Distance
+        double distToPoint = myPosition.getDistanceTo(point); // Distance
         double velocity = myVelocity.getMagnitude(); // Velocity
         double timeValue = (arrivalTime <= timeSpent) ? -(timeSpent/arrivalTime) + 2 : timeSpent / arrivalTime;
 
@@ -61,7 +63,7 @@ public class FitnessArriveAtPointAtTime implements FitnessFunction {
     public boolean isDeviationFulfilled(Situation situation, double timeSpent) {
 
         //Calculate function variables
-        double distToPoint = situation.getMyCar().getPosition().getDistanceTo(point.evaluate(timeSpent)); // Distance
+        double distToPoint = situation.getMyCar().getPosition().getDistanceTo(pointFunc.apply(situation)); // Distance
         double velocity = situation.getMyCar().getVelocity().getMagnitude(); // Velocity
 
         if(distToPoint <= distDeviation){
