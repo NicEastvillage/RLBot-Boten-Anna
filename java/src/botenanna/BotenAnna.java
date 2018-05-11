@@ -47,7 +47,7 @@ public class BotenAnna extends Application {
 
         Scene scene = new Scene(root, 420, 370);
         stage.setScene(scene);
-        stage.setTitle("Boten Anna - Debug");
+        stage.setTitle("Boten Anna - Data Display Window");
         stage.setAlwaysOnTop(true);
         stage.show();
     }
