@@ -22,9 +22,9 @@ public class InterpolatedTimeLineTest {
         InterpolatedTimeLine<Double> line = new InterpolatedTimeLine<>(RLMath::lerp);
         line.addTimeStep(1, 100d);
         line.addTimeStep(2, 200d);
-        assertEquals(-100d, line.evaluate(-1), 1E-8);
-        assertEquals(0d, line.evaluate(0), 1E-8);
-        assertEquals(500d, line.evaluate(5), 1E-8);
+        assertEquals(100d, line.evaluate(-1), 1E-8);
+        assertEquals(100d, line.evaluate(0), 1E-8);
+        assertEquals(200d, line.evaluate(5), 1E-8);
     }
 
     @Test

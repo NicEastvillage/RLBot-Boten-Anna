@@ -34,7 +34,7 @@ public class BotenAnna extends Application {
 
         // Technical stuff
         createDefaultBehaviourTreeBuilder(stage);
-        startGrpcServerAndInputListener();
+        startGrpcServerAndInputPoll();
 
         root = new VBox();
 
@@ -52,7 +52,7 @@ public class BotenAnna extends Application {
         stage.show();
     }
 
-    private void startGrpcServerAndInputListener() throws Exception {
+    private void startGrpcServerAndInputPoll() throws Exception {
         // The javafx application thread does not allow other threads to call its methods
         // so a multi-thread safe queue is used to send data between the window and the server
         final ArrayBlockingQueue<Bot> botUpdateQueue = new ArrayBlockingQueue<>(3);
@@ -60,7 +60,7 @@ public class BotenAnna extends Application {
         grpc.start();
         System.out.println(String.format("Grpc server started on port %s. Listening for Rocket League data!", grpc.getPort()));
 
-        // Setup listener that acts whenever a bot update is placed in botUpdateQueue
+        // Setup timer that acts each frame and checks bot updates placed in botUpdateQueue
         final LongProperty lastUpdate = new SimpleLongProperty();
         AnimationTimer timer = new AnimationTimer() {
             @Override

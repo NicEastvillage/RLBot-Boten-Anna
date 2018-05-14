@@ -66,11 +66,6 @@ public class FitnessArriveAtPointAtTime implements FitnessFunction {
         double distToPoint = situation.getMyCar().getPosition().getDistanceTo(pointFunc.apply(situation)); // Distance
         double velocity = situation.getMyCar().getVelocity().getMagnitude(); // Velocity
 
-        if(distToPoint <= distDeviation){
-            if(velocity <= velDeviation)
-                return true;
-        }
-
-        return false;
+        return distToPoint <= distDeviation && velocity <= velDeviation;
     }
 }

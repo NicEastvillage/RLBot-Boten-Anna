@@ -73,11 +73,6 @@ public class FitnessShootInDirection implements FitnessFunction {
         Vector3 currentShotDirection = situation.getBall().getVelocity().plus(car.getVelocity());
         double angleDifference = desiredShotDirection.getAngleTo(currentShotDirection);
 
-        if(distToBall <= distDeviation){
-            if(angleDifference <= angleDeviation)
-                return true;
-        }
-
-        return false;
+        return distToBall <= distDeviation && angleDifference <= angleDeviation;
     }
 }

@@ -59,12 +59,16 @@ public class FitnessDriveOverPointWithAngle implements FitnessFunction {
         double angleDifference = myDirection.getAngleTo(desiredDirectionVector);
         double velocity = carVelocity.getMagnitude();
 
-        if(stopOnPoint){
-            return (velocity == 0) ? Double.MIN_VALUE : (Math.pow(Math.E, -(timeSpent + Math.abs(angleDifference * ANGLE_SCALE) + (distanceToPoint * DIST_SCALE))))
-                    * (-2300 / velocity);
-        }else{
-            return (velocity == 0) ? Double.MIN_VALUE : (Math.pow(Math.E, -(timeSpent + Math.abs(angleDifference * ANGLE_SCALE) + (distanceToPoint * DIST_SCALE))))
-                    * 2300 / velocity;
+        // Avoid divide by zero error
+        if (velocity == 0)
+            return Double.MIN_VALUE;
+
+        double fitness = Math.pow(Math.E, -(timeSpent + Math.abs(angleDifference * ANGLE_SCALE) + (distanceToPoint * DIST_SCALE)));
+
+        if (stopOnPoint) {
+            return fitness * (-2300 / velocity);
+        } else {
+            return fitness * 2300 / velocity;
         }
     }
 
@@ -82,11 +86,6 @@ public class FitnessDriveOverPointWithAngle implements FitnessFunction {
         double distToPoint = myPos.getDistanceTo(dest); // Distance
         double angToPoint = myPos.getAngleTo(dest); // Angle
 
-        if(distToPoint <= distDeviation){
-            if(angToPoint <= angleDeviation)
-                return true;
-        }
-
-        return false;
+        return distToPoint <= distDeviation && angToPoint <= angleDeviation;
     }
 }
