@@ -265,7 +265,7 @@ public class Vector3Test {
     @Test
     public void toStringFixedSize01 () {
         Vector3 firstVector = new Vector3(1500, 3000, 2500);
-        String expectedString = "( 1500,00,  3000,00,  2500,00)";
+        String expectedString = "( 1500.00,  3000.00,  2500.00)";
 
         assertEquals(expectedString, firstVector.toStringFixedSize());
     }
