@@ -1,6 +1,7 @@
 package botenanna.behaviortree.guards;
 
-import botenanna.AgentInput;
+import botenanna.game.Arena;
+import botenanna.game.Situation;
 import botenanna.behaviortree.*;
 
 public class GuardIsBallOnMyHalf extends Leaf {
@@ -23,11 +24,11 @@ public class GuardIsBallOnMyHalf extends Leaf {
     }
 
     @Override
-    public NodeStatus run(AgentInput input) throws MissingNodeException {
+    public NodeStatus run(Situation input) throws MissingNodeException {
 
-        double ballY = input.ballLocation.y;
+        double ballY = input.getBall().getPosition().y;
 
-        if (ballY * input.getGoalDirection(input.myPlayerIndex) >= 0) {
+        if (ballY * Arena.getTeamGoalYDirection(input.myPlayerIndex) >= 0) {
             return NodeStatus.DEFAULT_SUCCESS;
         } else {
             return NodeStatus.DEFAULT_FAILURE;

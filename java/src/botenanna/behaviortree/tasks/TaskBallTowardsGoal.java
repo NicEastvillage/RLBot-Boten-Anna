@@ -1,14 +1,11 @@
 package botenanna.behaviortree.tasks;
 
-import botenanna.AgentInput;
-import botenanna.AgentOutput;
-import botenanna.ArgumentTranslator;
+import botenanna.game.Situation;
+import botenanna.game.ActionSet;
 import botenanna.behaviortree.*;
 import botenanna.math.RLMath;
 import botenanna.math.Vector2;
 import botenanna.math.Vector3;
-
-import java.util.function.Function;
 
 public class TaskBallTowardsGoal extends Leaf {
 
@@ -34,7 +31,7 @@ public class TaskBallTowardsGoal extends Leaf {
     }
 
     @Override
-    public NodeStatus run(AgentInput input) throws MissingNodeException {
+    public NodeStatus run(Situation input) throws MissingNodeException {
 
         //TODO: The agent is only trying to shoot the ball towards the middle of opponents goal, there are commented math for right and left side of the goal
         //TODO: Do so the agent shoots towards the "easisest" place in the goal.
@@ -63,7 +60,7 @@ public class TaskBallTowardsGoal extends Leaf {
             }
             else velocity = input.myVelocity.getMagnitude();
 
-            if (-25 < expectedBall.minus(input.myLocation.plus(input.myFrontVector.scale(70))).getMagnitude() - velocity*predict && expectedBall.minus(input.myLocation.plus(input.myFrontVector.scale(70))).getMagnitude() - velocity*predict < 25) {
+            if (-25 < expectedBall.minus(input.myPosition.plus(input.myFrontVector.scale(70))).getMagnitude() - velocity*predict && expectedBall.minus(input.myPosition.plus(input.myFrontVector.scale(70))).getMagnitude() - velocity*predict < 25) {
                 predictSeconds = predict;
             }
 
@@ -81,7 +78,7 @@ public class TaskBallTowardsGoal extends Leaf {
             predictSeconds = 0;
         }*/
         double predictSeconds = input.getCollisionTime();
-        Vector3 expectedBallLocation = input.ballLocation.plus(input.ballVelocity.scale(predictSeconds));
+        Vector3 expectedBallLocation = input.getBall().getPosition().plus(input.getBall().getVelocity().scale(predictSeconds));
 
         //Vector2 ballToRightGoalPostVector = new Vector2(0,0);
         //Vector2 ballToLeftGoalPostVector = new Vector2(0,0);
@@ -89,18 +86,18 @@ public class TaskBallTowardsGoal extends Leaf {
         //Vector2 leftGoalPost = new Vector2(0,0);
         Vector2 middleOfGoal;
 
-        if (input.myTeam == 1) {
-            //ballToRightGoalPostVector = AgentInput.BLUE_GOALPOST_RIGHT.minus(expectedBallLocation.asVector2());
-            //ballToLeftGoalPostVector = AgentInput.BLUE_GOALPOST_LEFT.minus(expectedBallLocation.asVector2());
+        if (input.getMyCar().getTeam() == 1) {
+            //ballToRightGoalPostVector = Situation.BLUE_GOALPOST_RIGHT.minus(expectedBallLocation.asVector2());
+            //ballToLeftGoalPostVector = Situation.BLUE_GOALPOST_LEFT.minus(expectedBallLocation.asVector2());
             middleOfGoal = new Vector2(0,-5200);
-            //rightGoalPost = AgentInput.BLUE_GOALPOST_RIGHT;
-            //leftGoalPost = AgentInput.BLUE_GOALPOST_LEFT;
+            //rightGoalPost = Situation.BLUE_GOALPOST_RIGHT;
+            //leftGoalPost = Situation.BLUE_GOALPOST_LEFT;
         }
         else {
-            //ballToRightGoalPostVector = AgentInput.RED_GOALPOST_RIGHT.minus(expectedBallLocation.asVector2());
-            //ballToLeftGoalPostVector = AgentInput.RED_GOALPOST_LEFT.minus(expectedBallLocation.asVector2());
-            //rightGoalPost = AgentInput.RED_GOALPOST_RIGHT;
-            //leftGoalPost = AgentInput.RED_GOALPOST_LEFT;
+            //ballToRightGoalPostVector = Situation.RED_GOALPOST_RIGHT.minus(expectedBallLocation.asVector2());
+            //ballToLeftGoalPostVector = Situation.RED_GOALPOST_LEFT.minus(expectedBallLocation.asVector2());
+            //rightGoalPost = Situation.RED_GOALPOST_RIGHT;
+            //leftGoalPost = Situation.RED_GOALPOST_LEFT;
             middleOfGoal = new Vector2(0,5200);
         }
 
@@ -122,8 +119,8 @@ public class TaskBallTowardsGoal extends Leaf {
 
 
         // Get the needed positions and rotations
-        Vector3 myPos = input.myLocation.plus(input.myFrontVector.scale(70));
-        Vector3 myRotation = input.myRotation;
+        Vector3 myPos = input.getMyCar().getPosition().plus(input.getMyCar().getFrontVector().scale(70));
+        Vector3 myRotation = input.getMyCar().getPosition();
 
         double ang = 0;
 
@@ -144,10 +141,10 @@ public class TaskBallTowardsGoal extends Leaf {
         //When the agent should boost
         boolean boost = false;
 
-        if(800 > expectedBallLocation.asVector2().minus(myPos.asVector2()).getMagnitude() && 1.5 > input.angleToBall && input.angleToBall > -1.5) {
+        if(800 > expectedBallLocation.asVector2().minus(myPos.asVector2()).getMagnitude() && 1.5 > input.getMyCar().getAngleToBall() && input.getMyCar().getAngleToBall() > -1.5) {
             boost = true;
         }
 
-        return new NodeStatus(Status.RUNNING, new AgentOutput().withAcceleration(1).withSteer(steering).withBoost(boost), this);
+        return new NodeStatus(Status.RUNNING, new ActionSet().withThrottle(1).withSteer(steering).withBoost(boost), this);
     }
 }

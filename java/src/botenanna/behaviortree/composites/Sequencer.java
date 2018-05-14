@@ -1,6 +1,6 @@
 package botenanna.behaviortree.composites;
 
-import botenanna.AgentInput;
+import botenanna.game.Situation;
 import botenanna.behaviortree.MissingNodeException;
 import botenanna.behaviortree.Node;
 import botenanna.behaviortree.NodeStatus;
@@ -18,7 +18,7 @@ public class Sequencer extends Composite {
     }
 
     @Override
-    public NodeStatus run(AgentInput input) throws MissingNodeException {
+    public NodeStatus run(Situation input) throws MissingNodeException {
         if (children.size() == 0) throw new MissingNodeException(this);
 
         // Go through each child node until one returns RUNNING or FAILURE

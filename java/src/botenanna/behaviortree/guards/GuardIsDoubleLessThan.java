@@ -1,6 +1,6 @@
 package botenanna.behaviortree.guards;
 
-import botenanna.AgentInput;
+import botenanna.game.Situation;
 import botenanna.ArgumentTranslator;
 import botenanna.behaviortree.Leaf;
 import botenanna.behaviortree.MissingNodeException;
@@ -11,7 +11,7 @@ import java.util.function.Function;
 
 public class GuardIsDoubleLessThan extends Leaf {
 
-    private Function<AgentInput, Object> valueFunc;
+    private Function<Situation, Object> valueFunc;
     private double size;
     private boolean valueIsAbsolute = false;
 
@@ -43,7 +43,7 @@ public class GuardIsDoubleLessThan extends Leaf {
     }
 
     @Override
-    public NodeStatus run(AgentInput input) throws MissingNodeException {
+    public NodeStatus run(Situation input) throws MissingNodeException {
         double value = (double) valueFunc.apply(input);
 
         // Optionally absolute

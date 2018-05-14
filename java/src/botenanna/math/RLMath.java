@@ -1,6 +1,6 @@
 package botenanna.math;
 
-import botenanna.AgentInput;
+import botenanna.game.Situation;
 
 import java.util.Vector;
 
@@ -47,7 +47,7 @@ public class RLMath {
      *  @param carRotation the rotation vector for the car.
      *  @return a vector pointing forward relative to the car. */
     public static Vector3 carFrontVector(Vector3 carRotation){
-        double noseX = -1 * Math.cos(carRotation.pitch) * Math.cos(carRotation.yaw);
+        double noseX = Math.cos(carRotation.pitch) * Math.cos(carRotation.yaw);
         double noseY = Math.cos(carRotation.pitch) * Math.sin(carRotation.yaw);
         double noseZ = Math.sin(carRotation.pitch);
 
@@ -61,4 +61,15 @@ public class RLMath {
         return carUpVector(carRotation).cross(carFrontVector(carRotation));
     }
 
+    /** Linearly interpolate from {@code a} to {@code b} with time {@code t}, such that {@code t = 0} will return
+     * {@code a} and {@code t = 1} will return {@code b}. */
+    public static double lerp(double a, double b, double t) {
+        return a + (b - a) * t;
+    }
+
+    /** Find the time {@code t} that produces value {@code v} when linearly interpolating from {@code a} to {@code b} with time {@code t}.
+     * That means if {@code v = a} this will return {@code 0} and if {@code v = b} this will return {@code 1}. */
+    public static double invLerp(double a, double b, double v) {
+        return b - a != 0 ? v - a / (b - a) : a;
+    }
 }

@@ -4,6 +4,9 @@ package botenanna.math;
 import java.util.Objects;
 import java.util.Vector;
 
+import static java.lang.Math.cos;
+import static java.lang.Math.sin;
+
 /** A vector with two components: x and y */
 public class Vector2 {
 
@@ -31,6 +34,16 @@ public class Vector2 {
     /** Convert to Vector3 */
     public Vector3 asVector3() {
         return new Vector3(this);
+    }
+
+    /** @return a NEW vector where the x is changed. */
+    public Vector2 withX(double x) {
+        return new Vector2(x, y);
+    }
+
+    /** @return a NEW vector where the y is changed. */
+    public Vector2 withY(double y) {
+        return new Vector2(x, y);
     }
 
     /** @return this vector plus the other vector */
@@ -84,6 +97,13 @@ public class Vector2 {
         return x == 0 && y == 0;
     }
 
+    /** Linearly interpolate from {@code this} to {@code other} with time {@code t}, such that {@code t = 0} will return
+     * {@code this} and {@code t = 1} will return {@code other}.
+     * @return a Vector3 that is linearly interpolated from {@code this} to {@code other} with time {@code t}.*/
+    public Vector2 lerp(Vector2 other, double time) {
+        return lerp(this, other, time);
+    }
+
     /** Compare two vectors.
      * @return whether the vectors are identical. */
     @Override
@@ -96,6 +116,12 @@ public class Vector2 {
         return this.minus(that).isZero();
     }
 
+    /** Turns a vector radians
+     * @return a turned vector2 */
+    public Vector2 turn(double inputRadians){
+        return  new Vector2(x*cos(inputRadians)-y*sin(inputRadians),x*sin(inputRadians)+y*cos(inputRadians));
+    }
+
     /** Generate a hash for this vector. */
     @Override
     public int hashCode() {
@@ -106,5 +132,15 @@ public class Vector2 {
     @Override
     public String toString() {
         return String.format("Vec2(" + x + ", " + y + ")");
+    }
+
+    /** Linearly interpolate from {@code A} to {@code B} with time {@code t}, such that {@code t = 0} will return
+     * {@code A} and {@code t = 1} will return {@code B}.
+     * @return a Vector3 that is linearly interpolated from {@code A} to {@code B} with time {@code t}.*/
+    public static Vector2 lerp(Vector2 A, Vector2 B, double t) {
+        return new Vector2(
+                RLMath.lerp(A.x, B.x, t),
+                RLMath.lerp(A.y, B.y, t)
+        );
     }
 }

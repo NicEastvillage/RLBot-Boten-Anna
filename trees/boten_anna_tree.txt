@@ -18,8 +18,8 @@ Selector
 	Sequencer
 		Inverter
 			Sequencer
-				GuardHasGoalOpportunity
-				TaskBallTowardsGoal
+				GuardIsPointInsideBox ball_pos mid_zone
+				TaskShootAtGoal
 		Inverter
 			Sequencer
 				Inverter
@@ -31,7 +31,7 @@ Selector
 						Inverter
 							GuardIsBallOnMyHalf
 						GuardIntercept
-				GuardCloserThan my_pos ball_pos enemy_pos
+				GuardCloserThan ball_pos my_pos enemy_pos
 				Inverter
 					GuardIsDistanceLessThan enemy_pos ball_pos 700
 				TaskGoTowardsPoint best_boost
@@ -50,4 +50,4 @@ Selector
 					GuardIsDistanceLessThan my_pos ball_land_pos 1800
 				TaskGoTowardsPoint ball_land_pos true true
 		TaskGoTowardsPoint ball_land_pos
-	TaskGoTowardsPoint my_goal_box
+	TaskGoTowardsPoint my_goal_pos

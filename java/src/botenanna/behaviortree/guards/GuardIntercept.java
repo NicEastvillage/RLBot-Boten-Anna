@@ -1,6 +1,7 @@
 package botenanna.behaviortree.guards;
 
-import botenanna.AgentInput;
+import botenanna.game.Arena;
+import botenanna.game.Situation;
 import botenanna.behaviortree.Leaf;
 import botenanna.behaviortree.MissingNodeException;
 import botenanna.behaviortree.NodeStatus;
@@ -21,9 +22,9 @@ public class GuardIntercept extends Leaf {
     }
 
     @Override
-    public NodeStatus run(AgentInput input) throws MissingNodeException {
+    public NodeStatus run(Situation input) throws MissingNodeException {
 
-        if (input.ballVelocity.y*input.getGoalDirection(input.myPlayerIndex)>input.getGoalDirection(input.myPlayerIndex)) {
+        if (input.getBall().getVelocity().y * Arena.getTeamGoalYDirection(input.myPlayerIndex) > Arena.getTeamGoalYDirection(input.myPlayerIndex)) {
             return NodeStatus.DEFAULT_SUCCESS;
         }
         return NodeStatus.DEFAULT_FAILURE;

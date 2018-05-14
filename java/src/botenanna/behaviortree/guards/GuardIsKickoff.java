@@ -1,6 +1,6 @@
 package botenanna.behaviortree.guards;
 
-import botenanna.AgentInput;
+import botenanna.game.Situation;
 import botenanna.behaviortree.Leaf;
 import botenanna.behaviortree.MissingNodeException;
 import botenanna.behaviortree.NodeStatus;
@@ -22,10 +22,10 @@ public class GuardIsKickoff extends Leaf{
     }
 
     @Override
-    public NodeStatus run(AgentInput input) throws MissingNodeException {
+    public NodeStatus run(Situation input) throws MissingNodeException {
 
-        if(input.ballLocation.x == 0 && input.ballLocation.y == 0){
-            if(input.ballVelocity.x == 0 && input.ballVelocity.y == 0)
+        if(input.getBall().getPosition().asVector2().isZero()){
+            if(input.getBall().getVelocity().asVector2().isZero())
                 return NodeStatus.DEFAULT_SUCCESS;
         }
 
