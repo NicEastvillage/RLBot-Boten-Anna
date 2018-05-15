@@ -1,9 +1,6 @@
 package botenanna.physics;
 
-import botenanna.game.Situation;
-import botenanna.math.Vector2;
 import botenanna.math.Vector3;
-import rlbot.api.GameData;
 
 /** A physical object with position, velocity and acceleration */
 public class Rigidbody implements Cloneable {
