@@ -63,7 +63,7 @@ public class FitnessDriveOverPointWithAngle implements FitnessFunction {
         if (velocity == 0)
             return Double.MIN_VALUE;
 
-        double fitness = Math.pow(Math.E, -(timeSpent + Math.abs(angleDifference * ANGLE_SCALE) + (distanceToPoint * DIST_SCALE)));
+        double fitness = -(timeSpent + Math.abs(angleDifference*ANGLE_SCALE) + distanceToPoint*DIST_SCALE);
 
         if (stopOnPoint) {
             return fitness * (-2300 / velocity);

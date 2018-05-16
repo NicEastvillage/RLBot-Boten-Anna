@@ -17,7 +17,7 @@ public class FitnessArriveAtPointAtTime implements FitnessFunction {
     private Function<Situation, Vector3> pointFunc;
     private double arrivalTime;
 
-    /** @param point the destination point.
+    /** @param pointFunc the destination point.
      *  @param arrivalTime the desired time of arrival.
      *  @param distDeviation the deviation in distance to desired point.
      *  @param velDeviation the deviation in velocity. */
@@ -52,7 +52,7 @@ public class FitnessArriveAtPointAtTime implements FitnessFunction {
         double velocity = myVelocity.getMagnitude(); // Velocity
         double timeValue = (arrivalTime <= timeSpent) ? -(timeSpent/arrivalTime) + 2 : timeSpent / arrivalTime;
 
-        return Math.pow(Math.E, -((distToPoint * DIST_SCALE) + (velocity * VEL_SCALE))) * timeValue;
+        return -(distToPoint*DIST_SCALE + velocity*VEL_SCALE) * timeValue;
     }
 
     /** Checks if the deviations are fulfilled.
