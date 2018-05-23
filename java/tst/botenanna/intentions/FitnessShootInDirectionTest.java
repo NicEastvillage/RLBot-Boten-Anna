@@ -1,7 +1,6 @@
-package botenanna.fitness;
+package botenanna.intentions;
 
 import botenanna.math.Vector3;
-import botenanna.physics.Path;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -18,9 +17,9 @@ public class FitnessShootInDirectionTest {
         Vector3 shootPoint = new Vector3(500,250,0);
         int timeSpent = 4;
 
-        FitnessShootInDirection fitness = new FitnessShootInDirection(s -> shootPoint, 0.2,0.2);
+        IntentionFunctionShootInDirection fitness = new IntentionFunctionShootInDirection(s -> shootPoint, 0.2,0.2);
 
-        double fitnessValue = fitness.calculateFitnessValue(shootPoint, ballLocation, ballVelocity, carLocation, carVelocity, timeSpent);
+        double fitnessValue = fitness.calculateWork(shootPoint, ballLocation, ballVelocity, carLocation, carVelocity, timeSpent);
 
         assertEquals(-7.6169842401624769146, fitnessValue, 1E-18);
     }
@@ -34,9 +33,9 @@ public class FitnessShootInDirectionTest {
         Vector3 shootPoint = new Vector3(500,-250,0);
         int timeSpent = 4;
 
-        FitnessShootInDirection fitness = new FitnessShootInDirection(s -> shootPoint, 0.2,0.2);
+        IntentionFunctionShootInDirection fitness = new IntentionFunctionShootInDirection(s -> shootPoint, 0.2,0.2);
 
-        double fitnessValue = fitness.calculateFitnessValue(shootPoint, ballLocation, ballVelocity, carLocation, carVelocity, timeSpent);
+        double fitnessValue = fitness.calculateWork(shootPoint, ballLocation, ballVelocity, carLocation, carVelocity, timeSpent);
 
         assertEquals(-10.537481695388022083, fitnessValue, 1E-19);
     }
@@ -50,9 +49,9 @@ public class FitnessShootInDirectionTest {
         Vector3 shootPoint = new Vector3(500,20,0);
         int timeSpent = 4;
 
-        FitnessShootInDirection fitness = new FitnessShootInDirection(s -> shootPoint, 0.2,0.2);
+        IntentionFunctionShootInDirection fitness = new IntentionFunctionShootInDirection(s -> shootPoint, 0.2,0.2);
 
-        double fitnessValue = fitness.calculateFitnessValue(shootPoint, ballLocation, ballVelocity, carLocation, carVelocity, timeSpent);
+        double fitnessValue = fitness.calculateWork(shootPoint, ballLocation, ballVelocity, carLocation, carVelocity, timeSpent);
 
         assertEquals(-12.976315744756912022, fitnessValue, 1E-19);
     }
@@ -67,13 +66,13 @@ public class FitnessShootInDirectionTest {
         Vector3 shootPoint = new Vector3(500,20,0);
         int timeSpent1 = 4;
 
-        FitnessShootInDirection fitness1 = new FitnessShootInDirection(s -> shootPoint, 0.2,0.2);
+        IntentionFunctionShootInDirection fitness1 = new IntentionFunctionShootInDirection(s -> shootPoint, 0.2,0.2);
 
-        double fitnessValue1 = fitness1.calculateFitnessValue(shootPoint, ballLocation1, ballVelocity1, carLocation1, carVelocity1, timeSpent1);
+        double fitnessValue1 = fitness1.calculateWork(shootPoint, ballLocation1, ballVelocity1, carLocation1, carVelocity1, timeSpent1);
 
         int timeSpent2 = 1;
 
-        double fitnessValue2 = fitness1.calculateFitnessValue(shootPoint, ballLocation1, ballVelocity1, carLocation1, carVelocity1, timeSpent2);
+        double fitnessValue2 = fitness1.calculateWork(shootPoint, ballLocation1, ballVelocity1, carLocation1, carVelocity1, timeSpent2);
 
         assertTrue(fitnessValue1 < fitnessValue2);
     }

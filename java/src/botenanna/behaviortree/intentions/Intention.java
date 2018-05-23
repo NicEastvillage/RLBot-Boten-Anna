@@ -1,14 +1,14 @@
 package botenanna.behaviortree.intentions;
 
 import botenanna.behaviortree.*;
-import botenanna.fitness.FitnessFunction;
+import botenanna.intentions.IntentionFunction;
 import botenanna.game.ActionSet;
 import botenanna.game.Situation;
 import botenanna.game.simulation.AStar;
 import botenanna.physics.TimeLine;
 import botenanna.physics.TimeTracker;
 
-/** Intentions are nodes with no children. They use a fitness-function, the A*-algorithm, and simulation of the game to
+/** Intentions are nodes with no children. They use a intention function, the A*-algorithm, and simulation of the game to
  * find a sequence of ActionSets that will fulfil the intention. They return FAILURE when the method
  * {@link #shouldInterrupt(Situation)} returns true, and they return SUCCESS when the sequence is over. When there are
  * steps left in the sequence, they will return RUNNING with the evaluated ActionSet. */
@@ -17,7 +17,7 @@ public abstract class Intention extends Leaf {
     public static final double STEPSIZE = 0.05;
 
     private boolean isRunning = false;
-    private FitnessFunction fitness;
+    private IntentionFunction intentionFunction;
     private TimeLine<ActionSet> sequence;
     private TimeTracker timeTracker = new TimeTracker();
 
@@ -30,15 +30,15 @@ public abstract class Intention extends Leaf {
     @Override
     public void reset() {
         isRunning = false;
-        fitness = null;
+        intentionFunction = null;
         sequence = null;
     }
 
     @Override
     public NodeStatus run(Situation input) throws MissingNodeException {
         if (!isRunning) {
-            fitness = getFitnessFunction(input);
-            sequence = AStar.findSequence(input, fitness, STEPSIZE);
+            intentionFunction = getIntetionFunction(input);
+            sequence = AStar.findSequence(input, intentionFunction, STEPSIZE);
             timeTracker.startTimer();
             isRunning = true;
         }
@@ -59,6 +59,6 @@ public abstract class Intention extends Leaf {
         return new NodeStatus(Status.RUNNING, action, this);
     }
 
-    protected abstract FitnessFunction getFitnessFunction(Situation input);
+    protected abstract IntentionFunction getIntetionFunction(Situation input);
     protected abstract boolean shouldInterrupt(Situation input);
 }

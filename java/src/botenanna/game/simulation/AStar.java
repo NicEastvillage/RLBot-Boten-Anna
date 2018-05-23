@@ -1,6 +1,6 @@
 package botenanna.game.simulation;
 
-import botenanna.fitness.FitnessFunction;
+import botenanna.intentions.IntentionFunction;
 import botenanna.game.ActionSet;
 import botenanna.game.Car;
 import botenanna.game.Situation;
@@ -20,27 +20,27 @@ public class AStar {
         public final ActionSet actionTaken;
         public final TimeNode cameFrom;
         public final double timeSpent;
-        public final double fitness;
+        public final double intentionValue;
 
-        public TimeNode(Situation situation, ActionSet actionTaken, TimeNode cameFrom, double timeSpent, FitnessFunction fitnessFunction) {
+        public TimeNode(Situation situation, ActionSet actionTaken, TimeNode cameFrom, double timeSpent, IntentionFunction intentionFunction) {
             this.cameFrom = cameFrom;
             this.situation = situation;
             this.actionTaken = actionTaken;
             this.timeSpent = timeSpent;
-            fitness = fitnessFunction.calculateFitness(situation, timeSpent);
+            intentionValue = intentionFunction.compute(situation, timeSpent);
         }
     }
 
-    /** Find a sequence of actions that steers the agent towards a desired intention defined by a fitness function.
+    /** Find a sequence of actions that steers the agent towards a desired intention defined by an intention function.
      * The method uses a modified version of A*. */
-    public static SteppedTimeLine<ActionSet> findSequence(Situation startSituation, FitnessFunction fitness, double stepsize) {
+    public static SteppedTimeLine<ActionSet> findSequence(Situation startSituation, IntentionFunction intention, double stepsize) {
 
-        TimeNode startNode = new TimeNode(startSituation, new ActionSet(), null, 0, fitness);
+        TimeNode startNode = new TimeNode(startSituation, new ActionSet(), null, 0, intention);
 
         TreeSet<TimeNode> openSet = new TreeSet<>((n1, n2) -> {
             if (n1 == n2) return 0; // Must be consistent with equals
-            double fit = n1.fitness - n2.fitness;
-            // Even if the situations have the same fitness, they are not the same
+            double fit = n1.intentionValue - n2.intentionValue;
+            // Even if the situations have the same value, they are not the same
             if (fit < 0) return -1;
             else return 1;
         });
@@ -52,7 +52,7 @@ public class AStar {
 
             // Is this situation a fulfilling destination?
             if (current.actionTaken != null) {
-                if (current.timeSpent >= stepsize * FORCED_STOP_ITERATIONS || fitness.isDeviationFulfilled(current.situation, current.timeSpent)) {
+                if (current.timeSpent >= stepsize * FORCED_STOP_ITERATIONS || intention.isDeviationFulfilled(current.situation, current.timeSpent)) {
                     List<ActionSet> sequence = reconstructSequence(current);
                     return toTimeLine(sequence, stepsize);
                 }
@@ -64,7 +64,7 @@ public class AStar {
             List<ActionSet> followingActions = getFollowingActionSets(current.situation, current.actionTaken);
             for (ActionSet action : followingActions) {
                 Situation newSituation = Simulation.simulate(current.situation, stepsize, action);
-                TimeNode node = new TimeNode(newSituation, action, current, current.timeSpent + stepsize, fitness);
+                TimeNode node = new TimeNode(newSituation, action, current, current.timeSpent + stepsize, intention);
                 openSet.add(node);
             }
         }
@@ -82,7 +82,7 @@ public class AStar {
         return timeLine;
     }
 
-    /** Helper method for the {@link #findSequence(Situation, FitnessFunction, double)} to backtrack the actions taken
+    /** Helper method for the {@link #findSequence(Situation, IntentionFunction, double)} to backtrack the actions taken
      * and create the sequence. */
     private static List<ActionSet> reconstructSequence(TimeNode destination) {
         TimeNode current = destination;

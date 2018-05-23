@@ -1,11 +1,10 @@
 package botenanna.behaviortree.intentions;
 
-import botenanna.fitness.FitnessFunction;
-import botenanna.fitness.FitnessShootInDirection;
+import botenanna.intentions.IntentionFunction;
+import botenanna.intentions.IntentionFunctionShootInDirection;
 import botenanna.game.Arena;
 import botenanna.game.Situation;
 import botenanna.math.Vector3;
-import botenanna.physics.Path;
 
 public class IntentionShootTowardsGoal extends Intention {
 
@@ -17,9 +16,9 @@ public class IntentionShootTowardsGoal extends Intention {
     }
 
     @Override
-    protected FitnessFunction getFitnessFunction(Situation input) {
+    protected IntentionFunction getIntetionFunction(Situation input) {
         final Vector3 targetPoint = Arena.getGoalPos(input.enemyPlayerIndex);
-        return new FitnessShootInDirection(s -> targetPoint, 20, 20);
+        return new IntentionFunctionShootInDirection(s -> targetPoint, 20, 20);
     }
 
     @Override

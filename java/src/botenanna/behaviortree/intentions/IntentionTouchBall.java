@@ -1,12 +1,10 @@
 package botenanna.behaviortree.intentions;
 
-import botenanna.fitness.FitnessDriveOverPointWithAngle;
+import botenanna.intentions.IntentionFunctionDriveOverPointWithAngle;
 import botenanna.game.Arena;
-import botenanna.fitness.FitnessFunction;
+import botenanna.intentions.IntentionFunction;
 import botenanna.game.Situation;
 import botenanna.math.Vector3;
-import botenanna.physics.BallPhysics;
-import botenanna.physics.Path;
 
 /** The IntentionTouchBall is the intention to go to the ball's position. The agent will try to arrive with an
  * angle towards the enemy goal box, but nothing is guaranteed.
@@ -21,9 +19,9 @@ public class IntentionTouchBall extends Intention {
     }
 
     @Override
-    protected FitnessFunction getFitnessFunction(Situation input) {
+    protected IntentionFunction getIntetionFunction(Situation input) {
         final Vector3 enemyGoal = Arena.getGoalPos(input.enemyPlayerIndex);
-        return new FitnessDriveOverPointWithAngle(s -> s.getBall().getPosition(), s -> enemyGoal, 0.7, 20, false);
+        return new IntentionFunctionDriveOverPointWithAngle(s -> s.getBall().getPosition(), s -> enemyGoal, 0.7, 20, false);
     }
 
     @Override

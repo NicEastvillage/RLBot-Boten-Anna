@@ -1,7 +1,6 @@
-package botenanna.fitness;
+package botenanna.intentions;
 
 import botenanna.math.Vector3;
-import botenanna.physics.Path;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -16,12 +15,12 @@ public class FitnessArriveAtPointAtTimeTest {
         int arrivalTime = 10;
         int timeSpent = 5;
 
-        FitnessArriveAtPointAtTime fitness = new FitnessArriveAtPointAtTime(s -> point, arrivalTime, 0.2,0.2);
+        IntentionFunctionArriveAtPointAtTime fitness = new IntentionFunctionArriveAtPointAtTime(s -> point, arrivalTime, 0.2,0.2);
 
         Vector3 myVelocity = new Vector3(10,0,0);
         Vector3 myPosition = new Vector3(0,0,0);
 
-        double fitnessValue = fitness.calculateFitnessValue(point, myPosition, myVelocity,timeSpent);
+        double fitnessValue = fitness.calculateWork(point, myPosition, myVelocity,timeSpent);
 
         assertEquals(-1.5963484026367722764, fitnessValue, 1E-15);
     }
@@ -33,12 +32,12 @@ public class FitnessArriveAtPointAtTimeTest {
         int arrival = 5;
         int timeSpent = 2;
 
-        FitnessArriveAtPointAtTime fitness = new FitnessArriveAtPointAtTime(s -> point, arrival, 0.2,0.2);
+        IntentionFunctionArriveAtPointAtTime fitness = new IntentionFunctionArriveAtPointAtTime(s -> point, arrival, 0.2,0.2);
 
         Vector3 myVelocity = new Vector3(100,0,0);
         Vector3 myPosition = new Vector3(100,100,0);
 
-        double fitnessValue = fitness.calculateFitnessValue(point, myPosition, myVelocity, timeSpent);
+        double fitnessValue = fitness.calculateWork(point, myPosition, myVelocity, timeSpent);
 
         assertEquals(-3.2169889330626027708, fitnessValue, 1E-15);
     }
@@ -50,12 +49,12 @@ public class FitnessArriveAtPointAtTimeTest {
         int arrival = 5;
         int timeSpent = 5;
 
-        FitnessArriveAtPointAtTime fitness = new FitnessArriveAtPointAtTime(s -> point, arrival, 0.2,0.2);
+        IntentionFunctionArriveAtPointAtTime fitness = new IntentionFunctionArriveAtPointAtTime(s -> point, arrival, 0.2,0.2);
 
         Vector3 myVelocity = new Vector3(-300,-300,0);
         Vector3 myPosition = new Vector3(200,0,0);
 
-        double fitnessValue = fitness.calculateFitnessValue(point, myPosition, myVelocity, timeSpent);
+        double fitnessValue = fitness.calculateWork(point, myPosition, myVelocity, timeSpent);
 
         assertEquals(-9.5715668387775137414, fitnessValue, 1E-15);
     }
@@ -67,12 +66,12 @@ public class FitnessArriveAtPointAtTimeTest {
         int arrival1 = 5;
         int timeSpent1 = 5;
 
-        FitnessArriveAtPointAtTime fitness1 = new FitnessArriveAtPointAtTime(s -> point1, arrival1, 0.2,0.2);
+        IntentionFunctionArriveAtPointAtTime fitness1 = new IntentionFunctionArriveAtPointAtTime(s -> point1, arrival1, 0.2,0.2);
 
         Vector3 myVelocity1 = new Vector3(-300,-300,0);
         Vector3 myPosition1 = new Vector3(200,0,0);
 
-        double fitnessValue1 = fitness1.calculateFitnessValue(point1, myPosition1, myVelocity1, timeSpent1);
+        double fitnessValue1 = fitness1.calculateWork(point1, myPosition1, myVelocity1, timeSpent1);
 
 
 
@@ -80,12 +79,12 @@ public class FitnessArriveAtPointAtTimeTest {
         int arrival2 = 5;
         int timeSpent2 = 5;
 
-        FitnessArriveAtPointAtTime fitness2 = new FitnessArriveAtPointAtTime(s -> point2, arrival2, 0.2,0.2);
+        IntentionFunctionArriveAtPointAtTime fitness2 = new IntentionFunctionArriveAtPointAtTime(s -> point2, arrival2, 0.2,0.2);
 
         Vector3 myVelocity2 = new Vector3(-300,-300,0);
         Vector3 myPosition2 = new Vector3(200,0,0);
 
-        double fitnessValue2 = fitness2.calculateFitnessValue(point2, myPosition2, myVelocity2, timeSpent2);
+        double fitnessValue2 = fitness2.calculateWork(point2, myPosition2, myVelocity2, timeSpent2);
 
         assertTrue(fitnessValue1 < fitnessValue2);
     }
