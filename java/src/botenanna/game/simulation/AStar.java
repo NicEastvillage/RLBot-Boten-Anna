@@ -48,7 +48,7 @@ public class AStar {
         openSet.add(startNode);
 
         while (!openSet.isEmpty()) {
-            TimeNode current = openSet.last();
+            TimeNode current = openSet.first();
 
             // Is this situation a fulfilling destination?
             if (current.actionTaken != null) {
