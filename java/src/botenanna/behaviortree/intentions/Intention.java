@@ -37,7 +37,7 @@ public abstract class Intention extends Leaf {
     @Override
     public NodeStatus run(Situation input) throws MissingNodeException {
         if (!isRunning) {
-            intentionFunction = getIntetionFunction(input);
+            intentionFunction = getIntentionFunction(input);
             sequence = AStar.findSequence(input, intentionFunction, STEPSIZE);
             timeTracker.startTimer();
             isRunning = true;
@@ -49,16 +49,17 @@ public abstract class Intention extends Leaf {
             return NodeStatus.DEFAULT_FAILURE;
         }
 
-        // Has next step?
+        // Out of next steps?
         if (sequence.getLastTime() < timeTracker.getElapsedSecondsTimer() + STEPSIZE) {
+            // Start over
             reset();
-            return NodeStatus.DEFAULT_SUCCESS;
+            return run(input);
         }
 
         ActionSet action = sequence.evaluate(timeTracker.getElapsedSecondsTimer());
         return new NodeStatus(Status.RUNNING, action, this);
     }
 
-    protected abstract IntentionFunction getIntetionFunction(Situation input);
+    protected abstract IntentionFunction getIntentionFunction(Situation input);
     protected abstract boolean shouldInterrupt(Situation input);
 }

@@ -19,7 +19,7 @@ public class IntentionTouchBall extends Intention {
     }
 
     @Override
-    protected IntentionFunction getIntetionFunction(Situation input) {
+    protected IntentionFunction getIntentionFunction(Situation input) {
         final Vector3 enemyGoal = Arena.getGoalPos(input.enemyPlayerIndex);
         return new IntentionFunctionDriveOverPointWithAngle(s -> s.getBall().getPosition(), s -> enemyGoal, 0.7, 20, false);
     }

@@ -16,7 +16,7 @@ public class IntentionDefendGoal extends Intention {
     }
 
     @Override
-    protected IntentionFunction getIntetionFunction(Situation input) {
+    protected IntentionFunction getIntentionFunction(Situation input) {
         final Vector3 goalPos = Arena.getGoalPos(input.myPlayerIndex);
         return new IntentionFunctionDriveOverPointWithAngle(s -> goalPos, s -> new Vector3(), 0.30, 60, true);
     }

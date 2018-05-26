@@ -16,7 +16,7 @@ public class IntentionShootTowardsGoal extends Intention {
     }
 
     @Override
-    protected IntentionFunction getIntetionFunction(Situation input) {
+    protected IntentionFunction getIntentionFunction(Situation input) {
         final Vector3 targetPoint = Arena.getGoalPos(input.enemyPlayerIndex);
         return new IntentionFunctionShootInDirection(s -> targetPoint, 20, 20);
     }
