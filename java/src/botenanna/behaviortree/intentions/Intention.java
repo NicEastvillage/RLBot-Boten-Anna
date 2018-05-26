@@ -24,7 +24,11 @@ public abstract class Intention extends Leaf {
     public Intention(String[] arguments) throws IllegalArgumentException {
         super(arguments);
 
-        if (arguments.length != 0) throw new IllegalArgumentException();
+        if (!isValidNumberOfArguments(arguments.length)) throw new IllegalArgumentException();
+    }
+
+    protected boolean isValidNumberOfArguments(int argumentCount) {
+        return argumentCount == 0;
     }
 
     @Override
