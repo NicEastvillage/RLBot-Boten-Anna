@@ -52,7 +52,7 @@ public abstract class Intention extends Leaf {
         // Has next step?
         if (sequence.getLastTime() < timeTracker.getElapsedSecondsTimer() + STEPSIZE) {
             reset();
-            return NodeStatus.DEFAULT_SUCCESS;
+            return run(input);
         }
 
         ActionSet action = sequence.evaluate(timeTracker.getElapsedSecondsTimer());
