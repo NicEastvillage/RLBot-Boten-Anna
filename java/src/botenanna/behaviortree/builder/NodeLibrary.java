@@ -23,8 +23,6 @@ public class NodeLibrary {
                     return new TaskDashForward(arguments);
                 case "TaskAdjustAirRotation":
                     return new TaskAdjustAirRotation(arguments);
-                case "TaskHitTowardsPoint":
-                    return new TaskHitTowardsPoint(arguments);
                 case "TaskShootAtGoal":
                     return new TaskShootAtGoal(arguments);
             }
