@@ -1,7 +1,7 @@
 package botenanna.behaviortree.guards;
 
 
-import botenanna.ArgumentTranslator;
+import botenanna.behaviortree.ArgumentTranslator;
 import botenanna.behaviortree.Leaf;
 import botenanna.behaviortree.MissingNodeException;
 import botenanna.behaviortree.NodeStatus;

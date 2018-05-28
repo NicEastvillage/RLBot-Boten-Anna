@@ -1,19 +1,14 @@
 package botenanna.behaviortree.guards;
 
 import botenanna.game.Situation;
-import botenanna.game.ActionSet;
-import botenanna.ArgumentTranslator;
+import botenanna.behaviortree.ArgumentTranslator;
 import botenanna.Ball;
 import botenanna.behaviortree.Leaf;
 import botenanna.behaviortree.MissingNodeException;
 import botenanna.behaviortree.NodeStatus;
-import botenanna.behaviortree.Status;
-import botenanna.game.Situation;
-import botenanna.math.Vector2;
 import botenanna.math.Vector3;
 import botenanna.math.zone.Box;
 import botenanna.physics.BallPhysics;
-import botenanna.physics.Path;
 import botenanna.physics.SimplePhysics;
 
 import java.util.function.Function;

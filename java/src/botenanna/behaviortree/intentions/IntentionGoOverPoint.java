@@ -1,6 +1,6 @@
 package botenanna.behaviortree.intentions;
 
-import botenanna.ArgumentTranslator;
+import botenanna.behaviortree.ArgumentTranslator;
 import botenanna.game.Arena;
 import botenanna.game.Situation;
 import botenanna.intentions.IntentionFunction;

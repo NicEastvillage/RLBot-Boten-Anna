@@ -2,7 +2,7 @@ package botenanna.behaviortree.tasks;
 
 import botenanna.game.ActionSet;
 import botenanna.game.Situation;
-import botenanna.ArgumentTranslator;
+import botenanna.behaviortree.ArgumentTranslator;
 import botenanna.behaviortree.*;
 import botenanna.math.RLMath;
 import botenanna.math.Vector3;

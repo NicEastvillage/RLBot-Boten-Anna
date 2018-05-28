@@ -2,7 +2,7 @@ package botenanna.behaviortree.tasks;
 
 import botenanna.game.Situation;
 import botenanna.game.ActionSet;
-import botenanna.ArgumentTranslator;
+import botenanna.behaviortree.ArgumentTranslator;
 import botenanna.behaviortree.Leaf;
 import botenanna.behaviortree.MissingNodeException;
 import botenanna.behaviortree.NodeStatus;

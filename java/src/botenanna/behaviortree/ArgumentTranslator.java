@@ -1,5 +1,6 @@
-package botenanna;
+package botenanna.behaviortree;
 
+import botenanna.UnknownBTKeyException;
 import botenanna.game.Arena;
 import botenanna.game.Situation;
 import java.util.function.Function;
