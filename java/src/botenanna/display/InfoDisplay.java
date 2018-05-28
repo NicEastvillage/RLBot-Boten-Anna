@@ -1,6 +1,5 @@
 package botenanna.display;
 
-import botenanna.Bot;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Background;
@@ -13,7 +12,7 @@ import javafx.scene.text.Font;
 /** Abstract InfoDisplay that ensures consistent layout. */
 public abstract class InfoDisplay extends VBox {
 
-    public static final Color DEFAULT_HEADER_COLOR = new Color(0.82, 0.82, 0.82, 1);
+    private static final Color DEFAULT_HEADER_COLOR = new Color(0.82, 0.82, 0.82, 1);
 
     protected HBox header;
     protected Label headerLabel;

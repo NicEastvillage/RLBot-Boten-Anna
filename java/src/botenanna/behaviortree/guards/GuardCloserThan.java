@@ -19,18 +19,16 @@ private Function<Situation, Object> fromB;
      * a given distance. Can be inverted to check if distance is greater than instead.
      *
      * Its signature is {@code GuardCloserThan <to:Vector3> <fromA:Vector3> <fromB:Vector3>}*/
-
     public GuardCloserThan(String[] arguments) throws IllegalArgumentException {
         super(arguments);
 
-        if (arguments.length != 3) {
-            throw new IllegalArgumentException();
-        }
+        if (arguments.length != 3) throw new IllegalArgumentException();
 
         to = ArgumentTranslator.get(arguments[0]);
         fromA = ArgumentTranslator.get(arguments[1]);
         fromB = ArgumentTranslator.get(arguments[2]);
     }
+
     @Override
     public void reset() {
 

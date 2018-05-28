@@ -16,7 +16,6 @@ public class NodeLibrary {
                 case "TaskGoTowardsPoint": return new TaskGoTowardsPoint(arguments);
                 case "TaskDashForward": return new TaskDashForward(arguments);
                 case "TaskAdjustAirRotation": return new TaskAdjustAirRotation(arguments);
-                case "TaskHitTowardsPoint": return new TaskHitTowardsPoint(arguments);
                 case "TaskShootAtGoal": return new TaskShootAtGoal(arguments);
             }
         } else if (nodeName.length() >= 9 && nodeName.substring(0, 9).equals("Intention")) {

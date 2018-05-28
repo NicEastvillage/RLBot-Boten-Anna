@@ -2,16 +2,12 @@ package botenanna.display;
 
 import botenanna.game.Situation;
 import botenanna.physics.Rigidbody;
-import javafx.geometry.Insets;
-import javafx.scene.control.Label;
-import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 
 /** A display for the ball info. */
 public class BallInfoDisplay extends InfoDisplay {
 
-    public static final Color HEADER_COLOR = new Color(0.7, 0.7, 0.7, 1);
+    private static final Color HEADER_COLOR = new Color(0.7, 0.7, 0.7, 1);
 
     public BallInfoDisplay() {
         super("Ball", HEADER_COLOR);

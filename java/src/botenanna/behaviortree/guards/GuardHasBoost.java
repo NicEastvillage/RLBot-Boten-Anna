@@ -16,9 +16,7 @@ public class GuardHasBoost extends Leaf {
     public GuardHasBoost(String[] arguments) throws IllegalArgumentException {
         super(arguments);
 
-        if (arguments.length > 1) {
-            throw new IllegalArgumentException();
-        }
+        if (arguments.length > 1) throw new IllegalArgumentException();
 
         // Parse optional amount
         if (arguments.length == 1) {
