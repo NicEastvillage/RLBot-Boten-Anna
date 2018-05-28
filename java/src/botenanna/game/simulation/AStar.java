@@ -15,6 +15,8 @@ public class AStar {
 
     private static final int FORCED_STOP_ITERATIONS = 4;
 
+    /** The TimeNode wraps the Situation which enables us to build a tree of Situations and remember details about
+     * the evaluation of each node. */
     private static class TimeNode {
         public final Situation situation;
         public final ActionSet actionTaken;
@@ -72,6 +74,8 @@ public class AStar {
         return null;
     }
 
+    /** Helper method for the {@link #findSequence(Situation, IntentionFunction, double)}.
+     * Takes a list of ActionSets and places them in a TimeLine with stepsize interval between each. */
     private static SteppedTimeLine<ActionSet> toTimeLine(List<ActionSet> sequence, double stepsize) {
         SteppedTimeLine<ActionSet> timeLine = new SteppedTimeLine<>();
         double time = 0;
