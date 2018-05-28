@@ -14,8 +14,8 @@ import java.io.IOException;
 /** Display for bot info */
 public class BotInfoDisplay extends InfoDisplay {
 
-    public static final Color BLUE = new Color(.34, .42, 1, 1);
-    public static final Color ORANGE = new Color(1, 0.7, 0.3, 1);
+    private static final Color BLUE = new Color(.34, .42, 1, 1);
+    private static final Color ORANGE = new Color(1, 0.7, 0.3, 1);
 
     private Bot bot;
 
@@ -26,8 +26,8 @@ public class BotInfoDisplay extends InfoDisplay {
         addChangeBtButton();
     }
 
-    /** Add button to header that allow changing of behaviour tree. */
-    public void addChangeBtButton() {
+    /** Add button to header that allows changing of behaviour tree. */
+    private void addChangeBtButton() {
         Button changeBt = new Button("Tree");
         changeBt.setFont(new Font(10));
         changeBt.setPadding(new Insets(1, 4, 1, 4));
@@ -55,7 +55,7 @@ public class BotInfoDisplay extends InfoDisplay {
                 input.hasPossession(input.myPlayerIndex)));
     }
 
-    /** Change the behaviour of the bot connected to this display. */
+    /** Change the behaviour tree of the bot connected to this display. */
     private void changeBehaviourTree() {
         try {
             BehaviorTree tree = BotenAnna.defaultBTBuilder.buildFromFileChooser();
