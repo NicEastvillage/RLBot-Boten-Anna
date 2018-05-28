@@ -2,7 +2,7 @@ package botenanna.behaviortree.tasks;
 
 import botenanna.game.Situation;
 import botenanna.game.ActionSet;
-import botenanna.ArgumentTranslator;
+import botenanna.behaviortree.ArgumentTranslator;
 import botenanna.behaviortree.Leaf;
 import botenanna.behaviortree.MissingNodeException;
 import botenanna.behaviortree.NodeStatus;
@@ -31,6 +31,7 @@ public class TaskAdjustAirRotation extends Leaf {
 
         // Check arguments
         if (arguments.length > 1) throw new IllegalArgumentException();
+
         if (arguments.length == 1) {
             // What to face
             shouldFace = true;

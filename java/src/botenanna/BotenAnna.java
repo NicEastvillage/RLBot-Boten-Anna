@@ -45,7 +45,7 @@ public class BotenAnna extends Application {
         ballInfoDisplay = new BallInfoDisplay();
         root.getChildren().add(ballInfoDisplay);
 
-        Scene scene = new Scene(root, 420, 370);
+        Scene scene = new Scene(root, 280, 320);
         stage.setScene(scene);
         stage.setTitle("Boten Anna - Data Display Window");
         stage.setAlwaysOnTop(true);

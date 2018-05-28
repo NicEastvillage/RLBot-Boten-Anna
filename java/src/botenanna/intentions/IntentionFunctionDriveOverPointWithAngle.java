@@ -1,17 +1,17 @@
-package botenanna.fitness;
+package botenanna.intentions;
 
 import botenanna.game.Car;
 import botenanna.game.Situation;
 import botenanna.math.Vector3;
-import botenanna.physics.Path;
 
 import java.util.function.Function;
 
-/** This class is used when you want a fitness value for "Drive over a point with a specific angle". */
-public class FitnessDriveOverPointWithAngle implements FitnessFunction {
+/** This class is used when you want an intention value for "Drive over a point with a specific angle". */
+public class IntentionFunctionDriveOverPointWithAngle implements IntentionFunction {
 
     private final double DIST_SCALE = 1/450d;
-    private final double ANGLE_SCALE = 5.09299;
+    private final double ANGLE_SCALE = 1/128d;
+    private final double VEL_SCALE = 1/1500d;
 
     private double angleDeviation;
     private double distDeviation;
@@ -24,7 +24,7 @@ public class FitnessDriveOverPointWithAngle implements FitnessFunction {
      *  @param angleDeviation an value that the angle is allowed to deviate.
      *  @param distDeviation an value that the distance is allowed to deviate.
      *  @param stopOnPoint should the car stop on the point or drive over. */
-    public FitnessDriveOverPointWithAngle(Function<Situation, Vector3> destinationPointFunc, Function<Situation,
+    public IntentionFunctionDriveOverPointWithAngle(Function<Situation, Vector3> destinationPointFunc, Function<Situation,
             Vector3> nextPointFunc, double angleDeviation, double distDeviation, boolean stopOnPoint) {
 
         this.destinationPointFunc = destinationPointFunc;
@@ -34,25 +34,25 @@ public class FitnessDriveOverPointWithAngle implements FitnessFunction {
         this.stopOnPoint = stopOnPoint;
     }
 
-    /**	Takes a situation and time spent and returns a fitness value of that situation.
+    /**	Takes a situation and time spent and returns an intention value of that situation.
      *  This method extracts needed data from Situation and passes in on to calculation.
      *  This is done to make the method testable.
      *  @param situation the situation to be evaluated.
      *  @param timeSpent the seconds used since origin of situation.
-     *  @return a fitness value for the given situation. */
+     *  @return an intention value for the given situation. */
     @Override
-    public double calculateFitness(Situation situation, double timeSpent){
+    public double compute(Situation situation, double timeSpent){
         Car myCar = situation.getMyCar();
-        return calculateFitnessValue(destinationPointFunc.apply(situation), nextPointFunc.apply(situation),
+        return calculateWork(destinationPointFunc.apply(situation), nextPointFunc.apply(situation),
                 myCar.getPosition(), myCar.getFrontVector(), timeSpent, myCar.getVelocity());
     }
 
-    /**	Takes the needed information and calculates the fitness value.
+    /**	Takes the needed information and calculates the intention value.
      *  @param myPosition my cars position.
      *  @param myDirection my cars direction.
      *  @param timeSpent the seconds used since origin of the situation.
-     *  @return a fitness value for the given situation. */
-    double calculateFitnessValue(Vector3 dest, Vector3 next, Vector3 myPosition, Vector3 myDirection, double timeSpent, Vector3 carVelocity){
+     *  @return an intention value for the given situation. */
+    double calculateWork(Vector3 dest, Vector3 next, Vector3 myPosition, Vector3 myDirection, double timeSpent, Vector3 carVelocity){
 
         double distanceToPoint = myPosition.getDistanceTo(dest);
         Vector3 desiredDirectionVector = next.minus(dest);
@@ -61,14 +61,14 @@ public class FitnessDriveOverPointWithAngle implements FitnessFunction {
 
         // Avoid divide by zero error
         if (velocity == 0)
-            return Double.MIN_VALUE;
+            return Double.MAX_VALUE;
 
-        double fitness = Math.pow(Math.E, -(timeSpent + Math.abs(angleDifference * ANGLE_SCALE) + (distanceToPoint * DIST_SCALE)));
+        double work = timeSpent + angleDifference*ANGLE_SCALE + distanceToPoint*DIST_SCALE;
 
         if (stopOnPoint) {
-            return fitness * (-2300 / velocity);
+            return work + velocity*VEL_SCALE;
         } else {
-            return fitness * 2300 / velocity;
+            return work - velocity*VEL_SCALE;
         }
     }
 

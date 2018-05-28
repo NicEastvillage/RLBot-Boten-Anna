@@ -37,10 +37,16 @@ public class BallPhysics {
                 }
             } else if (nextGroundHit == 0) {
                 // Simulate ball rolling until it hits wall
-                ball.setVelocity(new Vector3(ball.getVelocity().x, ball.getVelocity().y, 0));
+                ball.setVelocity(ball.getVelocity().withZ(0));
+
+                if (Double.isNaN(nextWallHit)) {
+                    // The ball is laying still
+                    break;
+                }
 
                 SimplePhysics.step(ball, Math.min(nextWallHit, timeLeft), false);
                 timeSpent += nextWallHit;
+
                 Vector3 vel = ball.getVelocity();
                 if (SimplePhysics.willHitSideWallNext(ball, RADIUS)) {
                     ball.setVelocity(new Vector3(vel.x * BALL_WALL_BOUNCINESS, vel.y, vel.z));

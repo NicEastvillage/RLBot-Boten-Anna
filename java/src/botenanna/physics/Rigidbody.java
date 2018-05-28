@@ -1,14 +1,9 @@
 package botenanna.physics;
 
-import botenanna.game.Situation;
-import botenanna.math.Vector2;
 import botenanna.math.Vector3;
-import rlbot.api.GameData;
 
 /** A physical object with position, velocity and acceleration */
 public class Rigidbody implements Cloneable {
-
-    public static final Vector3 GRAVITY = Vector3.DOWN.scale(650);
 
     private Vector3 position = new Vector3();
     private Vector3 velocity = new Vector3();
@@ -17,13 +12,15 @@ public class Rigidbody implements Cloneable {
     private Vector3 angularVelocity = new Vector3();
 
     /** Clone this Rigidbody.
-     * @return a Rigidbody with the same position, velocity, acceleration and gravity */
+     * @return a Rigidbody with the same position, velocity, acceleration, rotation and angularVelocity. */
     @Override
     public Rigidbody clone() {
         Rigidbody copy = new Rigidbody();
         copy.setPosition(position);
         copy.setVelocity(velocity);
         copy.setAcceleration(acceleration);
+        copy.setRotation(rotation);
+        copy.setAngularVelocity(angularVelocity);
         return copy;
     }
 

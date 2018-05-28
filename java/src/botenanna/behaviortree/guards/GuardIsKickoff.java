@@ -8,6 +8,7 @@ import botenanna.behaviortree.NodeStatus;
 public class GuardIsKickoff extends Leaf{
 
     /** <p> The GuardIsKickoff returns SUCCESS if there is a kickoff. </p>
+     *
      *  <p> It's signature is: {@code GuardIsKickoff}</p> */
     public GuardIsKickoff(String[] arguments) throws IllegalArgumentException {
         super(arguments);

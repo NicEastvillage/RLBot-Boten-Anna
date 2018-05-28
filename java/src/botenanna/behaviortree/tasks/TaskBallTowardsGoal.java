@@ -17,7 +17,6 @@ public class TaskBallTowardsGoal extends Leaf {
      * the ball towards its own goal.</p>
      *
      * <p>It's signature is {@code TaskBallTowardsGoal}</p>*/
-
     public TaskBallTowardsGoal(String[] arguments) throws IllegalArgumentException {
         super(arguments);
 

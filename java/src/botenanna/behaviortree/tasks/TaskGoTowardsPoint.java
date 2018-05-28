@@ -2,7 +2,7 @@ package botenanna.behaviortree.tasks;
 
 import botenanna.game.ActionSet;
 import botenanna.game.Situation;
-import botenanna.ArgumentTranslator;
+import botenanna.behaviortree.ArgumentTranslator;
 import botenanna.behaviortree.*;
 import botenanna.math.RLMath;
 import botenanna.math.Vector3;
@@ -11,7 +11,7 @@ import java.util.function.Function;
 
 public class TaskGoTowardsPoint extends Leaf {
 
-    public static final double SLIDE_ANGLE = 1.7;
+    private static final double SLIDE_ANGLE = 1.7;
 
     private Function<Situation, Object> pointFunc;
     private boolean allowSlide = true;

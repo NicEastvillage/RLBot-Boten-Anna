@@ -8,7 +8,6 @@ import botenanna.behaviortree.NodeStatus;
 import botenanna.behaviortree.Status;
 import botenanna.physics.SteppedTimeLine;
 
-
 public class TaskDashForward extends Leaf {
 
     private SteppedTimeLine<NodeStatus> timeLine;
@@ -19,10 +18,7 @@ public class TaskDashForward extends Leaf {
     public TaskDashForward(String[] arguments) throws IllegalArgumentException {
         super(arguments);
 
-
-        if(arguments.length != 0){
-            throw new IllegalArgumentException();
-        }
+        if(arguments.length != 0) throw new IllegalArgumentException();
 
         currentlyActive = false;
 

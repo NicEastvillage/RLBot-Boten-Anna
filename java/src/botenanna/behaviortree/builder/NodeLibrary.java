@@ -2,10 +2,7 @@ package botenanna.behaviortree.builder;
 
 import botenanna.behaviortree.Node;
 import botenanna.behaviortree.guards.*;
-import botenanna.behaviortree.intentions.IntentionCollectBoost;
-import botenanna.behaviortree.intentions.IntentionDefendGoal;
-import botenanna.behaviortree.intentions.IntentionShootTowardsGoal;
-import botenanna.behaviortree.intentions.IntentionTouchBall;
+import botenanna.behaviortree.intentions.*;
 import botenanna.behaviortree.tasks.*;
 import botenanna.behaviortree.composites.*;
 import botenanna.behaviortree.decorators.*;
@@ -15,18 +12,11 @@ public class NodeLibrary {
         if (nodeName.length() >= 4 && nodeName.substring(0, 4).equals("Task")) {
             // Tasks
             switch (nodeName) {
-                case "TaskGoForwards":
-                    return new TaskGoForwards(arguments);
-                case "TaskGoTowardsPoint":
-                    return new TaskGoTowardsPoint(arguments);
-                case "TaskDashForward":
-                    return new TaskDashForward(arguments);
-                case "TaskAdjustAirRotation":
-                    return new TaskAdjustAirRotation(arguments);
-                case "TaskHitTowardsPoint":
-                    return new TaskHitTowardsPoint(arguments);
-                case "TaskShootAtGoal":
-                    return new TaskShootAtGoal(arguments);
+                case "TaskGoForwards": return new TaskGoForwards(arguments);
+                case "TaskGoTowardsPoint": return new TaskGoTowardsPoint(arguments);
+                case "TaskDashForward": return new TaskDashForward(arguments);
+                case "TaskAdjustAirRotation": return new TaskAdjustAirRotation(arguments);
+                case "TaskShootAtGoal": return new TaskShootAtGoal(arguments);
             }
         } else if (nodeName.length() >= 9 && nodeName.substring(0, 9).equals("Intention")) {
             // Intentions
@@ -35,6 +25,7 @@ public class NodeLibrary {
                 case "IntentionCollectBoost": return new IntentionCollectBoost(arguments);
                 case "IntentionTouchBall": return new IntentionTouchBall(arguments);
                 case "IntentionShootTowardsGoal": return new IntentionShootTowardsGoal(arguments);
+                case "IntentionGoOverPoint": return new IntentionGoOverPoint(arguments);
             }
         } else if (nodeName.length() >= 5 && nodeName.substring(0, 5).equals("Guard")) {
             // Guards
