@@ -22,9 +22,7 @@ public class GuardIsDistanceLessThan extends Leaf {
     public GuardIsDistanceLessThan(String[] arguments) throws IllegalArgumentException {
         super(arguments);
 
-        if (arguments.length != 3) {
-            throw new IllegalArgumentException();
-        }
+        if (arguments.length != 3) throw new IllegalArgumentException();
 
         fromFunc = ArgumentTranslator.get(arguments[0]);
         toFunc = ArgumentTranslator.get(arguments[1]);

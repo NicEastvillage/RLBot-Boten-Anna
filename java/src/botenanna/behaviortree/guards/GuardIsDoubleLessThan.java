@@ -4,7 +4,6 @@ import botenanna.game.Situation;
 import botenanna.ArgumentTranslator;
 import botenanna.behaviortree.Leaf;
 import botenanna.behaviortree.MissingNodeException;
-import botenanna.behaviortree.Node;
 import botenanna.behaviortree.NodeStatus;
 
 import java.util.function.Function;
@@ -23,9 +22,7 @@ public class GuardIsDoubleLessThan extends Leaf {
     public GuardIsDoubleLessThan(String[] arguments) throws IllegalArgumentException {
         super(arguments);
 
-        if (arguments.length < 2 || arguments.length > 3) {
-            throw new IllegalArgumentException();
-        }
+        if (arguments.length < 2 || arguments.length > 3) throw new IllegalArgumentException();
 
         // Set variables
         valueFunc = ArgumentTranslator.get(arguments[0]);

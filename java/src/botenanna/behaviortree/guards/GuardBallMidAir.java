@@ -8,9 +8,10 @@ import botenanna.behaviortree.NodeStatus;
 
 public class GuardBallMidAir extends Leaf{
 
-/** The GuardBallMidAir compares if the ball z is in the air by taking the z value and checks if it is over a set value and returns true if is is over*/
-
-
+    /** The GuardBallMidAir compares if the ball z is in the air by taking the z value and
+     *  checks if it is over a set value and returns true if is is over.
+     *
+     * <p> It's signature is: {@code GuardIsKickoff}</p> */
     public GuardBallMidAir(String[] arguments) throws IllegalArgumentException {
         super(arguments);
 

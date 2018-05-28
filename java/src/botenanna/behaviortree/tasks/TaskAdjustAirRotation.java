@@ -31,6 +31,7 @@ public class TaskAdjustAirRotation extends Leaf {
 
         // Check arguments
         if (arguments.length > 1) throw new IllegalArgumentException();
+
         if (arguments.length == 1) {
             // What to face
             shouldFace = true;

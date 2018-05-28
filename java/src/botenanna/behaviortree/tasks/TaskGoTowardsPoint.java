@@ -11,7 +11,7 @@ import java.util.function.Function;
 
 public class TaskGoTowardsPoint extends Leaf {
 
-    public static final double SLIDE_ANGLE = 1.7;
+    private static final double SLIDE_ANGLE = 1.7;
 
     private Function<Situation, Object> pointFunc;
     private boolean allowSlide = true;

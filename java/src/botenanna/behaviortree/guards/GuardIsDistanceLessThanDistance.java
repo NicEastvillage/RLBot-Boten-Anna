@@ -1,6 +1,5 @@
 package botenanna.behaviortree.guards;
 
-
 import botenanna.ArgumentTranslator;
 import botenanna.behaviortree.Leaf;
 import botenanna.behaviortree.MissingNodeException;
@@ -25,9 +24,7 @@ public class GuardIsDistanceLessThanDistance extends Leaf {
     public GuardIsDistanceLessThanDistance (String[] arguments) throws IllegalArgumentException {
         super(arguments);
 
-        if (arguments.length != 4) {
-            throw new IllegalArgumentException();
-        }
+        if (arguments.length != 4) throw new IllegalArgumentException();
 
         fromVecA = ArgumentTranslator.get(arguments[0]);
         toVecB = ArgumentTranslator.get(arguments[1]);

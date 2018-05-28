@@ -14,7 +14,6 @@ import java.util.function.Function;
 import static java.lang.Math.atan2;
 import static java.lang.Math.cos;
 
-
 public class TaskHitTowardsPoint extends Leaf{
 
     private Function<Situation, Object> pointFunc;
@@ -45,7 +44,7 @@ public class TaskHitTowardsPoint extends Leaf{
             precision = Double.parseDouble(arguments[1]);
         }
     }
-    //old
+
     @Override
     public void reset() {
         // Irrelevant
